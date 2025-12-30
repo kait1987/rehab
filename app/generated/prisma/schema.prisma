@@ -20,7 +20,9 @@ datasource db {
 
 model User {
   id          String   @id @default(uuid()) @db.Uuid
+  clerkId     String?  @unique @map("clerk_id") // Clerk 사용자 ID
   email       String?  @unique
+  name        String? // 사용자 이름 (Clerk 동기화 API에서 사용)
   displayName String?  @map("display_name")
   isAdmin     Boolean  @default(false) @map("is_admin")
   isActive    Boolean  @default(true) @map("is_active")
@@ -35,6 +37,7 @@ model User {
   userFavorites     UserFavorite[]
   events            Event[]
 
+  @@index([clerkId], map: "idx_users_clerk_id")
   @@index([isActive], map: "idx_users_is_active")
   @@index([isAdmin], map: "idx_users_is_admin")
   @@map("users")
@@ -410,13 +413,4 @@ model Event {
   @@index([eventName], map: "idx_events_event_name")
   @@index([eventTime(sort: Desc)], map: "idx_events_event_time")
   @@map("events")
-}
-
-model Patient {
-  id        Int      @id @default(autoincrement()) // 환자 번호 (자동 생성 1, 2, 3...)
-  name      String // 환자 이름
-  age       Int // 나이
-  gender    String // 성별
-  createdAt DateTime @default(now()) // 등록된 시간
-  updatedAt DateTime @updatedAt // 수정된 시간
 }

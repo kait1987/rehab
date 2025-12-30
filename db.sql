@@ -24,7 +24,9 @@ create extension if not exists pgcrypto;  -- gen_random_uuid() [web:81][web:82]
 create table if not exists public.users (
   id uuid primary key default gen_random_uuid(),
   -- 운영 방식이 "아무나 접속"이어도 결국 계정/권한이 필요해지는 경우가 많아 최소 필드만 둡니다.
+  clerk_id text unique,  -- Clerk 사용자 ID (AGENTS.md 요구사항)
   email text unique,
+  name text,  -- 사용자 이름 (Clerk 동기화 API에서 사용)
   display_name text,
   is_admin boolean default false,
   is_active boolean default true,
@@ -34,6 +36,7 @@ create table if not exists public.users (
 
 comment on table public.users is '앱 사용자(최소 스키마). 외부 인증 시스템 도입 시 확장/대체 가능.';
 
+create index if not exists idx_users_clerk_id on public.users(clerk_id);
 create index if not exists idx_users_is_active on public.users(is_active);
 create index if not exists idx_users_is_admin on public.users(is_admin);
 
