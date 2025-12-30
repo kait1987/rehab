@@ -1,0 +1,12 @@
+node_modules/
+.github/
+.next/
+out/
+pnpm-lock.yaml
+.vercel/
+coverage/
+*.log
+.env*
+public/icons/
+.cache/
+.temp/
