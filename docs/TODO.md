@@ -4,6 +4,24 @@
 
 ---
 
+## 🚀 현재 진행 상황 (Current Status)
+
+### ✅ 완료된 작업 (Done)
+
+- [x] 프로젝트 초기 세팅 (Next.js + Supabase Boilerplate)
+- [x] 로컬 맥(Mac) 서버 DB 연결 (PostgreSQL)
+- [x] Prisma 설정 및 초기 데이터(Form Roller) 표시 성공
+- [x] 기존 템플릿 디자인(Velvet) 제거 및 초기화
+- [x] 로그인/회원가입 라이브러리(Clerk) 설치 완료 (설정 필요)
+- [x] 아이콘 라이브러리(Lucide React) 설치 완료
+
+### 🏃‍♂️ 진행 중 (In Progress)
+
+- [ ] TODO.md 파일 작성 및 로드맵 수립 (현재 단계)
+- [ ] 로그인 기능(Clerk) 설정 및 테스트
+
+---
+
 ## ✅ PHASE 1: Foundation MVP (핵심 기능 완성)
 
 ### 🎯 목표

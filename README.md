@@ -15,8 +15,12 @@ NEXT_PUBLIC_STORAGE_BUCKET=study
 
 # Prisma 데이터베이스 연결 (Prisma 7 필수)
 # Supabase PostgreSQL 연결 문자열 사용
-# 형식: postgresql://postgres:[PASSWORD]@[HOST]:[PORT]/postgres?sslmode=require
-DATABASE_URL=postgresql://postgres:[YOUR_PASSWORD]@[YOUR_PROJECT_REF].supabase.co:5432/postgres?sslmode=require
+# 형식: postgresql://postgres:[PASSWORD]@[HOST]:[PORT]/postgres?sslmode=require&connection_limit=5&pool_timeout=30&connect_timeout=30
+# 연결 파라미터 설명:
+# - connection_limit: 최대 연결 풀 크기 (권장: 5-10)
+# - pool_timeout: 연결 풀 타임아웃 (초, 권장: 30)
+# - connect_timeout: 연결 타임아웃 (초, 권장: 30)
+DATABASE_URL=postgresql://postgres:[YOUR_PASSWORD]@[YOUR_PROJECT_REF].supabase.co:5432/postgres?sslmode=require&connection_limit=5&pool_timeout=30&connect_timeout=30
 
 # 네이버 API 환경 변수 (선택사항)
 NAVER_CLIENT_ID=your_naver_client_id
