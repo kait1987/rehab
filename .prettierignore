@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.vercel
+coverage
+pnpm-lock.yaml
+*.log
+.env*
+public/icons
+.cache

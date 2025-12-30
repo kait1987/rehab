@@ -1,0 +1,422 @@
+// ===================================================
+// REHAB 재활운동 어플리케이션 - Prisma 스키마
+// PRD.md와 db.sql 기반 설계
+// Prisma 7 형식 (datasource url은 prisma/config.ts에서 설정)
+// ===================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url은 prisma/config.ts에서 설정
+}
+
+// ============================================
+// 1️⃣ 사용자 테이블
+// ============================================
+
+model User {
+  id          String    @id @default(uuid()) @db.Uuid
+  email       String?   @unique
+  displayName String?   @map("display_name")
+  isAdmin     Boolean   @default(false) @map("is_admin")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  reviews            Review[]
+  courses            Course[]
+  userPainProfiles   UserPainProfile[]
+  userCourseHistory  UserCourseHistory[]
+  userFavorites      UserFavorite[]
+  events             Event[]
+
+  @@index([isActive], map: "idx_users_is_active")
+  @@index([isAdmin], map: "idx_users_is_admin")
+  @@map("users")
+}
+
+// ============================================
+// 2️⃣ 헬스장 관련 테이블
+// ============================================
+
+model Gym {
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String
+  address           String
+  latitude          Decimal   @db.Decimal(10, 8)
+  longitude         Decimal   @db.Decimal(11, 8)
+  phone             String?
+  website           String?
+  priceRange        String?   @map("price_range") @db.VarChar(20)
+  description       String?
+  isActive          Boolean   @default(true) @map("is_active")
+  facilityInfoCount Int       @default(0) @map("facility_info_count")
+  lastUpdatedAt     DateTime? @map("last_updated_at") @db.Timestamptz
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  facilities        GymFacility?
+  operatingHours    GymOperatingHour[]
+  crowdLevels      GymCrowdLevel[]
+  reviews           Review[]
+  userFavorites     UserFavorite[]
+
+  @@index([latitude, longitude], map: "idx_gyms_location")
+  @@index([isActive], map: "idx_gyms_is_active")
+  @@index([priceRange], map: "idx_gyms_price_range")
+  @@map("gyms")
+}
+
+model GymFacility {
+  id                  String    @id @default(uuid()) @db.Uuid
+  gymId               String    @unique @map("gym_id") @db.Uuid
+  isQuiet             Boolean   @default(false) @map("is_quiet")
+  hasRehabEquipment   Boolean   @default(false) @map("has_rehab_equipment")
+  hasPtCoach          Boolean   @default(false) @map("has_pt_coach")
+  hasShower           Boolean   @default(false) @map("has_shower")
+  hasParking          Boolean   @default(false) @map("has_parking")
+  hasLocker           Boolean   @default(false) @map("has_locker")
+  hasWaterDispenser   Boolean   @default(false) @map("has_water_dispenser")
+  hasAirConditioning Boolean   @default(false) @map("has_air_conditioning")
+  otherFacilities     String[]  @map("other_facilities")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@index([gymId], map: "idx_gym_facilities_gym_id")
+  @@index([isQuiet], map: "idx_gym_facilities_is_quiet")
+  @@index([hasRehabEquipment], map: "idx_gym_facilities_has_rehab_equipment")
+  @@index([hasPtCoach], map: "idx_gym_facilities_has_pt_coach")
+  @@map("gym_facilities")
+}
+
+model GymOperatingHour {
+  id        String    @id @default(uuid()) @db.Uuid
+  gymId     String    @map("gym_id") @db.Uuid
+  dayOfWeek Int       @map("day_of_week")
+  openTime  String?   @map("open_time")
+  closeTime String?   @map("close_time")
+  isClosed  Boolean   @default(false) @map("is_closed")
+  notes     String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, dayOfWeek], map: "gym_operating_hours_unique")
+  @@index([gymId], map: "idx_gym_operating_hours_gym_id")
+  @@index([dayOfWeek], map: "idx_gym_operating_hours_day_of_week")
+  @@map("gym_operating_hours")
+}
+
+model GymCrowdLevel {
+  id          String    @id @default(uuid()) @db.Uuid
+  gymId       String    @map("gym_id") @db.Uuid
+  timeSlot    String    @map("time_slot") @db.VarChar(20)
+  dayOfWeek   Int?      @map("day_of_week")
+  crowdLevel  String    @map("crowd_level") @db.VarChar(20) // 'quiet', 'normal', 'busy'
+  source      String    @default("manual") @db.VarChar(20)
+  reportedAt  DateTime? @map("reported_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@index([gymId], map: "idx_gym_crowd_levels_gym_id")
+  @@index([timeSlot], map: "idx_gym_crowd_levels_time_slot")
+  @@index([crowdLevel], map: "idx_gym_crowd_levels_crowd_level")
+  @@map("gym_crowd_levels")
+}
+
+// ============================================
+// 3️⃣ 리뷰 관련 테이블
+// ============================================
+
+model ReviewTag {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @unique
+  category     String?   @db.VarChar(50)
+  displayOrder Int       @default(0) @map("display_order")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  reviewTagMappings ReviewTagMapping[]
+
+  @@index([category], map: "idx_review_tags_category")
+  @@index([displayOrder], map: "idx_review_tags_display_order")
+  @@map("review_tags")
+}
+
+model Review {
+  id            String    @id @default(uuid()) @db.Uuid
+  gymId         String    @map("gym_id") @db.Uuid
+  userId        String?   @map("user_id") @db.Uuid
+  comment       String?
+  isAdminReview Boolean   @default(false) @map("is_admin_review")
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  gym             Gym                @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user            User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  reviewTagMappings ReviewTagMapping[]
+
+  @@index([gymId], map: "idx_reviews_gym_id")
+  @@index([userId], map: "idx_reviews_user_id")
+  @@index([isDeleted], map: "idx_reviews_is_deleted")
+  @@index([isAdminReview], map: "idx_reviews_is_admin_review")
+  @@index([createdAt(sort: Desc)], map: "idx_reviews_created_at")
+  @@map("reviews")
+}
+
+model ReviewTagMapping {
+  id          String    @id @default(uuid()) @db.Uuid
+  reviewId    String    @map("review_id") @db.Uuid
+  reviewTagId String    @map("review_tag_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewTag ReviewTag @relation(fields: [reviewTagId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, reviewTagId], map: "review_tag_mappings_unique")
+  @@index([reviewId], map: "idx_review_tag_mappings_review_id")
+  @@index([reviewTagId], map: "idx_review_tag_mappings_review_tag_id")
+  @@map("review_tag_mappings")
+}
+
+// ============================================
+// 4️⃣ 재활 코스 관련 테이블
+// ============================================
+
+model BodyPart {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @unique
+  displayOrder Int       @default(0) @map("display_order")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  exerciseTemplates ExerciseTemplate[]
+  userPainProfiles  UserPainProfile[]
+
+  @@index([displayOrder], map: "idx_body_parts_display_order")
+  @@map("body_parts")
+}
+
+model EquipmentType {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @unique
+  displayOrder Int       @default(0) @map("display_order")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  exerciseEquipmentMappings ExerciseEquipmentMapping[]
+
+  @@index([displayOrder], map: "idx_equipment_types_display_order")
+  @@map("equipment_types")
+}
+
+model ExerciseTemplate {
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String
+  description       String?
+  bodyPartId        String    @map("body_part_id") @db.Uuid
+  intensityLevel    Int?      @map("intensity_level")
+  durationMinutes   Int?      @map("duration_minutes")
+  reps              Int?
+  sets              Int?
+  restSeconds       Int?      @map("rest_seconds")
+  difficultyScore   Int?      @map("difficulty_score")
+  contraindications String[]  @map("contraindications")
+  instructions      String?
+  precautions       String?
+  isActive          Boolean   @default(true) @map("is_active")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  bodyPart                  BodyPart                  @relation(fields: [bodyPartId], references: [id])
+  exerciseEquipmentMappings ExerciseEquipmentMapping[]
+  courseExercises            CourseExercise[]
+
+  @@index([bodyPartId], map: "idx_exercise_templates_body_part_id")
+  @@index([intensityLevel], map: "idx_exercise_templates_intensity_level")
+  @@index([isActive], map: "idx_exercise_templates_is_active")
+  @@map("exercise_templates")
+}
+
+model ExerciseEquipmentMapping {
+  id                 String    @id @default(uuid()) @db.Uuid
+  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
+  equipmentTypeId    String    @map("equipment_type_id") @db.Uuid
+  isRequired         Boolean   @default(false) @map("is_required")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+  equipmentType    EquipmentType   @relation(fields: [equipmentTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([exerciseTemplateId, equipmentTypeId], map: "exercise_equipment_mappings_unique")
+  @@index([exerciseTemplateId], map: "idx_exercise_equipment_mappings_exercise_template_id")
+  @@index([equipmentTypeId], map: "idx_exercise_equipment_mappings_equipment_type_id")
+  @@map("exercise_equipment_mappings")
+}
+
+model Course {
+  id                  String    @id @default(uuid()) @db.Uuid
+  userId              String?   @map("user_id") @db.Uuid
+  // PRD.md 요구사항: 60, 90, 120분만 허용 (데이터베이스 레벨 CHECK 제약조건 존재)
+  // 애플리케이션 레벨에서도 검증 필요
+  totalDurationMinutes Int      @map("total_duration_minutes") // 60, 90, 120만 허용
+  painLevel           Int?      @map("pain_level")
+  experienceLevel     String?   @map("experience_level") @db.VarChar(20)
+  bodyParts           String[]  @map("body_parts")
+  equipmentAvailable  String[]  @map("equipment_available")
+  courseType          String    @default("warmup_main_cooldown") @map("course_type") @db.VarChar(20)
+  isTemplate          Boolean   @default(false) @map("is_template")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  courseExercises   CourseExercise[]
+  userCourseHistory UserCourseHistory[]
+
+  @@index([userId], map: "idx_courses_user_id")
+  @@index([painLevel], map: "idx_courses_pain_level")
+  @@index([isTemplate], map: "idx_courses_is_template")
+  @@index([createdAt(sort: Desc)], map: "idx_courses_created_at")
+  @@map("courses")
+}
+
+model CourseExercise {
+  id                 String    @id @default(uuid()) @db.Uuid
+  courseId           String    @map("course_id") @db.Uuid
+  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
+  section            String    // 'warmup', 'main', 'cooldown'
+  orderInSection     Int       @map("order_in_section")
+  durationMinutes    Int?      @map("duration_minutes")
+  reps               Int?
+  sets               Int?
+  restSeconds        Int?      @map("rest_seconds")
+  notes              String?
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  course           Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id])
+
+  @@index([courseId], map: "idx_course_exercises_course_id")
+  @@index([exerciseTemplateId], map: "idx_course_exercises_exercise_template_id")
+  @@index([section, orderInSection], map: "idx_course_exercises_section")
+  @@map("course_exercises")
+}
+
+// ============================================
+// 5️⃣ 사용자 관련 테이블
+// ============================================
+
+model UserPainProfile {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String?   @map("user_id") @db.Uuid
+  bodyPartId        String    @map("body_part_id") @db.Uuid
+  painLevel         Int?      @map("pain_level")
+  experienceLevel   String?   @map("experience_level") @db.VarChar(20)
+  equipmentAvailable String[] @map("equipment_available")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyPart BodyPart  @relation(fields: [bodyPartId], references: [id])
+
+  @@index([userId], map: "idx_user_pain_profiles_user_id")
+  @@index([bodyPartId], map: "idx_user_pain_profiles_body_part_id")
+  @@map("user_pain_profiles")
+}
+
+model UserCourseHistory {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String?   @map("user_id") @db.Uuid
+  courseId    String    @map("course_id") @db.Uuid
+  completedAt DateTime? @map("completed_at") @db.Timestamptz
+  savedAt     DateTime  @default(now()) @map("saved_at") @db.Timestamptz
+  isFavorite  Boolean   @default(false) @map("is_favorite")
+  notes       String?
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_course_history_user_id")
+  @@index([courseId], map: "idx_user_course_history_course_id")
+  @@index([savedAt(sort: Desc)], map: "idx_user_course_history_saved_at")
+  @@index([isFavorite], map: "idx_user_course_history_is_favorite")
+  @@map("user_course_history")
+}
+
+model UserFavorite {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String?   @map("user_id") @db.Uuid
+  gymId     String    @map("gym_id") @db.Uuid
+  savedAt   DateTime  @default(now()) @map("saved_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gymId], map: "user_favorites_unique")
+  @@index([userId], map: "idx_user_favorites_user_id")
+  @@index([gymId], map: "idx_user_favorites_gym_id")
+  @@index([savedAt(sort: Desc)], map: "idx_user_favorites_saved_at")
+  @@map("user_favorites")
+}
+
+// ============================================
+// 6️⃣ 분석 관련 테이블
+// ============================================
+
+model Event {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String?   @map("user_id") @db.Uuid
+  anonymousId String?   @map("anonymous_id")
+  eventName   String    @map("event_name") @db.VarChar(100)
+  eventData   Json?     @map("event_data") @db.JsonB
+  eventTime   DateTime  @default(now()) @map("event_time") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId], map: "idx_events_user_id")
+  @@index([anonymousId], map: "idx_events_anonymous_id")
+  @@index([eventName], map: "idx_events_event_name")
+  @@index([eventTime(sort: Desc)], map: "idx_events_event_time")
+  @@map("events")
+}
+
+model Patient {
+  id        Int      @id @default(autoincrement()) // 환자 번호 (자동 생성 1, 2, 3...)
+  name      String   // 환자 이름
+  age       Int      // 나이
+  gender    String   // 성별
+  createdAt DateTime @default(now()) // 등록된 시간
+  updatedAt DateTime @updatedAt      // 수정된 시간
+}
