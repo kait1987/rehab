@@ -37,33 +37,33 @@
 
 #### 1.1 DB 기본 스키마 구축
 
-- [ ] `gyms` 테이블 생성 (헬스장 기본 정보)
-- [ ] `gym_facilities` 테이블 생성 (시설 정보)
-- [ ] `gym_operating_hours` 테이블 생성 (운영시간)
-- [ ] `gym_crowd_levels` 테이블 생성 (혼잡도 정보)
-- [ ] `reviews` 테이블 생성 (리뷰 기본 정보)
-- [ ] `review_tags` 테이블 생성 (리뷰 태그 마스터)
-- [ ] `review_tag_mappings` 테이블 생성 (리뷰-태그 매핑)
-- [ ] `courses` 테이블 생성 (재활 코스 기본 정보)
-- [ ] `course_exercises` 테이블 생성 (코스 내 운동 목록)
-- [ ] `exercise_templates` 테이블 생성 (운동 템플릿)
-- [ ] `body_parts` 테이블 생성 (부위 마스터)
-- [ ] `equipment_types` 테이블 생성 (기구 종류 마스터)
-- [ ] `exercise_equipment_mappings` 테이블 생성 (운동-기구 매핑)
-- [ ] `user_favorites` 테이블 생성 (즐겨찾기)
-- [ ] `user_course_history` 테이블 생성 (사용자 코스 히스토리)
-- [ ] `user_pain_profiles` 테이블 생성 (사용자 통증 프로필)
-- [ ] `events` 테이블 생성 (분석용 이벤트)
-- [ ] 모든 테이블에 적절한 인덱스 생성
-- [ ] 외래키 제약조건 설정
-- [ ] 타임스탬프 자동 업데이트 트리거 설정
+- [x] `gyms` 테이블 생성 (헬스장 기본 정보)
+- [x] `gym_facilities` 테이블 생성 (시설 정보)
+- [x] `gym_operating_hours` 테이블 생성 (운영시간)
+- [x] `gym_crowd_levels` 테이블 생성 (혼잡도 정보)
+- [x] `reviews` 테이블 생성 (리뷰 기본 정보)
+- [x] `review_tags` 테이블 생성 (리뷰 태그 마스터)
+- [x] `review_tag_mappings` 테이블 생성 (리뷰-태그 매핑)
+- [x] `courses` 테이블 생성 (재활 코스 기본 정보)
+- [x] `course_exercises` 테이블 생성 (코스 내 운동 목록)
+- [x] `exercise_templates` 테이블 생성 (운동 템플릿)
+- [x] `body_parts` 테이블 생성 (부위 마스터)
+- [x] `equipment_types` 테이블 생성 (기구 종류 마스터)
+- [x] `exercise_equipment_mappings` 테이블 생성 (운동-기구 매핑)
+- [x] `user_favorites` 테이블 생성 (즐겨찾기)
+- [x] `user_course_history` 테이블 생성 (사용자 코스 히스토리)
+- [x] `user_pain_profiles` 테이블 생성 (사용자 통증 프로필)
+- [x] `events` 테이블 생성 (분석용 이벤트)
+- [x] 모든 테이블에 적절한 인덱스 생성
+- [x] 외래키 제약조건 설정
+- [x] 타임스탬프 자동 업데이트 트리거 설정
 
 #### 1.2 재활 템플릿 데이터 준비
 
-- [ ] 재활 템플릿 100개 업로드
-- [ ] 템플릿 데이터 구조 설계 (부위, 강도, 시간, 기구별)
-- [ ] 템플릿 JSON 형식 정의
-- [ ] 템플릿 검증 로직 작성
+- [x] 재활 템플릿 100개 업로드
+- [x] 템플릿 데이터 구조 설계 (부위, 강도, 시간, 기구별)
+- [x] 템플릿 JSON 형식 정의
+- [x] 템플릿 검증 로직 작성
 
 #### 1.3 부위 Bank 데이터 준비
 

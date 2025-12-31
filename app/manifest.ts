@@ -8,9 +8,9 @@ import { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "VELVET",
-    short_name: "쇼핑몰",
-    description: "트렌디한 의류를 만나보세요",
+    name: "REHAB",
+    short_name: "REHAB",
+    description: "동네 기반 재활 헬스장 추천 & 맞춤형 재활 코스 생성 서비스",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
@@ -40,7 +40,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
-    categories: ["shopping", "ecommerce"],
+    categories: ["health", "fitness"],
   };
 }
 

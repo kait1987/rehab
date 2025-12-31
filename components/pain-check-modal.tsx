@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { HeartPulse, ChevronLeft, ChevronRight, Check, RefreshCw } from "lucide-react";
 import { savePainProfile } from "@/actions/pain-check";
 import { cn } from "@/lib/utils";
+import StepLoader from "@/components/ui/step-loader";
 
 /**
  * 통증 체크 모달 컴포넌트
@@ -42,6 +43,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -67,6 +69,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
     setSuccess(false);
     setError(null);
     setDataLoadError(null);
+    setIsSaving(false);
   };
 
   // 모달 열림/닫힘 처리
@@ -195,16 +198,23 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    setIsSaving(true);
     setLoading(true);
     setError(null);
 
     try {
-      const result = await savePainProfile({
+      // 최소 로딩 시간을 보장하여 사용자 경험 향상
+      const savePromise = savePainProfile({
         bodyPartId,
         painLevel,
         experienceLevel,
         equipmentAvailable,
       });
+      
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500)); // 최소 1.5초 로딩
+      
+      const result = await savePromise;
+      await delayPromise; // 저장이 빨리 끝나도 최소 1.5초는 로딩 표시
 
       if (result.success) {
         setSuccess(true);
@@ -224,6 +234,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
         : "저장 중 예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
       setError(errorMessage);
     } finally {
+      setIsSaving(false);
       setLoading(false);
     }
   };
@@ -262,7 +273,11 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
           <DialogTitle className="text-2xl">오늘의 통증 체크</DialogTitle>
         </DialogHeader>
 
-        {dataLoading ? (
+        {isSaving ? (
+          <div className="h-[400px] flex items-center justify-center">
+            <StepLoader />
+          </div>
+        ) : dataLoading ? (
           <div className="py-8 text-center">
             <div className="text-muted-foreground mb-2">데이터를 불러오는 중...</div>
             <div className="text-sm text-muted-foreground">잠시만 기다려주세요</div>
@@ -405,7 +420,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                   현재 사용 가능한 기구를 선택해주세요 (복수 선택 가능)
                 </p>
                 <p className="text-xs text-muted-foreground mb-3">
-                  💡 사용할 수 있는 기구가 없다면 '없음'을 선택해주세요
+                  💡 사용할 수 있는 기구가 없다면 &apos;없음&apos;을 선택해주세요
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {equipmentTypes.map((equipment) => (
