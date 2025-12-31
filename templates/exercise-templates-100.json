@@ -1,0 +1,1767 @@
+[
+  {
+    "name": "허리 스트레칭 1",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 19,
+    "reps": 13,
+    "sets": 3,
+    "rest_seconds": 41,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "TRX",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 2",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 29,
+    "reps": 13,
+    "sets": 4,
+    "rest_seconds": 60,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 3",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 30,
+    "reps": 15,
+    "sets": 2,
+    "rest_seconds": 57,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 4",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 10,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 34,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 5",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 17,
+    "reps": 16,
+    "sets": 2,
+    "rest_seconds": 55,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 6",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 15,
+    "reps": 18,
+    "sets": 4,
+    "rest_seconds": 35,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 7",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 20,
+    "reps": 16,
+    "sets": 3,
+    "rest_seconds": 34,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 8",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 5,
+    "reps": 10,
+    "sets": 2,
+    "rest_seconds": 50,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드",
+      "매트"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 9",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 9번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 15,
+    "reps": 11,
+    "sets": 2,
+    "rest_seconds": 58,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신",
+      "덤벨",
+      "밴드"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 10",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 10번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 16,
+    "reps": 19,
+    "sets": 2,
+    "rest_seconds": 52,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "TRX",
+      "짐볼",
+      "매트"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 11",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 11번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 13,
+    "reps": 18,
+    "sets": 3,
+    "rest_seconds": 48,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨",
+      "바벨"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 12",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 12번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 12,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 40,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 13",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 13번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 13,
+    "reps": 14,
+    "sets": 2,
+    "rest_seconds": 38,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드",
+      "TRX",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 14",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 14번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 16,
+    "reps": 16,
+    "sets": 2,
+    "rest_seconds": 51,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼",
+      "매트",
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "허리 스트레칭 15",
+    "bodyPartName": "허리",
+    "description": "허리 부위를 위한 재활 운동 템플릿 15번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 8,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 57,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "허리 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 1",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 6,
+    "reps": 16,
+    "sets": 3,
+    "rest_seconds": 46,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 2",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 26,
+    "reps": 17,
+    "sets": 2,
+    "rest_seconds": 44,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 3",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 7,
+    "reps": 19,
+    "sets": 2,
+    "rest_seconds": 33,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 4",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 13,
+    "reps": 17,
+    "sets": 3,
+    "rest_seconds": 58,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드",
+      "폼롤러",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 5",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 9,
+    "reps": 19,
+    "sets": 3,
+    "rest_seconds": 49,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 6",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 29,
+    "reps": 19,
+    "sets": 4,
+    "rest_seconds": 53,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 7",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 17,
+    "reps": 13,
+    "sets": 3,
+    "rest_seconds": 52,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨",
+      "밴드",
+      "TRX"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 8",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 16,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 47,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 9",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 9번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 28,
+    "reps": 13,
+    "sets": 2,
+    "rest_seconds": 57,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 10",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 10번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 23,
+    "reps": 17,
+    "sets": 2,
+    "rest_seconds": 55,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼",
+      "매트",
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 11",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 11번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 26,
+    "reps": 19,
+    "sets": 3,
+    "rest_seconds": 43,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 12",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 12번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 14,
+    "reps": 11,
+    "sets": 2,
+    "rest_seconds": 32,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 13",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 13번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 30,
+    "reps": 14,
+    "sets": 2,
+    "rest_seconds": 37,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 14",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 14번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 12,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 36,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드",
+      "머신",
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "어깨 안정화 운동 15",
+    "bodyPartName": "어깨",
+    "description": "어깨 부위를 위한 재활 운동 템플릿 15번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 18,
+    "reps": 13,
+    "sets": 3,
+    "rest_seconds": 43,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "어깨 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신",
+      "밴드",
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 1",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 28,
+    "reps": 13,
+    "sets": 2,
+    "rest_seconds": 36,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 2",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 7,
+    "reps": 17,
+    "sets": 2,
+    "rest_seconds": 37,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 3",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 13,
+    "reps": 20,
+    "sets": 4,
+    "rest_seconds": 37,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러",
+      "바벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 4",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 10,
+    "reps": 20,
+    "sets": 3,
+    "rest_seconds": 60,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신",
+      "덤벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 5",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 27,
+    "reps": 14,
+    "sets": 4,
+    "rest_seconds": 31,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 6",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 11,
+    "reps": 11,
+    "sets": 2,
+    "rest_seconds": 44,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 7",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 27,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 41,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 8",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 25,
+    "reps": 20,
+    "sets": 2,
+    "rest_seconds": 52,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 9",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 9번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 5,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 51,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 10",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 10번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 10,
+    "reps": 11,
+    "sets": 2,
+    "rest_seconds": 31,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신",
+      "폼롤러",
+      "바벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 11",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 11번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 11,
+    "reps": 15,
+    "sets": 2,
+    "rest_seconds": 54,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 12",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 12번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 10,
+    "reps": 18,
+    "sets": 4,
+    "rest_seconds": 40,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 13",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 13번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 29,
+    "reps": 17,
+    "sets": 3,
+    "rest_seconds": 51,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 14",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 14번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 12,
+    "reps": 17,
+    "sets": 4,
+    "rest_seconds": 35,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드",
+      "바벨",
+      "매트"
+    ]
+  },
+  {
+    "name": "무릎 강화 운동 15",
+    "bodyPartName": "무릎",
+    "description": "무릎 부위를 위한 재활 운동 템플릿 15번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 12,
+    "reps": 20,
+    "sets": 4,
+    "rest_seconds": 58,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "무릎 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨",
+      "매트",
+      "밴드"
+    ]
+  },
+  {
+    "name": "목 관절 운동 1",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 5,
+    "reps": 13,
+    "sets": 4,
+    "rest_seconds": 47,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼",
+      "매트"
+    ]
+  },
+  {
+    "name": "목 관절 운동 2",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 16,
+    "reps": 18,
+    "sets": 4,
+    "rest_seconds": 37,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "목 관절 운동 3",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 30,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 48,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "목 관절 운동 4",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 8,
+    "reps": 15,
+    "sets": 4,
+    "rest_seconds": 50,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "목 관절 운동 5",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 23,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 42,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "목 관절 운동 6",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 14,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 51,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "목 관절 운동 7",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 18,
+    "reps": 15,
+    "sets": 4,
+    "rest_seconds": 56,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨"
+    ]
+  },
+  {
+    "name": "목 관절 운동 8",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 10,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 41,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
+  },
+  {
+    "name": "목 관절 운동 9",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 9번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 8,
+    "reps": 11,
+    "sets": 3,
+    "rest_seconds": 35,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "목 관절 운동 10",
+    "bodyPartName": "목",
+    "description": "목 부위를 위한 재활 운동 템플릿 10번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 10,
+    "reps": 13,
+    "sets": 4,
+    "rest_seconds": 50,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "TRX"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 1",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 10,
+    "reps": 20,
+    "sets": 2,
+    "rest_seconds": 54,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 2",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 7,
+    "reps": 17,
+    "sets": 4,
+    "rest_seconds": 55,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 3",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 25,
+    "reps": 14,
+    "sets": 4,
+    "rest_seconds": 45,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨",
+      "매트",
+      "밴드"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 4",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 15,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 43,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 5",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 21,
+    "reps": 15,
+    "sets": 4,
+    "rest_seconds": 36,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨",
+      "매트"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 6",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 5,
+    "reps": 16,
+    "sets": 2,
+    "rest_seconds": 56,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "TRX"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 7",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 29,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 35,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "손목 유연성 운동 8",
+    "bodyPartName": "손목",
+    "description": "손목 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 24,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 57,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "손목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 1",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 6,
+    "reps": 11,
+    "sets": 2,
+    "rest_seconds": 34,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨",
+      "TRX"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 2",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 6,
+    "reps": 20,
+    "sets": 2,
+    "rest_seconds": 52,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 3",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 16,
+    "reps": 20,
+    "sets": 2,
+    "rest_seconds": 47,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨",
+      "짐볼",
+      "밴드"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 4",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 22,
+    "reps": 19,
+    "sets": 4,
+    "rest_seconds": 57,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "덤벨"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 5",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 21,
+    "reps": 17,
+    "sets": 4,
+    "rest_seconds": 35,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 6",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 18,
+    "reps": 14,
+    "sets": 4,
+    "rest_seconds": 51,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 7",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 22,
+    "reps": 14,
+    "sets": 3,
+    "rest_seconds": 33,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "발목 안정성 운동 8",
+    "bodyPartName": "발목",
+    "description": "발목 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 30,
+    "reps": 10,
+    "sets": 3,
+    "rest_seconds": 36,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "발목 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 1",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 15,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 50,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "머신"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 2",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 8,
+    "reps": 18,
+    "sets": 2,
+    "rest_seconds": 42,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "밴드",
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 3",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 5,
+    "reps": 12,
+    "sets": 3,
+    "rest_seconds": 45,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 4",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 12,
+    "reps": 14,
+    "sets": 2,
+    "rest_seconds": 30,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 5",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 15,
+    "reps": 18,
+    "sets": 3,
+    "rest_seconds": 58,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러",
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 6",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 9,
+    "reps": 16,
+    "sets": 4,
+    "rest_seconds": 37,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 7",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 14,
+    "reps": 18,
+    "sets": 4,
+    "rest_seconds": 45,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼",
+      "밴드",
+      "바벨"
+    ]
+  },
+  {
+    "name": "팔꿈치 관절 운동 8",
+    "bodyPartName": "팔꿈치",
+    "description": "팔꿈치 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 15,
+    "reps": 13,
+    "sets": 2,
+    "rest_seconds": 32,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "팔꿈치 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 1",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 6,
+    "reps": 19,
+    "sets": 2,
+    "rest_seconds": 39,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 2",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 26,
+    "reps": 20,
+    "sets": 4,
+    "rest_seconds": 30,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 3",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 20,
+    "reps": 18,
+    "sets": 4,
+    "rest_seconds": 53,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 4",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 25,
+    "reps": 12,
+    "sets": 4,
+    "rest_seconds": 32,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 5",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 11,
+    "reps": 17,
+    "sets": 3,
+    "rest_seconds": 46,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "폼롤러"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 6",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 26,
+    "reps": 10,
+    "sets": 4,
+    "rest_seconds": 48,
+    "difficulty_score": 6,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 7",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 25,
+    "reps": 13,
+    "sets": 2,
+    "rest_seconds": 40,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨"
+    ]
+  },
+  {
+    "name": "엉덩이 강화 운동 8",
+    "bodyPartName": "엉덩이",
+    "description": "엉덩이 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 19,
+    "reps": 17,
+    "sets": 4,
+    "rest_seconds": 32,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "엉덩이 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "등 스트레칭 1",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 21,
+    "reps": 18,
+    "sets": 2,
+    "rest_seconds": 58,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "등 스트레칭 2",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 9,
+    "reps": 14,
+    "sets": 3,
+    "rest_seconds": 40,
+    "difficulty_score": 4,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "등 스트레칭 3",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 19,
+    "reps": 18,
+    "sets": 2,
+    "rest_seconds": 51,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "밴드"
+    ]
+  },
+  {
+    "name": "등 스트레칭 4",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 3,
+    "duration_minutes": 7,
+    "reps": 20,
+    "sets": 3,
+    "rest_seconds": 47,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "등 스트레칭 5",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 10,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 31,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "덤벨",
+      "TRX"
+    ]
+  },
+  {
+    "name": "등 스트레칭 6",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 6번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 24,
+    "reps": 18,
+    "sets": 2,
+    "rest_seconds": 32,
+    "difficulty_score": 3,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "없음"
+    ]
+  },
+  {
+    "name": "등 스트레칭 7",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 7번입니다.",
+    "intensity_level": 1,
+    "duration_minutes": 14,
+    "reps": 14,
+    "sets": 4,
+    "rest_seconds": 33,
+    "difficulty_score": 5,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "짐볼",
+      "머신"
+    ]
+  },
+  {
+    "name": "등 스트레칭 8",
+    "bodyPartName": "등",
+    "description": "등 부위를 위한 재활 운동 템플릿 8번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 20,
+    "reps": 12,
+    "sets": 4,
+    "rest_seconds": 43,
+    "difficulty_score": 8,
+    "contraindications": [],
+    "instructions": "등 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "덤벨",
+      "머신",
+      "짐볼"
+    ]
+  },
+  {
+    "name": "가슴 유연성 운동 1",
+    "bodyPartName": "가슴",
+    "description": "가슴 부위를 위한 재활 운동 템플릿 1번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 26,
+    "reps": 12,
+    "sets": 2,
+    "rest_seconds": 51,
+    "difficulty_score": 10,
+    "contraindications": [],
+    "instructions": "가슴 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "바벨",
+      "TRX",
+      "머신"
+    ]
+  },
+  {
+    "name": "가슴 유연성 운동 2",
+    "bodyPartName": "가슴",
+    "description": "가슴 부위를 위한 재활 운동 템플릿 2번입니다.",
+    "intensity_level": 2,
+    "duration_minutes": 10,
+    "reps": 16,
+    "sets": 3,
+    "rest_seconds": 35,
+    "difficulty_score": 1,
+    "contraindications": [],
+    "instructions": "가슴 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨",
+      "머신",
+      "매트"
+    ]
+  },
+  {
+    "name": "가슴 유연성 운동 3",
+    "bodyPartName": "가슴",
+    "description": "가슴 부위를 위한 재활 운동 템플릿 3번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 28,
+    "reps": 14,
+    "sets": 3,
+    "rest_seconds": 53,
+    "difficulty_score": 9,
+    "contraindications": [],
+    "instructions": "가슴 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "케틀벨",
+      "매트",
+      "덤벨"
+    ]
+  },
+  {
+    "name": "가슴 유연성 운동 4",
+    "bodyPartName": "가슴",
+    "description": "가슴 부위를 위한 재활 운동 템플릿 4번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 25,
+    "reps": 13,
+    "sets": 3,
+    "rest_seconds": 59,
+    "difficulty_score": 7,
+    "contraindications": [],
+    "instructions": "가슴 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "매트",
+      "덤벨"
+    ]
+  },
+  {
+    "name": "가슴 유연성 운동 5",
+    "bodyPartName": "가슴",
+    "description": "가슴 부위를 위한 재활 운동 템플릿 5번입니다.",
+    "intensity_level": 4,
+    "duration_minutes": 17,
+    "reps": 17,
+    "sets": 3,
+    "rest_seconds": 44,
+    "difficulty_score": 2,
+    "contraindications": [],
+    "instructions": "가슴 부위에 집중하는 운동입니다. 천천히 진행하세요.",
+    "precautions": "통증이 심해지면 즉시 중단하고 전문의와 상담하세요.",
+    "equipmentTypes": [
+      "머신",
+      "바벨",
+      "케틀벨"
+    ]
+  }
+]

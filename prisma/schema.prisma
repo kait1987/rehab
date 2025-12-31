@@ -211,8 +211,10 @@ model BodyPart {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
-  exerciseTemplates ExerciseTemplate[]
-  userPainProfiles  UserPainProfile[]
+  exerciseTemplates            ExerciseTemplate[]
+  userPainProfiles             UserPainProfile[]
+  exerciseMappings             BodyPartExerciseMapping[]
+  contraindications            BodyPartContraindication[]
 
   @@index([displayOrder], map: "idx_body_parts_display_order")
   @@map("body_parts")
@@ -254,6 +256,8 @@ model ExerciseTemplate {
   bodyPart                  BodyPart                  @relation(fields: [bodyPartId], references: [id])
   exerciseEquipmentMappings ExerciseEquipmentMapping[]
   courseExercises            CourseExercise[]
+  bodyPartExerciseMappings   BodyPartExerciseMapping[]
+  bodyPartContraindications  BodyPartContraindication[]
 
   @@index([bodyPartId], map: "idx_exercise_templates_body_part_id")
   @@index([intensityLevel], map: "idx_exercise_templates_intensity_level")
@@ -276,6 +280,51 @@ model ExerciseEquipmentMapping {
   @@index([exerciseTemplateId], map: "idx_exercise_equipment_mappings_exercise_template_id")
   @@index([equipmentTypeId], map: "idx_exercise_equipment_mappings_equipment_type_id")
   @@map("exercise_equipment_mappings")
+}
+
+model BodyPartExerciseMapping {
+  id                String    @id @default(uuid()) @db.Uuid
+  bodyPartId        String    @map("body_part_id") @db.Uuid
+  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
+  priority          Int
+  intensityLevel    Int?      @map("intensity_level")
+  painLevelRange    String?   @map("pain_level_range") @db.VarChar(20)
+  isActive          Boolean   @default(true) @map("is_active")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  bodyPart        BodyPart        @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([bodyPartId, exerciseTemplateId, painLevelRange], map: "body_part_exercise_mappings_unique")
+  @@index([bodyPartId], map: "idx_body_part_exercise_mappings_body_part_id")
+  @@index([exerciseTemplateId], map: "idx_body_part_exercise_mappings_exercise_template_id")
+  @@index([priority], map: "idx_body_part_exercise_mappings_priority")
+  @@index([painLevelRange], map: "idx_body_part_exercise_mappings_pain_level_range")
+  @@map("body_part_exercise_mappings")
+}
+
+model BodyPartContraindication {
+  id                String    @id @default(uuid()) @db.Uuid
+  bodyPartId        String    @map("body_part_id") @db.Uuid
+  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
+  painLevelMin      Int?      @map("pain_level_min")
+  reason            String?
+  severity          String    @default("warning") @db.VarChar(20)
+  isActive          Boolean   @default(true) @map("is_active")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  bodyPart        BodyPart        @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([bodyPartId, exerciseTemplateId, painLevelMin], map: "body_part_contraindications_unique")
+  @@index([bodyPartId], map: "idx_body_part_contraindications_body_part_id")
+  @@index([exerciseTemplateId], map: "idx_body_part_contraindications_exercise_template_id")
+  @@index([painLevelMin], map: "idx_body_part_contraindications_pain_level_min")
+  @@map("body_part_contraindications")
 }
 
 model Course {

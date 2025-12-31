@@ -30,7 +30,7 @@ async function EquipmentTypesData() {
 
     return (
       <div className="space-y-2">
-        {equipmentTypes.map((equipmentType) => (
+        {equipmentTypes.map((equipmentType: { id: string; name: string }) => (
           <div
             key={equipmentType.id}
             className="p-3 bg-white border rounded-lg shadow-sm"
