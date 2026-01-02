@@ -1,9 +1,10 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+export const dynamic = "force-dynamic";
 
 /**
  * sitemap.ts
- * 
+ *
  * 동적 사이트맵을 생성합니다.
  * Next.js 15 App Router에서 자동으로 /sitemap.xml 경로로 제공됩니다.
  */
@@ -58,4 +59,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return staticPages;
   }
 }
-

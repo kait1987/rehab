@@ -22,8 +22,10 @@ export async function validateBodyPartBank(
     const schemaResult = bodyPartBankSchema.safeParse(item);
     
     if (!schemaResult.success) {
-      schemaResult.error.errors.forEach((err) => {
-        errors.push(`[${i}] ${item.bodyPartName}: ${err.path.join(".")} - ${err.message}`);
+      schemaResult.error.issues.forEach((err) => {
+        errors.push(
+          `[${i}] ${item.bodyPartName}: ${err.path.join(".")} - ${err.message}`,
+        );
       });
       continue;
     }
