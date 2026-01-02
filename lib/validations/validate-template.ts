@@ -21,7 +21,7 @@ export async function validateTemplate(
   const schemaResult = exerciseTemplateSchema.safeParse(input);
   
   if (!schemaResult.success) {
-    schemaResult.error.errors.forEach((err) => {
+    schemaResult.error.issues.forEach((err) => {
       errors.push(`${err.path.join(".")}: ${err.message}`);
     });
     return { success: false, errors, warnings };
