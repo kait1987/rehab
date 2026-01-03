@@ -1,0 +1,243 @@
+import { prisma } from "@/lib/prisma/client";
+import { calculatePriorityScore } from "@/lib/utils/calculate-priority";
+import { deduplicateExercises } from "@/lib/utils/deduplicate-exercises";
+import { filterContraindications } from "@/lib/utils/filter-contraindications";
+import { classifyBySection } from "@/lib/utils/classify-by-section";
+import { distributeTime } from "@/lib/utils/distribute-time";
+import { adjustDifficultyForUser } from "@/lib/algorithms/adjust-difficulty";
+import { filterByDifficultyRange } from "@/lib/utils/filter-by-difficulty";
+import { mapExperienceLevel } from "@/lib/utils/map-experience-level";
+import type { ExperienceLevel } from "@/types/difficulty";
+import type {
+  MergeRequest,
+  MergeResult,
+  MergedExercise,
+  BodyPartSelection,
+} from "@/types/body-part-merge";
+
+/**
+ * pain_level_range와 사용자 painLevel 매칭
+ * 
+ * @param painLevelRange 통증 정도 범위 ('1-2', '3-4', '5', 'all')
+ * @param userPainLevel 사용자 통증 정도 (1-5)
+ * @returns 매칭 여부
+ */
+function matchesPainLevelRange(
+  painLevelRange: string | null | undefined,
+  userPainLevel: number
+): boolean {
+  if (!painLevelRange || painLevelRange === 'all') {
+    return true;
+  }
+
+  if (painLevelRange.includes('-')) {
+    // 범위 형식: '1-2', '3-4'
+    const [min, max] = painLevelRange.split('-').map(Number);
+    return userPainLevel >= min && userPainLevel <= max;
+  }
+
+  // 단일 값: '5'
+  const level = Number(painLevelRange);
+  return userPainLevel === level;
+}
+
+/**
+ * 다중 부위 병합 메인 함수
+ * 
+ * 여러 부위의 추천 운동을 병합하여 최종 코스를 생성합니다.
+ * 
+ * @param request 병합 요청
+ * @returns 병합 결과
+ */
+export async function mergeBodyParts(
+  request: MergeRequest
+): Promise<MergeResult> {
+  const warnings: string[] = [];
+  const bodyPartIds = request.bodyParts.map((bp) => bp.bodyPartId);
+
+  // 1. 각 부위별 추천 운동 조회
+  const mappings = await prisma.bodyPartExerciseMapping.findMany({
+    where: {
+      bodyPartId: { in: bodyPartIds },
+      isActive: true,
+    },
+    include: {
+      exerciseTemplate: {
+        include: {
+          exerciseEquipmentMappings: {
+            include: { equipmentType: true },
+          },
+        },
+      },
+      bodyPart: true,
+    },
+    orderBy: [
+      { bodyPartId: 'asc' },
+      { priority: 'asc' },
+    ],
+  });
+
+  if (mappings.length === 0) {
+    warnings.push('추천 운동을 찾을 수 없습니다. 기본 운동을 사용합니다.');
+    return {
+      exercises: [],
+      totalDuration: request.totalDurationMinutes ?? 90,
+      warnings,
+    };
+  }
+
+  // 2. pain_level_range 필터링 및 우선순위 점수 계산
+  const exercisesWithScores: MergedExercise[] = [];
+
+  for (const mapping of mappings) {
+    const bodyPart = request.bodyParts.find(
+      (bp) => bp.bodyPartId === mapping.bodyPartId
+    );
+
+    if (!bodyPart) continue;
+
+    // pain_level_range 매칭 확인
+    if (
+      !matchesPainLevelRange(
+        mapping.painLevelRange,
+        bodyPart.painLevel
+      )
+    ) {
+      continue;
+    }
+
+    // 기구 필터링 (선택적)
+    if (request.equipmentAvailable.length > 0) {
+      const requiredEquipment = mapping.exerciseTemplate.exerciseEquipmentMappings
+        .filter((eem) => eem.isRequired)
+        .map((eem) => eem.equipmentType.name);
+
+      const hasRequiredEquipment = requiredEquipment.every((eq) =>
+        request.equipmentAvailable.includes(eq)
+      );
+
+      if (!hasRequiredEquipment && requiredEquipment.length > 0) {
+        continue;
+      }
+    }
+
+    // 우선순위 점수 계산
+    const priorityScore = calculatePriorityScore(
+      bodyPart,
+      mapping.priority,
+      mapping.intensityLevel || 2
+    );
+
+    exercisesWithScores.push({
+      exerciseTemplateId: mapping.exerciseTemplateId,
+      exerciseTemplateName: mapping.exerciseTemplate.name,
+      bodyPartIds: [mapping.bodyPartId],
+      priorityScore,
+      section: 'main', // 임시, 나중에 분류됨
+      orderInSection: 0, // 임시, 나중에 설정됨
+      durationMinutes: mapping.exerciseTemplate.durationMinutes || undefined,
+      reps: mapping.exerciseTemplate.reps || undefined,
+      sets: mapping.exerciseTemplate.sets || undefined,
+      restSeconds: mapping.exerciseTemplate.restSeconds || undefined,
+      intensityLevel: mapping.intensityLevel || mapping.exerciseTemplate.intensityLevel || undefined,
+      difficultyScore: mapping.exerciseTemplate.difficultyScore || undefined,
+      painLevelRange: mapping.painLevelRange || undefined,
+      description: mapping.exerciseTemplate.description || undefined,
+      instructions: mapping.exerciseTemplate.instructions || undefined,
+      precautions: mapping.exerciseTemplate.precautions || undefined,
+    });
+  }
+
+  // 3. 난이도 자동 조절 및 필터링
+  let filteredByDifficulty = exercisesWithScores;
+  
+  if (request.experienceLevel) {
+    const experienceLevel: ExperienceLevel = mapExperienceLevel(request.experienceLevel);
+    const difficultyAdjustment = adjustDifficultyForUser({
+      experienceLevel,
+      painLevel: request.painLevel,
+    });
+
+    // 난이도 범위로 필터링
+    filteredByDifficulty = filterByDifficultyRange(
+      exercisesWithScores,
+      difficultyAdjustment.allowedRange
+    );
+
+    // 난이도 조정 사유가 있으면 경고 추가
+    if (difficultyAdjustment.adjustmentReason) {
+      warnings.push(difficultyAdjustment.adjustmentReason);
+    }
+  }
+
+  // 4. 우선순위 점수로 정렬
+  filteredByDifficulty.sort((a, b) => a.priorityScore - b.priorityScore);
+
+  // 5. 중복 운동 제거 및 병합
+  const deduplicated = deduplicateExercises(filteredByDifficulty);
+
+  // 6. 금기 운동 필터링
+  const contraindications = await prisma.bodyPartContraindication.findMany({
+    where: {
+      bodyPartId: { in: bodyPartIds },
+      isActive: true,
+    },
+    include: {
+      exerciseTemplate: true,
+    },
+  });
+
+  const contraindicationData = contraindications.map((c) => ({
+    exerciseTemplateId: c.exerciseTemplateId,
+    exerciseTemplateName: c.exerciseTemplate.name,
+    painLevelMin: c.painLevelMin,
+    severity: c.severity as 'warning' | 'strict',
+    reason: c.reason,
+  }));
+
+  const filterResult = filterContraindications(
+    deduplicated,
+    contraindicationData,
+    request.painLevel
+  );
+
+  warnings.push(...filterResult.warnings);
+
+  // 7. 섹션별 분류
+  const classified = classifyBySection(filterResult.exercises);
+
+  // 8. 시간 배분
+  const finalExercises = distributeTime(
+    classified,
+    request.totalDurationMinutes ?? 90
+  );
+
+  // 9. 통계 계산
+  const stats = {
+    warmup: classified.warmup.length,
+    main: classified.main.length,
+    cooldown: classified.cooldown.length,
+    byBodyPart: {} as Record<string, number>,
+  };
+
+  // 부위별 운동 개수 계산
+  request.bodyParts.forEach((bp) => {
+    stats.byBodyPart[bp.bodyPartName] = finalExercises.filter((ex) =>
+      ex.bodyPartIds.includes(bp.bodyPartId)
+    ).length;
+  });
+
+  // 총 시간 계산
+  const totalDuration = finalExercises.reduce(
+    (sum, ex) => sum + (ex.durationMinutes || 0),
+    0
+  );
+
+  return {
+    exercises: finalExercises,
+    totalDuration: Math.round(totalDuration),
+    warnings: warnings.length > 0 ? warnings : undefined,
+    stats,
+  };
+}
+
