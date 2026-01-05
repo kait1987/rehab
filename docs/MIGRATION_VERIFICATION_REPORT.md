@@ -419,7 +419,7 @@
 2. `user_pain_profiles.user_id`, `user_course_history.user_id`, `user_favorites.user_id`에서 NOT NULL 제약조건 제거 (db.sql과 Prisma Schema에 맞춤)
 
 **권장 사항**: 
-- 마이그레이션 실행 전 `supabase db reset`으로 로컬 DB 초기화 권장
+- 마이그레이션 실행은 Prisma를 통해 Supabase Cloud에 직접 적용합니다 (`pnpm prisma:migrate:deploy`)
 - 마이그레이션 실행 후 Prisma Client 재생성 (`pnpm prisma:generate`)
 - 마이그레이션 실행 후 CRUD 테스트 쿼리 실행 권장
 - 초기 데이터가 정상적으로 삽입되었는지 확인 권장
