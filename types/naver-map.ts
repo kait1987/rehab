@@ -14,8 +14,6 @@ import type { OperatingHours } from './operating-hours';
  * 장소 검색 옵션
  */
 export interface PlaceSearchOptions {
-  /** 검색어 */
-  query: string;
   /** 중심 좌표 (위도, 경도) */
   coordinate?: {
     lat: number;

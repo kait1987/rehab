@@ -11,7 +11,7 @@ import { z } from 'zod';
  * 가격대 스키마
  */
 export const priceRangeSchema = z.enum(['low', 'medium', 'high', 'premium'], {
-  errorMap: () => ({ message: '가격대는 "low", "medium", "high", "premium" 중 하나여야 합니다.' }),
+  message: '가격대는 "low", "medium", "high", "premium" 중 하나여야 합니다.',
 });
 
 /**
