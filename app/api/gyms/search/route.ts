@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: `요청 파라미터 검증 실패: ${validationResult.error.errors.map((e) => e.message).join(', ')}`,
+          error: `요청 파라미터 검증 실패: ${validationResult.error.issues.map((e) => e.message).join(', ')}`,
         } as GymSearchResponse,
         { status: 400 }
       );

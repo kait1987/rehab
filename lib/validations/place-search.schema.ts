@@ -38,7 +38,7 @@ export const placeSearchRequestSchema = z.object({
   
   /** 정렬 방식 (기본값: 'random') */
   sort: z.enum(['random', 'comment'], {
-    errorMap: () => ({ message: 'sort는 "random" 또는 "comment"여야 합니다.' }),
+    message: 'sort는 "random" 또는 "comment"여야 합니다.',
   }).default('random'),
 });
 
