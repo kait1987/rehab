@@ -1,3 +1,18 @@
+# ===================================================
+# 현재는 Supabase Cloud만 사용하므로 로컬 설정 비활성화
+# 
+# 로컬 개발 환경이 필요할 경우:
+# 1. 이 파일의 주석을 해제하고 설정을 활성화
+# 2. `supabase start` 명령어로 로컬 Supabase 실행
+# 
+# 참고: 마이그레이션 파일(supabase/migrations/*)은 
+#       Supabase Cloud 배포에도 사용되므로 유지됩니다.
+# ===================================================
+
+# [로컬 개발 환경 설정 - 현재 비활성화]
+# 아래 설정들은 Supabase CLI 로컬 개발 환경용입니다.
+# 현재 프로젝트는 Supabase Cloud만 사용하므로 주석 처리되어 있습니다.
+
 # For detailed configuration reference documentation, visit:
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the

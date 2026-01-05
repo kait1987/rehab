@@ -22,7 +22,8 @@
     "templates:upload": "node scripts/upload-templates.js",
     "body-part-bank:generate": "tsx scripts/generate-body-part-bank.ts",
     "body-part-bank:validate": "tsx scripts/validate-body-part-bank.ts",
-    "body-part-bank:upload": "tsx scripts/upload-body-part-bank.ts"
+    "body-part-bank:upload": "tsx scripts/upload-body-part-bank.ts",
+    "verify:database-url": "tsx scripts/verify-database-url.ts"
   },
   "dependencies": {
     "@clerk/localizations": "^3.32.1",

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma/client";
 /**
  * Clerk 사용자를 Prisma users 테이블에 동기화하는 API
  *
- * 클라이언트에서 로그인 후 이 API를 호출하여 사용자 정보를 로컬 PostgreSQL에 저장합니다.
+ * 클라이언트에서 로그인 후 이 API를 호출하여 사용자 정보를 Supabase PostgreSQL에 저장합니다.
  * 이미 존재하는 경우 업데이트하고, 없으면 새로 생성합니다.
  */
 export async function POST() {

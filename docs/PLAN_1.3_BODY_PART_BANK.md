@@ -586,7 +586,8 @@ CREATE TRIGGER handle_body_part_contraindications_updated_at
    ```bash
    supabase migration new create_body_part_bank_tables
    # 파일 작성 후
-   supabase db reset  # 로컬 DB 재설정
+   # Supabase Cloud를 사용하므로 마이그레이션은 Prisma를 통해 관리합니다
+   # prisma migrate deploy  # Supabase Cloud에 마이그레이션 적용
    ```
 
 2. Prisma 스키마 업데이트 및 생성
