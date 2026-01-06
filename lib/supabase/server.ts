@@ -44,7 +44,7 @@ import { auth } from "@clerk/nextjs/server";
  * import { createClerkSupabaseClient } from '@/lib/supabase/server';
  *
  * export default async function MyPage() {
- *   const supabase = createClerkSupabaseClient();
+ *   const supabase = await createClerkSupabaseClient();
  *   // ... 동일한 사용법
  * }
  * ```
@@ -60,7 +60,7 @@ import { auth } from "@clerk/nextjs/server";
  * @see {@link https://supabase.com/docs/guides/getting-started/quickstarts/nextjs Supabase Next.js Quickstart}
  */
 export async function createClient() {
-  return createClerkSupabaseClient();
+  return await createClerkSupabaseClient();
 }
 
 /**
@@ -69,7 +69,7 @@ export async function createClient() {
  * 명시적인 함수명을 원하는 경우 이 함수를 사용하세요.
  * 이 함수는 `createClient()`와 동일한 기능을 제공합니다.
  */
-export function createClerkSupabaseClient() {
+export async function createClerkSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
