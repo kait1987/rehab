@@ -68,10 +68,17 @@ export default async function LoginPage({
             </div>
 
             <div className="flex gap-2">
-              <Button formAction={signInWithPassword} className="flex-1">
+              <Button 
+                formAction={signInWithPassword} 
+                className="flex-1 rounded-2xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              >
                 Sign In
               </Button>
-              <Button formAction={signUp} variant="outline" className="flex-1">
+              <Button 
+                formAction={signUp} 
+                variant="secondary"
+                className="flex-1 rounded-2xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              >
                 Sign Up
               </Button>
             </div>
@@ -88,7 +95,7 @@ export default async function LoginPage({
             <Button
               formAction={signInWithMagicLink}
               variant="secondary"
-              className="w-full"
+              className="w-full rounded-2xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
               Sign in with Magic Link
             </Button>
