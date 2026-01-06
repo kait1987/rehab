@@ -59,6 +59,8 @@ export interface GymSearchRequest {
   lng: number;
   /** 검색 반경 (미터, 기본값: 1000m = 1km) */
   radius?: number;
+  /** 검색어 (Full Text Search용, 선택) */
+  query?: string;
   /** 필터 옵션 */
   filters?: GymSearchFilter;
 }

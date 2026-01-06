@@ -4,6 +4,10 @@
  * 
  * 헬스장 운영시간 정보를 표현하기 위한 TypeScript 타입들을 정의합니다.
  * DB 스키마(gym_operating_hours)와 일치하도록 설계되었습니다.
+ * 
+ * Phase 2 요구사항 기준으로 재정의:
+ * - openTime, closeTime은 string | null (요구사항 명시)
+ * - 요일별 7개 고정 배열 반환
  */
 
 /**
@@ -27,10 +31,10 @@ export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export interface OperatingHours {
   /** 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일) */
   dayOfWeek: DayOfWeek;
-  /** 오픈 시간 (HH:mm 형식, 예: "09:00") */
-  openTime?: string;
-  /** 마감 시간 (HH:mm 형식, 예: "22:00") */
-  closeTime?: string;
+  /** 오픈 시간 (HH:mm 형식, 예: "09:00", null 가능) */
+  openTime: string | null;
+  /** 마감 시간 (HH:mm 형식, 예: "22:00", null 가능) */
+  closeTime: string | null;
   /** 휴무일 여부 */
   isClosed: boolean;
   /** 
@@ -39,25 +43,21 @@ export interface OperatingHours {
    * - 자정 넘김 운영시간: "22:00~02:00 (자정 넘김)" 등
    * - 기타 운영시간 관련 메모
    */
-  notes?: string;
+  notes?: string | null;
 }
 
 /**
  * 운영시간 입력 데이터
  * 
  * 파싱된 운영시간 정보를 DB에 저장하기 전의 형태입니다.
- * 
- * 브레이크 타임 처리:
- * - 브레이크 타임 정보는 notes 필드에 저장됩니다.
- * - DB 스키마에 isBreakTime 필드가 없으므로 notes 필드를 활용합니다.
  */
 export interface OperatingHoursInput {
   /** 요일 */
   dayOfWeek: DayOfWeek;
   /** 오픈 시간 */
-  openTime?: string;
+  openTime?: string | null;
   /** 마감 시간 */
-  closeTime?: string;
+  closeTime?: string | null;
   /** 휴무일 여부 */
   isClosed?: boolean;
   /** 
@@ -65,7 +65,7 @@ export interface OperatingHoursInput {
    * - 브레이크 타임 정보 저장용
    * - 자정 넘김 운영시간 명시용
    */
-  notes?: string;
+  notes?: string | null;
 }
 
 /**
@@ -77,14 +77,9 @@ export interface OperatingHoursStatus {
   /** 영업중 여부 */
   isOpen: boolean;
   /** 다음 영업 시작 시간 (휴무 중일 때만 제공) */
-  nextOpenTime?: {
-    /** 다음 영업 시작 날짜 */
-    date: Date;
-    /** 다음 영업 시작 시간 (HH:mm 형식) */
-    time: string;
-    /** 다음 영업 요일 */
-    dayOfWeek: DayOfWeek;
-  };
+  nextOpenTime: Date | null;
+  /** 마감 시간 (영업 중일 때만 제공) */
+  closingTime: Date | null;
   /** 오늘 운영시간 정보 */
   currentDayHours?: OperatingHours;
   /** 현재 시간 */
@@ -92,4 +87,3 @@ export interface OperatingHoursStatus {
   /** 현재 요일 */
   currentDayOfWeek: DayOfWeek;
 }
-

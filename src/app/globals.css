@@ -172,6 +172,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-geist-sans), sans-serif;
@@ -182,7 +187,7 @@
     background-position: 0 0;
   }
   main {
-    @apply max-w-7xl mx-auto pt-16 px-4;
+    @apply max-w-7xl mx-auto px-4;
   }
 }
 

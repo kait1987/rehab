@@ -1,78 +1,78 @@
 /**
  * @file parse-operating-hours.ts
- * @description 운영시간 파싱 유틸리티
+ * @description 운영시간 파싱 유틸리티 (Phase 2 재구현)
  * 
  * 네이버 API 응답의 description 필드에서 운영시간 정보를 추출합니다.
  * 
- * 주요 기능:
- * - description 필드에서 운영시간 파싱
- * - 24시간 헬스장 감지
- * - 다양한 시간 형식 지원
- * - 요일별 키워드 우선순위 파싱 (주말, 공휴일, 평일 등)
- * - 브레이크 타임 처리 (notes 필드에 저장)
- * - 자정 넘김 운영시간 처리
- * - 파싱 실패 시 기본값 반환
+ * 핵심 설계 원칙:
+ * 1. 실패 안전: 파싱 실패 시 항상 기본값 반환 (앱이 죽지 않음)
+ * 2. 요일 우선순위: 전체(매일) > 평일/주말 > 특정 요일 순으로 덮어쓰기
+ * 3. Map 기반 덮어쓰기: 요일별로 Map에 저장하여 우선순위 적용
+ * 4. 자정 넘김 처리: closeTime < openTime인 경우 다음날로 간주
+ * 5. 브레이크 타임: notes 필드에 저장 (파싱 결과에는 포함하지 않음)
  */
 
-import type { OperatingHours, OperatingHoursInput, DayOfWeek } from '@/types/operating-hours';
+import type { OperatingHours, DayOfWeek } from '@/types/operating-hours';
 import { DEFAULT_OPERATING_HOURS, TWENTY_FOUR_HOURS, isValidTimeFormat } from '@/lib/constants/operating-hours';
 
 /**
  * description 필드에서 운영시간 정보 파싱
  * 
  * @param description 네이버 API 응답의 description 필드
- * @returns 파싱된 운영시간 배열 (파싱 실패 시 기본값 반환)
+ * @returns 파싱된 운영시간 배열 (요일별 7개 고정, 파싱 실패 시 기본값 반환)
  * 
  * @example
  * parseOperatingHoursFromDescription("운영시간: 09:00~22:00")
  * // [{ dayOfWeek: 0, openTime: "09:00", closeTime: "22:00", isClosed: false }, ...]
  * 
- * parseOperatingHoursFromDescription("24시간 운영")
+ * parseOperatingHoursFromDescription("24시간 연중무휴")
  * // 24시간 운영시간 반환
  */
 export function parseOperatingHoursFromDescription(
   description?: string
 ): OperatingHours[] {
+  // 실패 안전 장치: 입력이 없거나 유효하지 않으면 기본값 반환
   if (!description || typeof description !== 'string') {
     return DEFAULT_OPERATING_HOURS;
   }
 
   const normalizedDescription = description.trim();
 
-  // 1. 24시간 헬스장 감지
+  // 1️⃣ 24시간 헬스장 감지 (최우선)
   if (is24HoursGym(normalizedDescription)) {
     return TWENTY_FOUR_HOURS;
   }
 
-  // 2. 브레이크 타임 추출 (운영시간과 구분)
+  // 2️⃣ 브레이크 타임 추출 (운영시간 파싱과 분리)
   const breakTimeInfo = extractBreakTime(normalizedDescription);
   const descriptionWithoutBreakTime = breakTimeInfo.cleanedDescription;
 
-  // 3. 시간 패턴 추출
+  // 3️⃣ 시간 패턴 추출
   const timePattern = extractTimePattern(descriptionWithoutBreakTime);
   if (!timePattern) {
+    // 시간 패턴을 찾지 못하면 기본값 반환
     return DEFAULT_OPERATING_HOURS;
   }
 
-  // 4. 자정 넘김 처리
+  // 4️⃣ 자정 넘김 처리
   const processedTimePattern = handleMidnightCrossing(timePattern);
 
-  // 5. 요일별 키워드 우선순위 파싱
-  const daySpecificHours = parseDaySpecificHoursWithPriority(
+  // 5️⃣ 요일별 우선순위 파싱 (Map 기반 덮어쓰기)
+  const dayHoursMap = parseDaySpecificHoursWithPriority(
     descriptionWithoutBreakTime,
     processedTimePattern,
     breakTimeInfo.notes
   );
-  if (daySpecificHours.length > 0) {
-    return daySpecificHours;
-  }
 
-  // 6. 전체 요일 동일하게 적용
-  return createOperatingHoursForAllDays(processedTimePattern, breakTimeInfo.notes);
+  // 6️⃣ 7개 요일 모두 채우기 (누락된 요일은 기본 시간 패턴 사용)
+  return createCompleteOperatingHours(dayHoursMap, processedTimePattern, breakTimeInfo.notes);
 }
 
 /**
- * 24시간 헬스장인지 확인
+ * 1️⃣ 24시간 헬스장인지 확인
+ * 
+ * 키워드: 24시간, 연중무휴
+ * 결과: 00:00 ~ 23:59, isClosed = false
  * 
  * @param description description 필드
  * @returns 24시간 헬스장 여부
@@ -82,24 +82,30 @@ function is24HoursGym(description: string): boolean {
     /24시간/,
     /24시/,
     /24\s*시간/,
-    /24\s*hr/,
+    /24\s*hr/i,
     /24\s*hour/i,
     /상시\s*운영/,
     /24시간\s*운영/,
     /24시간\s*영업/,
+    /연중무휴/,
+    /연중\s*무휴/,
   ];
 
   return patterns.some((pattern) => pattern.test(description));
 }
 
 /**
- * description에서 시간 패턴 추출
+ * 3️⃣ description에서 시간 패턴 추출
+ * 
+ * HH:mm 형식만 허용
+ * 10:00 - 22:00, 10시~22시 모두 대응
+ * 잘못된 형식은 무시하고 null 반환
  * 
  * @param description description 필드
  * @returns 추출된 시간 패턴 { openTime, closeTime } 또는 null
  */
 function extractTimePattern(description: string): { openTime: string; closeTime: string } | null {
-  // 다양한 구분자 지원: ~, -, ~, 부터, 까지
+  // 다양한 구분자 지원: ~, -, 부터, 까지
   const patterns = [
     // "09:00~22:00" 형식
     /(\d{1,2}:\d{2})\s*~\s*(\d{1,2}:\d{2})/,
@@ -131,7 +137,7 @@ function extractTimePattern(description: string): { openTime: string; closeTime:
         closeTime = `${closeTime.padStart(2, '0')}:00`;
       }
 
-      // 시간 형식 검증
+      // 시간 형식 검증 (HH:mm 형식만 허용)
       if (isValidTimeFormat(openTime) && isValidTimeFormat(closeTime)) {
         return { openTime, closeTime };
       }
@@ -142,71 +148,16 @@ function extractTimePattern(description: string): { openTime: string; closeTime:
 }
 
 /**
- * 요일별 키워드 감지 및 매핑
+ * 5️⃣ 브레이크 타임 추출
  * 
- * @param description description 필드
- * @returns 감지된 요일 키워드 정보
- */
-function detectDayKeywords(description: string): {
-  specificDays: Map<DayOfWeek, { openTime?: string; closeTime?: string }>;
-  weekdayDays: DayOfWeek[];
-  weekendDays: DayOfWeek[];
-  allDays: boolean;
-} {
-  const specificDays = new Map<DayOfWeek, { openTime?: string; closeTime?: string }>();
-  let weekdayDays: DayOfWeek[] = [];
-  let weekendDays: DayOfWeek[] = [];
-  let allDays = false;
-
-  // 특정 요일 키워드 감지 (우선순위 높음)
-  const dayKeywords: Array<{ pattern: RegExp; days: DayOfWeek[] }> = [
-    { pattern: /일요일|일\s*요일/g, days: [0] },
-    { pattern: /월요일|월\s*요일/g, days: [1] },
-    { pattern: /화요일|화\s*요일/g, days: [2] },
-    { pattern: /수요일|수\s*요일/g, days: [3] },
-    { pattern: /목요일|목\s*요일/g, days: [4] },
-    { pattern: /금요일|금\s*요일/g, days: [5] },
-    { pattern: /토요일|토\s*요일/g, days: [6] },
-  ];
-
-  for (const { pattern, days } of dayKeywords) {
-    const matches = description.matchAll(pattern);
-    for (const match of matches) {
-      const dayTimePattern = extractTimePatternForDay(description, match.index || 0);
-      for (const day of days) {
-        if (!specificDays.has(day)) {
-          specificDays.set(day, dayTimePattern || {});
-        }
-      }
-    }
-  }
-
-  // 평일/주중 키워드 감지
-  if (/평일|주중/.test(description)) {
-    weekdayDays = [1, 2, 3, 4, 5];
-  }
-
-  // 주말 키워드 감지
-  if (/주말/.test(description)) {
-    weekendDays = [0, 6];
-  }
-
-  // 매일 키워드 감지
-  if (/매일|매\s*일/.test(description)) {
-    allDays = true;
-  }
-
-  return { specificDays, weekdayDays, weekendDays, allDays };
-}
-
-/**
- * 브레이크 타임 추출
+ * 정규식으로 분리
+ * notes 필드에 저장 (파싱 결과에는 포함하지 않음)
  * 
  * @param description description 필드
  * @returns 브레이크 타임 정보 및 정리된 description
  */
 function extractBreakTime(description: string): {
-  notes?: string;
+  notes?: string | null;
   cleanedDescription: string;
 } {
   const breakTimePatterns = [
@@ -235,20 +186,24 @@ function extractBreakTime(description: string): {
   }
 
   return {
-    notes: breakTimeNotes.length > 0 ? breakTimeNotes.join(', ') : undefined,
+    notes: breakTimeNotes.length > 0 ? breakTimeNotes.join(', ') : null,
     cleanedDescription: cleanedDescription.trim(),
   };
 }
 
 /**
- * 자정 넘김 운영시간 처리
+ * 4️⃣ 자정 넘김 운영시간 처리
+ * 
+ * 예: 18:00 ~ 02:00
+ * closeTime이 openTime보다 작으면 "다음날"로 간주
+ * notes 필드에 명시
  * 
  * @param timePattern 시간 패턴
  * @returns 처리된 시간 패턴 (자정 넘김인 경우 notes 추가)
  */
 function handleMidnightCrossing(
   timePattern: { openTime: string; closeTime: string }
-): { openTime: string; closeTime: string; notes?: string } {
+): { openTime: string; closeTime: string; notes?: string | null } {
   const openMinutes = timeToMinutes(timePattern.openTime);
   const closeMinutes = timeToMinutes(timePattern.closeTime);
 
@@ -272,122 +227,121 @@ function timeToMinutes(time: string): number {
 }
 
 /**
- * 요일별 운영시간 파싱 (우선순위 로직 강화)
+ * 2️⃣ 요일별 키워드 감지 및 매핑
  * 
- * 우선순위: 특정 요일 키워드 > 평일/주말 > 매일 > 기본값
+ * 우선순위: 전체(매일) > 평일/주말 > 특정 요일
+ * Map 기반 덮어쓰기 구조 사용
  * 
  * @param description description 필드
  * @param defaultTimePattern 기본 시간 패턴
  * @param breakTimeNotes 브레이크 타임 notes
- * @returns 요일별 운영시간 배열
+ * @returns 요일별 운영시간 Map
  */
 function parseDaySpecificHoursWithPriority(
   description: string,
-  defaultTimePattern: { openTime: string; closeTime: string; notes?: string },
-  breakTimeNotes?: string
-): OperatingHours[] {
-  const { specificDays, weekdayDays, weekendDays, allDays } = detectDayKeywords(description);
-  const hours: OperatingHours[] = [];
+  defaultTimePattern: { openTime: string; closeTime: string; notes?: string | null },
+  breakTimeNotes?: string | null
+): Map<DayOfWeek, OperatingHours> {
+  const dayHoursMap = new Map<DayOfWeek, OperatingHours>();
   const processedDays = new Set<DayOfWeek>();
 
-  // 1. 특정 요일 키워드가 있으면 우선 적용 (최우선)
-  for (const [day, timePattern] of specificDays.entries()) {
-    if (!processedDays.has(day)) {
-      const finalTimePattern = timePattern.openTime && timePattern.closeTime
-        ? timePattern
-        : defaultTimePattern;
+  // 우선순위 1: 전체(매일) 키워드 감지
+  if (/매일|매\s*일/.test(description)) {
+    const notes: string[] = [];
+    if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
+    if (breakTimeNotes) notes.push(breakTimeNotes);
+
+    for (let day = 0; day < 7; day++) {
+      dayHoursMap.set(day as DayOfWeek, {
+        dayOfWeek: day as DayOfWeek,
+        openTime: defaultTimePattern.openTime,
+        closeTime: defaultTimePattern.closeTime,
+        isClosed: false,
+        notes: notes.length > 0 ? notes.join(', ') : null,
+      });
+      processedDays.add(day as DayOfWeek);
+    }
+    return dayHoursMap; // 전체 적용이면 바로 반환
+  }
+
+  // 우선순위 2: 평일/주중 키워드 감지
+  if (/평일|주중/.test(description)) {
+    const weekdayDays: DayOfWeek[] = [1, 2, 3, 4, 5];
+    const notes: string[] = [];
+    if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
+    if (breakTimeNotes) notes.push(breakTimeNotes);
+
+    for (const day of weekdayDays) {
+      dayHoursMap.set(day, {
+        dayOfWeek: day,
+        openTime: defaultTimePattern.openTime,
+        closeTime: defaultTimePattern.closeTime,
+        isClosed: false,
+        notes: notes.length > 0 ? notes.join(', ') : null,
+      });
+      processedDays.add(day);
+    }
+  }
+
+  // 우선순위 3: 주말 키워드 감지
+  if (/주말/.test(description)) {
+    const weekendDays: DayOfWeek[] = [0, 6];
+    const notes: string[] = [];
+    if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
+    if (breakTimeNotes) notes.push(breakTimeNotes);
+
+    for (const day of weekendDays) {
+      if (!processedDays.has(day)) {
+        dayHoursMap.set(day, {
+          dayOfWeek: day,
+          openTime: defaultTimePattern.openTime,
+          closeTime: defaultTimePattern.closeTime,
+          isClosed: false,
+          notes: notes.length > 0 ? notes.join(', ') : null,
+        });
+        processedDays.add(day);
+      }
+    }
+  }
+
+  // 우선순위 4: 특정 요일 키워드 감지 (가장 낮은 우선순위)
+  const dayKeywords: Array<{ pattern: RegExp; days: DayOfWeek[] }> = [
+    { pattern: /일요일|일\s*요일/g, days: [0] },
+    { pattern: /월요일|월\s*요일/g, days: [1] },
+    { pattern: /화요일|화\s*요일/g, days: [2] },
+    { pattern: /수요일|수\s*요일/g, days: [3] },
+    { pattern: /목요일|목\s*요일/g, days: [4] },
+    { pattern: /금요일|금\s*요일/g, days: [5] },
+    { pattern: /토요일|토\s*요일/g, days: [6] },
+  ];
+
+  for (const { pattern, days } of dayKeywords) {
+    const matches = description.matchAll(pattern);
+    for (const match of matches) {
+      // 특정 요일 근처의 시간 패턴 추출 시도
+      const dayTimePattern = extractTimePatternForDay(description, match.index || 0);
+      const finalTimePattern = dayTimePattern || defaultTimePattern;
       
       const notes: string[] = [];
-      if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
+      if (finalTimePattern.notes) notes.push(finalTimePattern.notes);
       if (breakTimeNotes) notes.push(breakTimeNotes);
 
-      hours.push({
-        dayOfWeek: day,
-        openTime: finalTimePattern.openTime,
-        closeTime: finalTimePattern.closeTime,
-        isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
-      });
-      processedDays.add(day);
-    }
-  }
-
-  // 2. 평일/주중 키워드 적용
-  for (const day of weekdayDays) {
-    if (!processedDays.has(day)) {
-      const notes: string[] = [];
-      if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
-      if (breakTimeNotes) notes.push(breakTimeNotes);
-
-      hours.push({
-        dayOfWeek: day,
-        openTime: defaultTimePattern.openTime,
-        closeTime: defaultTimePattern.closeTime,
-        isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
-      });
-      processedDays.add(day);
-    }
-  }
-
-  // 3. 주말 키워드 적용
-  for (const day of weekendDays) {
-    if (!processedDays.has(day)) {
-      const notes: string[] = [];
-      if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
-      if (breakTimeNotes) notes.push(breakTimeNotes);
-
-      hours.push({
-        dayOfWeek: day,
-        openTime: defaultTimePattern.openTime,
-        closeTime: defaultTimePattern.closeTime,
-        isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
-      });
-      processedDays.add(day);
-    }
-  }
-
-  // 4. 매일 키워드가 있으면 나머지 요일 모두 적용
-  if (allDays) {
-    for (let day = 0; day < 7; day++) {
-      if (!processedDays.has(day as DayOfWeek)) {
-        const notes: string[] = [];
-        if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
-        if (breakTimeNotes) notes.push(breakTimeNotes);
-
-        hours.push({
-          dayOfWeek: day as DayOfWeek,
-          openTime: defaultTimePattern.openTime,
-          closeTime: defaultTimePattern.closeTime,
-          isClosed: false,
-          notes: notes.length > 0 ? notes.join(', ') : undefined,
-        });
-        processedDays.add(day as DayOfWeek);
+      for (const day of days) {
+        if (!processedDays.has(day)) {
+          dayHoursMap.set(day, {
+            dayOfWeek: day,
+            openTime: finalTimePattern.openTime,
+            closeTime: finalTimePattern.closeTime,
+            isClosed: false,
+            notes: notes.length > 0 ? notes.join(', ') : null,
+          });
+          processedDays.add(day);
+        }
       }
     }
   }
 
-  // 5. 특정 요일이 처리되었지만 모든 요일이 아닌 경우, 나머지 요일은 기본값 사용
-  if (hours.length > 0 && hours.length < 7 && !allDays) {
-    for (let day = 0; day < 7; day++) {
-      if (!processedDays.has(day as DayOfWeek)) {
-        const notes: string[] = [];
-        if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
-        if (breakTimeNotes) notes.push(breakTimeNotes);
-
-        hours.push({
-          dayOfWeek: day as DayOfWeek,
-          openTime: defaultTimePattern.openTime,
-          closeTime: defaultTimePattern.closeTime,
-          isClosed: false,
-          notes: notes.length > 0 ? notes.join(', ') : undefined,
-        });
-      }
-    }
-  }
-
-  return hours.length > 0 ? hours : [];
+  return dayHoursMap;
 }
 
 /**
@@ -410,59 +364,40 @@ function extractTimePatternForDay(
 }
 
 /**
- * 모든 요일에 동일한 운영시간 생성
+ * 7개 요일 모두 채우기 (누락된 요일은 기본 시간 패턴 사용)
  * 
- * @param timePattern 시간 패턴
+ * @param dayHoursMap 요일별 운영시간 Map
+ * @param defaultTimePattern 기본 시간 패턴
  * @param breakTimeNotes 브레이크 타임 notes
- * @returns 운영시간 배열
+ * @returns 완전한 운영시간 배열 (7개 요일)
  */
-function createOperatingHoursForAllDays(
-  timePattern: { openTime: string; closeTime: string; notes?: string },
-  breakTimeNotes?: string
+function createCompleteOperatingHours(
+  dayHoursMap: Map<DayOfWeek, OperatingHours>,
+  defaultTimePattern: { openTime: string; closeTime: string; notes?: string | null },
+  breakTimeNotes?: string | null
 ): OperatingHours[] {
   const hours: OperatingHours[] = [];
   const notes: string[] = [];
-  if (timePattern.notes) notes.push(timePattern.notes);
+  if (defaultTimePattern.notes) notes.push(defaultTimePattern.notes);
   if (breakTimeNotes) notes.push(breakTimeNotes);
 
+  // 7개 요일 모두 채우기
   for (let day = 0; day < 7; day++) {
-    hours.push({
-      dayOfWeek: day as DayOfWeek,
-      openTime: timePattern.openTime,
-      closeTime: timePattern.closeTime,
-      isClosed: false,
-      notes: notes.length > 0 ? notes.join(', ') : undefined,
-    });
+    const dayOfWeek = day as DayOfWeek;
+    
+    // Map에 있으면 사용, 없으면 기본값 사용
+    if (dayHoursMap.has(dayOfWeek)) {
+      hours.push(dayHoursMap.get(dayOfWeek)!);
+    } else {
+      hours.push({
+        dayOfWeek,
+        openTime: defaultTimePattern.openTime,
+        closeTime: defaultTimePattern.closeTime,
+        isClosed: false,
+        notes: notes.length > 0 ? notes.join(', ') : null,
+      });
+    }
   }
 
   return hours;
 }
-
-/**
- * 기본 운영시간 생성
- * 
- * @returns 기본 운영시간 배열
- */
-export function createDefaultOperatingHours(): OperatingHours[] {
-  return DEFAULT_OPERATING_HOURS;
-}
-
-/**
- * 네이버 API 응답에서 운영시간 정보 정규화
- * 
- * @param raw 네이버 API 원본 응답
- * @returns 정규화된 운영시간 배열
- */
-export function normalizeOperatingHours(raw: any): OperatingHours[] {
-  // description 필드에서 파싱 시도
-  if (raw.description) {
-    const parsed = parseOperatingHoursFromDescription(raw.description);
-    if (parsed.length > 0) {
-      return parsed;
-    }
-  }
-
-  // 파싱 실패 시 기본값 반환
-  return DEFAULT_OPERATING_HOURS;
-}
-

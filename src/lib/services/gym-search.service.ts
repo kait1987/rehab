@@ -42,81 +42,49 @@ import type { PlaceItem } from '@/types/naver-map';
  */
 export class GymSearchService {
   /**
-   * 반경 내 헬스장 검색 (하이브리드 전략)
+   * 반경 내 헬스장 검색 (하이브리드 전략 + Full Text Search)
    * 
-   * 1단계: DB 검색 → 2단계: API Fallback → 3단계: Upsert (백그라운드) → 4단계: 통합
+   * Phase 3.2: Full Text Search 통합
+   * - 검색어(query)가 있으면 Full Text Search 우선 사용
+   * - 검색어가 없으면 기존 위치 기반 검색 사용
+   * 
+   * 1단계: DB 검색 (FTS 또는 위치 기반) → 2단계: API Fallback → 3단계: Upsert (백그라운드) → 4단계: 통합
    * 
    * @param request 검색 요청
-   * @returns 검색 결과 목록 (거리순 정렬)
+   * @returns 검색 결과 목록 (검색어 있으면 관련도순, 없으면 거리순 정렬)
    */
   async searchGymsNearby(request: GymSearchRequest): Promise<GymSearchResult[]> {
-    const { lat, lng, radius = 1000, filters } = request;
+    const { lat, lng, radius = 1000, query, filters } = request;
 
     // 1. 좌표 범위 계산 (DB 쿼리 최적화)
     const bbox = calculateBoundingBox(lat, lng, radius);
 
-    // 2. Prisma 쿼리 조건 구성
-    const whereConditions: any = {
-      latitude: {
-        gte: bbox.minLat,
-        lte: bbox.maxLat,
-      },
-      longitude: {
-        gte: bbox.minLng,
-        lte: bbox.maxLng,
-      },
-      isActive: true,
-    };
+    let gyms: Array<{
+      id: string;
+      name: string;
+      address: string;
+      latitude: any; // Prisma Decimal
+      longitude: any; // Prisma Decimal
+      phone: string | null;
+      website: string | null;
+      priceRange: string | null;
+      description: string | null;
+      isActive: boolean;
+      facilities: any;
+      operatingHours: any[];
+      ftsRank?: number; // Full Text Search 관련도 점수
+    }> = [];
 
-    // 3. 필터 조건 추가
-    if (filters) {
-      // facilities 관계 필터링을 위한 조건
-      const facilityConditions: any = {};
-
-      if (filters.isQuiet !== undefined) {
-        facilityConditions.isQuiet = filters.isQuiet;
-      }
-      if (filters.hasRehabEquipment !== undefined) {
-        facilityConditions.hasRehabEquipment = filters.hasRehabEquipment;
-      }
-      if (filters.hasPtCoach !== undefined) {
-        facilityConditions.hasPtCoach = filters.hasPtCoach;
-      }
-      if (filters.hasShower !== undefined) {
-        facilityConditions.hasShower = filters.hasShower;
-      }
-      if (filters.hasParking !== undefined) {
-        facilityConditions.hasParking = filters.hasParking;
-      }
-      if (filters.hasLocker !== undefined) {
-        facilityConditions.hasLocker = filters.hasLocker;
-      }
-
-      // facilities 필터가 있으면 facilities 관계 조건 추가
-      if (Object.keys(facilityConditions).length > 0) {
-        whereConditions.facilities = facilityConditions;
-      }
-
-      // priceRange 필터
-      if (filters.priceRange !== undefined) {
-        whereConditions.priceRange = filters.priceRange;
-      }
+    // 2. 검색어가 있으면 Full Text Search 사용, 없으면 기존 위치 기반 검색
+    if (query && query.trim().length > 0) {
+      // Full Text Search 사용
+      gyms = await this.searchWithFullTextSearch(query, bbox, filters);
+    } else {
+      // 기존 위치 기반 검색 사용
+      gyms = await this.searchByLocation(bbox, filters);
     }
 
-    // 4. DB 조회 (facilities, operatingHours 관계 포함)
-    const gyms = await prisma.gym.findMany({
-      where: whereConditions,
-      include: {
-        facilities: true,
-        operatingHours: {
-          orderBy: {
-            dayOfWeek: 'asc',
-          },
-        },
-      },
-    });
-
-    // 5. 정확한 거리 계산 및 반경 필터링
+    // 3. 정확한 거리 계산 및 반경 필터링
     const results: GymSearchResult[] = [];
 
     for (const gym of gyms) {
@@ -151,7 +119,7 @@ export class GymSearchService {
           notes: oh.notes || undefined,
         }));
 
-        results.push({
+        const result: GymSearchResult & { ftsRank?: number } = {
           id: gym.id,
           name: gym.name,
           address: gym.address,
@@ -175,14 +143,39 @@ export class GymSearchService {
           },
           operatingHours: operatingHours.length > 0 ? operatingHours : undefined,
           isActive: gym.isActive,
-        });
+        };
+
+        // FTS 관련도 점수 추가 (정렬용, 최종 결과에는 포함하지 않음)
+        if ('ftsRank' in gym && gym.ftsRank !== undefined) {
+          (result as any).ftsRank = gym.ftsRank;
+        }
+
+        results.push(result);
       }
     }
 
-    // 6. 거리순 정렬
-    results.sort((a, b) => a.distanceMeters - b.distanceMeters);
+    // 4. 정렬 (검색어 있으면 관련도순, 없으면 거리순)
+    if (query && query.trim().length > 0) {
+      // Full Text Search 결과는 관련도(ftsRank) 우선, 그 다음 거리순
+      results.sort((a, b) => {
+        const aRank = (a as any).ftsRank || 0;
+        const bRank = (b as any).ftsRank || 0;
+        if (bRank !== aRank) {
+          return bRank - aRank; // 관련도 높은 순
+        }
+        return a.distanceMeters - b.distanceMeters; // 거리순
+      });
+      
+      // ftsRank 제거 (최종 결과에는 포함하지 않음)
+      results.forEach((result) => {
+        delete (result as any).ftsRank;
+      });
+    } else {
+      // 거리순 정렬
+      results.sort((a, b) => a.distanceMeters - b.distanceMeters);
+    }
 
-    // 7. 하이브리드 검색: DB 결과가 3개 미만이면 API Fallback
+    // 5. 하이브리드 검색: DB 결과가 3개 미만이면 API Fallback
     if (results.length < 3) {
       const apiResults = await this.searchFromAPI(request);
       
@@ -205,6 +198,178 @@ export class GymSearchService {
     }
 
     return results;
+  }
+
+  /**
+   * Full Text Search를 사용한 헬스장 검색
+   * 
+   * Phase 3.2: Full Text Search 통합
+   * - PostgreSQL의 tsvector와 tsquery를 사용하여 빠른 텍스트 검색
+   * - 검색어와 일치하는 헬스장을 관련도 순으로 반환
+   * 
+   * @param query 검색어
+   * @param bbox 좌표 범위
+   * @param filters 필터 옵션
+   * @returns 헬스장 배열 (ftsRank 포함)
+   */
+  private async searchWithFullTextSearch(
+    query: string,
+    bbox: { minLat: number; maxLat: number; minLng: number; maxLng: number },
+    filters?: GymSearchFilter
+  ) {
+    // 검색어 정규화 (공백 제거)
+    const normalizedQuery = query.trim();
+    
+    // Prisma $queryRaw를 사용하여 Full Text Search 쿼리 실행
+    // 템플릿 리터럴 방식을 사용하여 Prisma가 자동으로 파라미터 바인딩 처리 (SQL Injection 방지)
+    // ts_rank로 관련도 점수 계산
+    const ftsResults = await prisma.$queryRaw<Array<{
+      id: string;
+      name: string;
+      address: string;
+      latitude: any;
+      longitude: any;
+      phone: string | null;
+      website: string | null;
+      price_range: string | null;
+      description: string | null;
+      is_active: boolean;
+      fts_rank: number;
+    }>>`
+      SELECT
+        g.id,
+        g.name,
+        g.address,
+        g.latitude,
+        g.longitude,
+        g.phone,
+        g.website,
+        g.price_range,
+        g.description,
+        g.is_active,
+        ts_rank(g.search_vector, plainto_tsquery('simple', ${normalizedQuery})) as fts_rank
+      FROM public.gyms g
+      WHERE
+        g.search_vector @@ plainto_tsquery('simple', ${normalizedQuery})
+        AND g.latitude >= ${bbox.minLat}
+        AND g.latitude <= ${bbox.maxLat}
+        AND g.longitude >= ${bbox.minLng}
+        AND g.longitude <= ${bbox.maxLng}
+        AND g.is_active = true
+      ORDER BY fts_rank DESC
+      LIMIT 50
+    `;
+
+    // Prisma 관계 데이터 로드 (facilities, operatingHours)
+    const gymIds = ftsResults.map((g) => g.id);
+    
+    if (gymIds.length === 0) {
+      return [];
+    }
+
+    // 필터 조건 구성
+    const whereConditions: any = {
+      id: { in: gymIds },
+    };
+
+    // facilities 필터 추가
+    if (filters) {
+      const facilityConditions: any = {};
+      if (filters.isQuiet !== undefined) facilityConditions.isQuiet = filters.isQuiet;
+      if (filters.hasRehabEquipment !== undefined) facilityConditions.hasRehabEquipment = filters.hasRehabEquipment;
+      if (filters.hasPtCoach !== undefined) facilityConditions.hasPtCoach = filters.hasPtCoach;
+      if (filters.hasShower !== undefined) facilityConditions.hasShower = filters.hasShower;
+      if (filters.hasParking !== undefined) facilityConditions.hasParking = filters.hasParking;
+      if (filters.hasLocker !== undefined) facilityConditions.hasLocker = filters.hasLocker;
+
+      if (Object.keys(facilityConditions).length > 0) {
+        whereConditions.facilities = facilityConditions;
+      }
+
+      if (filters.priceRange !== undefined) {
+        whereConditions.priceRange = filters.priceRange;
+      }
+    }
+
+    // Prisma로 관계 데이터 포함하여 조회
+    const gymsWithRelations = await prisma.gym.findMany({
+      where: whereConditions,
+      include: {
+        facilities: true,
+        operatingHours: {
+          orderBy: {
+            dayOfWeek: 'asc',
+          },
+        },
+      },
+    });
+
+    // FTS 결과와 관계 데이터 결합 (ftsRank 포함)
+    const ftsRankMap = new Map(ftsResults.map((g) => [g.id, g.fts_rank]));
+    
+    return gymsWithRelations.map((gym) => ({
+      ...gym,
+      ftsRank: ftsRankMap.get(gym.id) || 0,
+    }));
+  }
+
+  /**
+   * 위치 기반 헬스장 검색 (기존 로직)
+   * 
+   * 검색어가 없을 때 사용하는 기존 위치 기반 검색 로직
+   * 
+   * @param bbox 좌표 범위
+   * @param filters 필터 옵션
+   * @returns 헬스장 배열
+   */
+  private async searchByLocation(
+    bbox: { minLat: number; maxLat: number; minLng: number; maxLng: number },
+    filters?: GymSearchFilter
+  ) {
+    // Prisma 쿼리 조건 구성
+    const whereConditions: any = {
+      latitude: {
+        gte: bbox.minLat,
+        lte: bbox.maxLat,
+      },
+      longitude: {
+        gte: bbox.minLng,
+        lte: bbox.maxLng,
+      },
+      isActive: true,
+    };
+
+    // 필터 조건 추가
+    if (filters) {
+      const facilityConditions: any = {};
+      if (filters.isQuiet !== undefined) facilityConditions.isQuiet = filters.isQuiet;
+      if (filters.hasRehabEquipment !== undefined) facilityConditions.hasRehabEquipment = filters.hasRehabEquipment;
+      if (filters.hasPtCoach !== undefined) facilityConditions.hasPtCoach = filters.hasPtCoach;
+      if (filters.hasShower !== undefined) facilityConditions.hasShower = filters.hasShower;
+      if (filters.hasParking !== undefined) facilityConditions.hasParking = filters.hasParking;
+      if (filters.hasLocker !== undefined) facilityConditions.hasLocker = filters.hasLocker;
+
+      if (Object.keys(facilityConditions).length > 0) {
+        whereConditions.facilities = facilityConditions;
+      }
+
+      if (filters.priceRange !== undefined) {
+        whereConditions.priceRange = filters.priceRange;
+      }
+    }
+
+    // DB 조회 (facilities, operatingHours 관계 포함)
+    return await prisma.gym.findMany({
+      where: whereConditions,
+      include: {
+        facilities: true,
+        operatingHours: {
+          orderBy: {
+            dayOfWeek: 'asc',
+          },
+        },
+      },
+    });
   }
 
   /**

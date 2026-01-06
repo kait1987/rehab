@@ -1,13 +1,14 @@
 /**
  * @file check-business-status.ts
- * @description 영업중 여부 판단 유틸리티
+ * @description 영업중 여부 판단 유틸리티 (Phase 2 재구현)
  * 
  * 현재 시간과 운영시간을 비교하여 영업중 여부를 판단합니다.
  * 
- * 주요 기능:
- * - 현재 시간 기준 영업중 여부 판단
- * - 다음 영업 시작 시간 계산
- * - 영업 상태 정보 반환
+ * 핵심 설계 원칙:
+ * 1. 한국 시간(KST) 기준: 모든 시간 계산은 KST 기준
+ * 2. 자정 넘김 처리: closeTime < openTime인 경우 다음날로 간주
+ * 3. closingTime 반환: 영업 중일 때 마감 시간 반환
+ * 4. nextOpenTime 계산: 영업 종료 상태일 때 다음 영업 시작 시간 계산
  */
 
 import type { OperatingHours, OperatingHoursStatus, DayOfWeek } from '@/types/operating-hours';
@@ -15,57 +16,13 @@ import {
   getDayOfWeek,
   getCurrentTimeString,
   timeToMinutes,
-  minutesToTime,
-  DAY_NAMES,
 } from '@/lib/constants/operating-hours';
-
-/**
- * 현재 시간 기준 영업중 여부 판단
- * 
- * @param operatingHours 운영시간 배열
- * @param currentTime 기준 시간 (기본값: 현재 시간)
- * @returns 영업중 여부
- * 
- * @example
- * const hours = [
- *   { dayOfWeek: 1, openTime: "09:00", closeTime: "22:00", isClosed: false },
- * ];
- * isGymOpen(hours) // 현재 시간이 09:00-22:00 사이이고 월요일이면 true
- */
-export function isGymOpen(
-  operatingHours: OperatingHours[],
-  currentTime: Date = new Date()
-): boolean {
-  const status = getBusinessStatus(operatingHours, currentTime);
-  return status.isOpen;
-}
-
-/**
- * 다음 영업 시작 시간 반환
- * 
- * @param operatingHours 운영시간 배열
- * @param currentTime 기준 시간 (기본값: 현재 시간)
- * @returns 다음 영업 시작 시간 정보 또는 null
- * 
- * @example
- * const hours = [
- *   { dayOfWeek: 1, openTime: "09:00", closeTime: "22:00", isClosed: false },
- * ];
- * getNextOpenTime(hours) // { date: Date, time: "09:00", dayOfWeek: 1 }
- */
-export function getNextOpenTime(
-  operatingHours: OperatingHours[],
-  currentTime: Date = new Date()
-): OperatingHoursStatus['nextOpenTime'] {
-  const status = getBusinessStatus(operatingHours, currentTime);
-  return status.nextOpenTime;
-}
 
 /**
  * 영업 상태 정보 반환
  * 
- * @param operatingHours 운영시간 배열
- * @param currentTime 기준 시간 (기본값: 현재 시간)
+ * @param operatingHours 운영시간 배열 (요일별 7개)
+ * @param now 기준 시간 (기본값: 현재 시간)
  * @returns 영업 상태 정보
  * 
  * @example
@@ -75,17 +32,21 @@ export function getNextOpenTime(
  * getBusinessStatus(hours)
  * // {
  * //   isOpen: true,
- * //   currentDayHours: { dayOfWeek: 1, openTime: "09:00", closeTime: "22:00", isClosed: false },
+ * //   nextOpenTime: null,
+ * //   closingTime: Date (오늘 22:00),
+ * //   currentDayHours: { dayOfWeek: 1, ... },
  * //   currentTime: Date,
  * //   currentDayOfWeek: 1
  * // }
  */
 export function getBusinessStatus(
   operatingHours: OperatingHours[],
-  currentTime: Date = new Date()
+  now: Date = new Date()
 ): OperatingHoursStatus {
-  const currentDayOfWeek = getDayOfWeek(currentTime);
-  const currentTimeString = getCurrentTimeString(currentTime);
+  // 한국 시간대(KST) 기준으로 변환
+  const kstNow = getKSTDate(now);
+  const currentDayOfWeek = getDayOfWeek(kstNow);
+  const currentTimeString = getCurrentTimeString(kstNow);
   const currentMinutes = timeToMinutes(currentTimeString);
 
   // 오늘의 운영시간 찾기
@@ -95,19 +56,22 @@ export function getBusinessStatus(
   if (!todayHours) {
     return {
       isOpen: true,
-      currentTime,
+      nextOpenTime: null,
+      closingTime: null,
+      currentTime: kstNow,
       currentDayOfWeek,
     };
   }
 
   // 휴무일이면 영업중 아님
   if (todayHours.isClosed) {
-    const nextOpenTime = findNextOpenTime(operatingHours, currentTime, currentDayOfWeek);
+    const nextOpenTime = findNextOpenTime(operatingHours, kstNow, currentDayOfWeek);
     return {
       isOpen: false,
       nextOpenTime,
+      closingTime: null,
       currentDayHours: todayHours,
-      currentTime,
+      currentTime: kstNow,
       currentDayOfWeek,
     };
   }
@@ -116,8 +80,10 @@ export function getBusinessStatus(
   if (!todayHours.openTime || !todayHours.closeTime) {
     return {
       isOpen: true,
+      nextOpenTime: null,
+      closingTime: null,
       currentDayHours: todayHours,
-      currentTime,
+      currentTime: kstNow,
       currentDayOfWeek,
     };
   }
@@ -127,33 +93,47 @@ export function getBusinessStatus(
   const closeMinutes = timeToMinutes(todayHours.closeTime);
 
   let isOpen = false;
+  let closingTime: Date | null = null;
 
   // 자정을 넘어가는 경우 (예: 22:00-02:00)
   if (closeMinutes < openMinutes) {
     // 현재 시간이 오픈 시간 이후이거나 마감 시간 이전이면 영업중
     isOpen = currentMinutes >= openMinutes || currentMinutes <= closeMinutes;
+    
+    if (isOpen) {
+      // 마감 시간은 다음날로 계산
+      closingTime = createKSTDate(kstNow, todayHours.closeTime, 1); // 다음날
+    }
   } else {
     // 일반적인 경우 (예: 09:00-22:00)
     isOpen = currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
+    
+    if (isOpen) {
+      // 마감 시간은 오늘로 계산
+      closingTime = createKSTDate(kstNow, todayHours.closeTime, 0); // 오늘
+    }
   }
 
   if (isOpen) {
     return {
       isOpen: true,
+      nextOpenTime: null,
+      closingTime,
       currentDayHours: todayHours,
-      currentTime,
+      currentTime: kstNow,
       currentDayOfWeek,
     };
   }
 
   // 영업중이 아니면 다음 영업 시작 시간 찾기
-  const nextOpenTime = findNextOpenTime(operatingHours, currentTime, currentDayOfWeek);
+  const nextOpenTime = findNextOpenTime(operatingHours, kstNow, currentDayOfWeek);
 
   return {
     isOpen: false,
     nextOpenTime,
+    closingTime: null,
     currentDayHours: todayHours,
-    currentTime,
+    currentTime: kstNow,
     currentDayOfWeek,
   };
 }
@@ -161,16 +141,18 @@ export function getBusinessStatus(
 /**
  * 다음 영업 시작 시간 찾기
  * 
+ * 날짜 이동 로직은 명확하게 분리
+ * 
  * @param operatingHours 운영시간 배열
- * @param currentTime 현재 시간
+ * @param currentTime 현재 시간 (KST)
  * @param currentDayOfWeek 현재 요일
- * @returns 다음 영업 시작 시간 정보 또는 undefined
+ * @returns 다음 영업 시작 시간 정보 또는 null
  */
 function findNextOpenTime(
   operatingHours: OperatingHours[],
   currentTime: Date,
   currentDayOfWeek: DayOfWeek
-): OperatingHoursStatus['nextOpenTime'] {
+): Date | null {
   // 오늘부터 7일 내에서 다음 영업 시작 시간 찾기
   for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
     const targetDay = (currentDayOfWeek + dayOffset) % 7 as DayOfWeek;
@@ -180,60 +162,61 @@ function findNextOpenTime(
       continue;
     }
 
-    const targetDate = new Date(currentTime);
-    targetDate.setDate(targetDate.getDate() + dayOffset);
-    targetDate.setHours(0, 0, 0, 0);
-
-    const [hours, minutes] = targetHours.openTime.split(':').map(Number);
-    targetDate.setHours(hours, minutes, 0, 0);
+    const targetDate = createKSTDate(currentTime, targetHours.openTime, dayOffset);
 
     // 오늘이고 현재 시간보다 이전이면 다음 날로
     if (dayOffset === 0 && targetDate <= currentTime) {
       continue;
     }
 
-    return {
-      date: targetDate,
-      time: targetHours.openTime,
-      dayOfWeek: targetDay,
-    };
+    return targetDate;
   }
 
-  return undefined;
+  return null;
 }
 
 /**
- * 운영시간을 사람이 읽기 쉬운 형식으로 변환
+ * 한국 시간대(KST) 기준 Date 객체 생성
  * 
- * @param operatingHours 운영시간 배열
- * @returns 포맷된 문자열
- * 
- * @example
- * formatOperatingHours(hours)
- * // "월요일: 09:00-22:00\n화요일: 09:00-22:00\n..."
+ * @param baseDate 기준 날짜
+ * @param timeString 시간 문자열 (HH:mm)
+ * @param dayOffset 날짜 오프셋 (0: 오늘, 1: 내일, ...)
+ * @returns KST 기준 Date 객체
  */
-export function formatOperatingHours(operatingHours: OperatingHours[]): string {
-  const lines: string[] = [];
+function createKSTDate(baseDate: Date, timeString: string, dayOffset: number): Date {
+  const kstDate = new Date(baseDate);
+  kstDate.setDate(kstDate.getDate() + dayOffset);
+  kstDate.setHours(0, 0, 0, 0);
 
-  for (const hours of operatingHours) {
-    const dayName = DAY_NAMES[hours.dayOfWeek];
-    let line = `${dayName}: `;
+  const [hours, minutes] = timeString.split(':').map(Number);
+  kstDate.setHours(hours, minutes, 0, 0);
 
-    if (hours.isClosed) {
-      line += '휴무';
-    } else if (hours.openTime && hours.closeTime) {
-      line += `${hours.openTime}-${hours.closeTime}`;
-    } else {
-      line += '정보 없음';
-    }
-
-    if (hours.notes) {
-      line += ` (${hours.notes})`;
-    }
-
-    lines.push(line);
-  }
-
-  return lines.join('\n');
+  return kstDate;
 }
 
+/**
+ * Date 객체를 한국 시간대(KST) 기준으로 변환
+ * 
+ * @param date 변환할 Date 객체
+ * @returns KST 기준 Date 객체
+ */
+function getKSTDate(date: Date): Date {
+  // 한국 시간대(KST) 기준으로 변환
+  const kstString = date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
+  return new Date(kstString);
+}
+
+/**
+ * 현재 시간 기준 영업중 여부 판단 (간편 함수)
+ * 
+ * @param operatingHours 운영시간 배열
+ * @param currentTime 기준 시간 (기본값: 현재 시간)
+ * @returns 영업중 여부
+ */
+export function isGymOpen(
+  operatingHours: OperatingHours[],
+  currentTime: Date = new Date()
+): boolean {
+  const status = getBusinessStatus(operatingHours, currentTime);
+  return status.isOpen;
+}

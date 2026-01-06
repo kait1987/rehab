@@ -286,14 +286,14 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
               onClick={loadData}
               className="gap-2"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
               다시 시도
             </Button>
           </div>
         ) : success ? (
           <div className="py-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-              <Check className="w-8 h-8 text-primary" />
+              <Check className="w-8 h-8 text-primary" strokeWidth={1.5} />
             </div>
             <p className="text-lg font-semibold text-foreground mb-2">
               통증 정보가 저장되었습니다
@@ -370,7 +370,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                         {equipment.name}
                       </span>
                       {equipmentAvailable.includes(equipment.id) && (
-                        <Check className="absolute top-2 right-2 w-5 h-5 text-primary" />
+                        <Check className="absolute top-2 right-2 w-5 h-5 text-primary" strokeWidth={1.5} />
                       )}
                     </button>
                   ))}
@@ -406,7 +406,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                           {option.label}
                         </span>
                         {experienceLevel === option.value && (
-                          <Check className="w-5 h-5 text-primary" />
+                          <Check className="w-5 h-5 text-primary" strokeWidth={1.5} />
                         )}
                       </div>
                     </button>
@@ -425,7 +425,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                   disabled={loading}
                   className="flex-1"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
                   이전
                 </Button>
               )}
@@ -447,7 +447,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                 ) : (
                   <>
                     다음
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
                   </>
                 )}
               </Button>

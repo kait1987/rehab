@@ -152,6 +152,7 @@ model ReviewTag {
   displayOrder Int       @default(0) @map("display_order")
   isActive     Boolean   @default(true) @map("is_active")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   reviewTagMappings ReviewTagMapping[]
@@ -189,6 +190,7 @@ model ReviewTagMapping {
   reviewId    String    @map("review_id") @db.Uuid
   reviewTagId String    @map("review_tag_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
@@ -210,6 +212,7 @@ model BodyPart {
   displayOrder Int       @default(0) @map("display_order")
   isActive     Boolean   @default(true) @map("is_active")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   exerciseTemplates            ExerciseTemplate[]
@@ -227,6 +230,7 @@ model EquipmentType {
   displayOrder Int       @default(0) @map("display_order")
   isActive     Boolean   @default(true) @map("is_active")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   exerciseEquipmentMappings ExerciseEquipmentMapping[]
@@ -272,6 +276,7 @@ model ExerciseEquipmentMapping {
   equipmentTypeId    String    @map("equipment_type_id") @db.Uuid
   isRequired         Boolean   @default(false) @map("is_required")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
@@ -367,6 +372,7 @@ model CourseExercise {
   restSeconds        Int?      @map("rest_seconds")
   notes              String?
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   course           Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -429,6 +435,7 @@ model UserFavorite {
   gymId     String    @map("gym_id") @db.Uuid
   savedAt   DateTime  @default(now()) @map("saved_at") @db.Timestamptz
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -453,6 +460,7 @@ model Event {
   eventData   Json?     @map("event_data") @db.JsonB
   eventTime   DateTime  @default(now()) @map("event_time") @db.Timestamptz
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)

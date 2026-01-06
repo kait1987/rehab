@@ -44,6 +44,8 @@ export const gymSearchRequestSchema = z.object({
   lng: z.number().min(124.5, '경도는 124.5 이상이어야 합니다.').max(132.0, '경도는 132.0 이하여야 합니다.'),
   /** 검색 반경 (미터 단위, 기본값: 1000m = 1km) */
   radius: z.number().min(100, '반경은 최소 100m입니다.').max(5000, '반경은 최대 5km입니다.').default(1000),
+  /** 검색어 (Full Text Search용, 선택) */
+  query: z.string().min(1, '검색어는 최소 1자 이상이어야 합니다.').max(100, '검색어는 최대 100자까지 입력 가능합니다.').optional(),
   /** 필터 옵션 */
   filters: gymSearchFilterSchema.optional(),
 });

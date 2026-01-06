@@ -45,30 +45,34 @@ Tailwind CSS v4는 `globals.css` 파일에서 직접 설정합니다:
 
 ## 색상 시스템
 
-### 테라코타 & 크림 베이지 컬러 팔레트
+### 다크 모드 기반 컬러 팔레트 (참고 이미지 6개 화면 기반)
 
-라이트 모드 기본 색상 팔레트:
+다크 퍼플/블랙 배경 + 화이트 텍스트 + 퍼플 액센트:
 
-#### Primary (테라코타/코랄)
+#### 배경 색상 (다크 퍼플/블랙 계열)
 ```css
---primary: oklch(0.65 0.12 30);        /* #E07A5F - 메인 브랜드 컬러 */
---primary-hover: oklch(0.6 0.13 30);  /* 호버 상태 */
---primary-light: oklch(0.95 0.03 30); /* 배경/강조용 */
---primary-dark: oklch(0.55 0.14 30);  /* 강조 텍스트 */
+--background: oklch(0.10 0 0);         /* #1A1A1A - 어두운 회색/검정 계열 */
+--foreground: oklch(0.95 0 0);         /* #F2F2F2 - 밝은 회색/흰색 */
+--card: oklch(0.15 0 0);               /* #262626 - 약간 밝은 어두운 회색 */
+--muted: oklch(0.12 0 0);              /* #1F1F1F - 어두운 배경 */
+--border: oklch(0.25 0 0);             /* #404040 - 보더 색상 */
+--input: oklch(0.12 0 0);              /* #1F1F1F - 어두운 입력 필드 */
 ```
 
-#### Secondary (샌드 베이지)
+#### Primary (퍼플) - 참고 이미지의 퍼플 버튼
 ```css
---secondary: oklch(0.85 0.08 70);      /* #F6E05E 계열 - 보조 브랜드 컬러 */
---secondary-hover: oklch(0.8 0.09 70);
---secondary-light: oklch(0.96 0.04 70);
---secondary-dark: oklch(0.7 0.1 70);
+--primary: oklch(0.55 0.15 300);       /* #8B5CF6 - 퍼플 액센트 */
+--primary-hover: oklch(0.60 0.15 300); /* 더 밝은 퍼플 - 호버 상태 */
+--primary-light: oklch(0.25 0.08 300); /* 다크 모드용 연한 퍼플 배경 */
+--primary-dark: oklch(0.50 0.16 300);   /* 진한 퍼플 - 강조 텍스트 */
 ```
 
-#### Background & Foreground
+#### Secondary (세이지 그린) - 재활 앱 특성 유지
 ```css
---background: oklch(0.99 0.005 60);    /* #FDFBF7 - 따뜻한 크림 베이지 */
---foreground: oklch(0.25 0.01 250);    /* #2D3748 - 짙은 차콜/다크 브라운 */
+--secondary: oklch(0.65 0.10 150);     /* #87A98A - 세이지 그린 */
+--secondary-hover: oklch(0.60 0.10 150);
+--secondary-light: oklch(0.20 0.05 150);
+--secondary-dark: oklch(0.50 0.12 150);
 ```
 
 ### Tailwind 클래스 사용
@@ -94,19 +98,12 @@ Tailwind CSS v4는 `globals.css` 파일에서 직접 설정합니다:
 
 ## 다크 모드
 
-다크 모드는 `.dark` 클래스를 통해 활성화됩니다:
+**다크 모드가 기본 테마입니다.**
 
-```css
-.dark {
-  --background: oklch(0.12 0.005 60);
-  --foreground: oklch(0.95 0 0);
-  /* ... */
-}
-```
-
-**활성화 방법**:
-- `ThemeProvider`가 `attribute="class"`로 설정되어 있음
-- `.dark` 클래스가 `<html>` 요소에 추가되면 다크 모드 활성화
+- `:root`에 다크 모드 색상이 직접 정의됨
+- 라이트 모드 토글 기능 제거
+- `ThemeProvider` 및 `ThemeToggle` 제거됨
+- 모든 페이지가 다크 모드로 표시됨
 
 ## 반응형 디자인
 
@@ -303,6 +300,6 @@ module.exports = {
 
 1. **CSS 변수 기반**: Tailwind CSS v4는 CSS 변수를 통해 색상을 관리합니다.
 2. **모바일 우선**: 기본 스타일은 모바일용이며, 큰 화면용 스타일은 프리픽스로 추가합니다.
-3. **다크 모드**: `.dark` 클래스를 통해 활성화되며, `ThemeProvider`가 관리합니다.
+3. **다크 모드 기본**: 다크 모드가 기본 테마이며, 라이트 모드 토글 기능이 없습니다.
 4. **커스텀 유틸리티**: `@layer utilities`를 통해 커스텀 유틸리티 클래스를 추가할 수 있습니다.
 
