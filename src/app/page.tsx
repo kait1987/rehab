@@ -1,13 +1,20 @@
 /**
  * @file page.tsx
  * @description REHAB 재활운동 어플리케이션 홈페이지
- * 
+ *
  * 동네 기반 재활 헬스장 추천 & 60/90/120분 재활 코스 생성 서비스
  */
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Navigation, Timer, Heart, HeartPulse } from "lucide-react";
+import {
+  Navigation,
+  Timer,
+  Heart,
+  HeartPulse,
+  Activity,
+  ChevronRight,
+} from "lucide-react";
 import { PainCheckModal } from "@/components/pain-check-modal";
 import { HomeHero } from "@/components/home-hero";
 
@@ -21,7 +28,8 @@ export default async function Home() {
             오늘 내 몸에 딱 맞는 안전한 회복
           </h1>
           <p className="relative text-muted-foreground text-base sm:text-xl md:text-2xl mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
-            내 몸을 돌보는 첫걸음,<br />
+            내 몸을 돌보는 첫걸음,
+            <br />
             안전하고 꾸준한 회복을 시작해보세요
           </p>
           <HomeHero />
@@ -31,33 +39,49 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16 md:mt-24">
           <div className="p-6 sm:p-8 border border-border rounded-2xl text-center bg-card shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-5 rounded-full bg-primary-light/20 flex items-center justify-center">
-              <Navigation className="h-8 w-8 sm:h-10 sm:w-10 text-primary" strokeWidth={1.2} />
+              <Navigation
+                className="h-8 w-8 sm:h-10 sm:w-10 text-primary"
+                strokeWidth={1.5}
+              />
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">내 몸을 위한 조용한 공간 찾기</h3>
+            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">
+              내 몸을 위한 조용한 공간 찾기
+            </h3>
             <p className="text-muted-foreground text-base leading-relaxed">
-              재활에 적합한 조용하고 친화적인 헬스장을<br />
-              내 위치 기반으로 찾아보세요
+              재활에 적합한 조용하고 친화적인 헬스장을
+              <br />내 위치 기반으로 찾아보세요
             </p>
           </div>
-          
+
           <div className="p-6 sm:p-8 border border-border rounded-2xl text-center bg-card shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-5 rounded-full bg-primary-light/20 flex items-center justify-center">
-              <Timer className="h-8 w-8 sm:h-10 sm:w-10 text-primary" strokeWidth={1.2} />
+              <Timer
+                className="h-8 w-8 sm:h-10 sm:w-10 text-primary"
+                strokeWidth={1.5}
+              />
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">내 상태에 맞는 회복 코스</h3>
+            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">
+              내 상태에 맞는 회복 코스
+            </h3>
             <p className="text-muted-foreground text-base leading-relaxed">
-              60분, 90분, 120분 중 선택하여<br />
-              내 상태에 맞는 재활 코스를 받아보세요
+              60분, 90분, 120분 중 선택하여
+              <br />내 상태에 맞는 재활 코스를 받아보세요
             </p>
           </div>
-          
+
           <div className="p-6 sm:p-8 border border-border rounded-2xl text-center bg-card shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-5 rounded-full bg-primary-light/20 flex items-center justify-center">
-              <Heart className="h-8 w-8 sm:h-10 sm:w-10 text-primary fill-primary/20" strokeWidth={1.2} />
+              <Heart
+                className="h-8 w-8 sm:h-10 sm:w-10 text-primary fill-primary/20"
+                strokeWidth={1.5}
+              />
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">안전하게 돌보는 재활운동</h3>
+            <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-foreground">
+              안전하게 돌보는 재활운동
+            </h3>
             <p className="text-muted-foreground text-base leading-relaxed">
-              통증 부위와 경험 수준을 고려한<br />
+              통증 부위와 경험 수준을 고려한
+              <br />
               안전한 재활운동 루틴을 제공합니다
             </p>
           </div>
@@ -65,17 +89,23 @@ export default async function Home() {
 
         {/* CTA Section */}
         <div className="mt-12 sm:mt-16 md:mt-24 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4 sm:mb-5 text-foreground">오늘부터 내 몸을 돌보세요</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4 sm:mb-5 text-foreground">
+            오늘부터 내 몸을 돌보세요
+          </h2>
           <p className="text-muted-foreground text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed">
-            어느 부위든, 오늘부터 안전하게 돌보세요<br />
-            내 몸에 맞는 재활 코스를 만들어보세요
+            어느 부위든, 오늘부터 안전하게 돌보세요
+            <br />내 몸에 맞는 재활 코스를 만들어보세요
           </p>
-          <Button 
-            asChild 
-            size="lg" 
+          <Button
+            asChild
+            size="lg"
             className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 rounded-2xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-xl hover:shadow-2xl shadow-primary/10 hover:shadow-primary/20 hover:-translate-y-0.5"
           >
-            <Link href="/courses/new">코스 생성하기</Link>
+            <Link href="/courses/new" className="flex items-center gap-2">
+              <Activity className="h-5 w-5" strokeWidth={1.5} />
+              재활 코스 시작하기
+              <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
+            </Link>
           </Button>
         </div>
       </div>
@@ -87,7 +117,7 @@ export default async function Home() {
           className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50 rounded-full w-14 h-14 sm:w-16 sm:h-16 bg-primary hover:bg-primary-hover text-white shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-110 hover:-translate-y-1"
           aria-label="오늘의 통증 체크"
         >
-          <HeartPulse className="w-5 h-5 sm:w-6 sm:h-6" />
+          <HeartPulse className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={1.5} />
         </Button>
       </PainCheckModal>
     </main>

@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
     const latParam = searchParams.get('lat');
     const lngParam = searchParams.get('lng');
     const radiusParam = searchParams.get('radius');
+    const queryParam = searchParams.get('query'); // Phase 3.2: Full Text Search용 검색어
 
     // 2. 필수 파라미터 검증
     if (!latParam || !lngParam) {
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest) {
     const lat = parseFloat(latParam);
     const lng = parseFloat(lngParam);
     const radius = radiusParam ? parseFloat(radiusParam) : undefined;
+    const query = queryParam ? queryParam.trim() : undefined; // 검색어 (선택)
 
     // 4. 필터 옵션 추출
     const filters: any = {};
@@ -95,6 +97,7 @@ export async function GET(request: NextRequest) {
       lat,
       lng,
       radius,
+      query, // Phase 3.2: Full Text Search용 검색어
       filters: Object.keys(filters).length > 0 ? filters : undefined,
     });
 

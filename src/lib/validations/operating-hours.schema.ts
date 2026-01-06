@@ -1,8 +1,11 @@
 /**
  * @file operating-hours.schema.ts
- * @description 운영시간 데이터 검증 스키마
+ * @description 운영시간 데이터 검증 스키마 (Phase 2 업데이트)
  * 
  * Zod를 사용하여 운영시간 데이터의 유효성을 검증합니다.
+ * 
+ * 타입 변경 반영:
+ * - openTime, closeTime: string | null
  */
 
 import { z } from 'zod';
@@ -27,10 +30,10 @@ export const timeStringSchema = z
  */
 export const operatingHoursInputSchema = z.object({
   dayOfWeek: dayOfWeekSchema,
-  openTime: timeStringSchema.optional(),
-  closeTime: timeStringSchema.optional(),
+  openTime: timeStringSchema.nullable().optional(),
+  closeTime: timeStringSchema.nullable().optional(),
   isClosed: z.boolean().optional().default(false),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 /**
@@ -38,10 +41,10 @@ export const operatingHoursInputSchema = z.object({
  */
 export const operatingHoursSchema = z.object({
   dayOfWeek: dayOfWeekSchema,
-  openTime: timeStringSchema.optional(),
-  closeTime: timeStringSchema.optional(),
+  openTime: timeStringSchema.nullable(),
+  closeTime: timeStringSchema.nullable(),
   isClosed: z.boolean(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 /**
@@ -78,4 +81,3 @@ export function validateOperatingHours(data: unknown) {
 export function validateOperatingHoursArray(data: unknown) {
   return operatingHoursArraySchema.safeParse(data);
 }
-

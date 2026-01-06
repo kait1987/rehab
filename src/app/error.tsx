@@ -29,7 +29,7 @@ export default function Error({
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-2xl mx-auto text-center">
         <div className="mb-8">
-          <AlertCircle className="h-24 w-24 mx-auto text-red-500 mb-4" />
+          <AlertCircle className="h-24 w-24 mx-auto text-red-500 mb-4" strokeWidth={1.5} />
           <h1 className="text-4xl font-bold mb-4">문제가 발생했습니다</h1>
           <p className="text-gray-600 text-lg mb-2">
             예상치 못한 오류가 발생했습니다.
@@ -67,7 +67,7 @@ export default function Error({
               size="lg"
               className="w-full sm:w-auto text-lg px-8 py-6 rounded-2xl bg-secondary hover:bg-secondary-hover text-secondary-foreground border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-secondary/20 hover:-translate-y-0.5"
             >
-              <Home className="h-4 w-4 mr-2" />
+              <Home className="h-4 w-4 mr-2" strokeWidth={1.5} />
               홈으로 돌아가기
             </Button>
           </Link>

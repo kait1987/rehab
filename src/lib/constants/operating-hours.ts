@@ -40,11 +40,11 @@ export const DAY_NAMES_SHORT: Record<DayOfWeek, string> = {
  */
 export const DEFAULT_OPERATING_HOURS: OperatingHours[] = [
   { dayOfWeek: 0, openTime: '08:00', closeTime: '22:00', isClosed: false }, // 일요일
-  { dayOfWeek: 1, openTime: '06:00', closeTime: '24:00', isClosed: false }, // 월요일
-  { dayOfWeek: 2, openTime: '06:00', closeTime: '24:00', isClosed: false }, // 화요일
-  { dayOfWeek: 3, openTime: '06:00', closeTime: '24:00', isClosed: false }, // 수요일
-  { dayOfWeek: 4, openTime: '06:00', closeTime: '24:00', isClosed: false }, // 목요일
-  { dayOfWeek: 5, openTime: '06:00', closeTime: '24:00', isClosed: false }, // 금요일
+  { dayOfWeek: 1, openTime: '06:00', closeTime: '23:59', isClosed: false }, // 월요일
+  { dayOfWeek: 2, openTime: '06:00', closeTime: '23:59', isClosed: false }, // 화요일
+  { dayOfWeek: 3, openTime: '06:00', closeTime: '23:59', isClosed: false }, // 수요일
+  { dayOfWeek: 4, openTime: '06:00', closeTime: '23:59', isClosed: false }, // 목요일
+  { dayOfWeek: 5, openTime: '06:00', closeTime: '23:59', isClosed: false }, // 금요일
   { dayOfWeek: 6, openTime: '08:00', closeTime: '22:00', isClosed: false }, // 토요일
 ];
 
