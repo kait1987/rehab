@@ -95,6 +95,8 @@ export function getBusinessStatus(
   if (!todayHours) {
     return {
       isOpen: true,
+      nextOpenTime: null,
+      closingTime: null,
       currentTime,
       currentDayOfWeek,
     };
@@ -106,6 +108,7 @@ export function getBusinessStatus(
     return {
       isOpen: false,
       nextOpenTime,
+      closingTime: null,
       currentDayHours: todayHours,
       currentTime,
       currentDayOfWeek,
@@ -116,6 +119,8 @@ export function getBusinessStatus(
   if (!todayHours.openTime || !todayHours.closeTime) {
     return {
       isOpen: true,
+      nextOpenTime: null,
+      closingTime: null,
       currentDayHours: todayHours,
       currentTime,
       currentDayOfWeek,
@@ -138,8 +143,20 @@ export function getBusinessStatus(
   }
 
   if (isOpen) {
+    // 마감 시간 계산
+    const closingDate = new Date(currentTime);
+    const [closeHours, closeMinutes] = todayHours.closeTime.split(':').map(Number);
+    
+    // 자정을 넘어가는 경우 다음날로 설정
+    if (closeMinutes < openMinutes) {
+      closingDate.setDate(closingDate.getDate() + 1);
+    }
+    closingDate.setHours(closeHours, closeMinutes, 0, 0);
+    
     return {
       isOpen: true,
+      nextOpenTime: null,
+      closingTime: closingDate,
       currentDayHours: todayHours,
       currentTime,
       currentDayOfWeek,
@@ -152,6 +169,7 @@ export function getBusinessStatus(
   return {
     isOpen: false,
     nextOpenTime,
+    closingTime: null,
     currentDayHours: todayHours,
     currentTime,
     currentDayOfWeek,
@@ -164,7 +182,7 @@ export function getBusinessStatus(
  * @param operatingHours 운영시간 배열
  * @param currentTime 현재 시간
  * @param currentDayOfWeek 현재 요일
- * @returns 다음 영업 시작 시간 정보 또는 undefined
+ * @returns 다음 영업 시작 시간 (Date 객체) 또는 null
  */
 function findNextOpenTime(
   operatingHours: OperatingHours[],
@@ -192,14 +210,10 @@ function findNextOpenTime(
       continue;
     }
 
-    return {
-      date: targetDate,
-      time: targetHours.openTime,
-      dayOfWeek: targetDay,
-    };
+    return targetDate;
   }
 
-  return undefined;
+  return null;
 }
 
 /**

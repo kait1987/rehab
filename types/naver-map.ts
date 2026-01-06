@@ -8,7 +8,7 @@
  * - 네이버 지도 API v3: https://navermaps.github.io/maps.js.ncp/
  */
 
-import type { OperatingHours } from './operating-hours';
+import type { OperatingHours } from '@/types/operating-hours';
 
 /**
  * 장소 검색 옵션

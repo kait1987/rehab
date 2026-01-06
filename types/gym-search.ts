@@ -5,7 +5,7 @@
  * 헬스장 검색 API의 요청/응답 타입을 정의합니다.
  */
 
-import type { OperatingHours } from './operating-hours';
+import type { OperatingHours } from '@/types/operating-hours';
 
 /**
  * 가격대 타입

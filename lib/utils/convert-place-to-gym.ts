@@ -124,10 +124,10 @@ export function convertPlaceItemToOperatingHours(
   if (placeItem.operatingHours && placeItem.operatingHours.length > 0) {
     return placeItem.operatingHours.map((oh: OperatingHours) => ({
       dayOfWeek: oh.dayOfWeek,
-      openTime: oh.openTime,
-      closeTime: oh.closeTime,
+      openTime: oh.openTime ?? undefined,
+      closeTime: oh.closeTime ?? undefined,
       isClosed: oh.isClosed,
-      notes: oh.notes,
+      notes: oh.notes ?? undefined,
     }));
   }
 
@@ -136,10 +136,10 @@ export function convertPlaceItemToOperatingHours(
     const parsedHours = parseOperatingHoursFromDescription(placeItem.description);
     return parsedHours.map((oh: OperatingHours) => ({
       dayOfWeek: oh.dayOfWeek,
-      openTime: oh.openTime,
-      closeTime: oh.closeTime,
+      openTime: oh.openTime ?? undefined,
+      closeTime: oh.closeTime ?? undefined,
       isClosed: oh.isClosed,
-      notes: oh.notes,
+      notes: oh.notes ?? undefined,
     }));
   }
 

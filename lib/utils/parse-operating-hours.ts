@@ -303,10 +303,10 @@ function parseDaySpecificHoursWithPriority(
 
       hours.push({
         dayOfWeek: day,
-        openTime: finalTimePattern.openTime,
-        closeTime: finalTimePattern.closeTime,
+        openTime: finalTimePattern.openTime ?? null,
+        closeTime: finalTimePattern.closeTime ?? null,
         isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
+        notes: notes.length > 0 ? notes.join(', ') : null,
       });
       processedDays.add(day);
     }
@@ -324,7 +324,7 @@ function parseDaySpecificHoursWithPriority(
         openTime: defaultTimePattern.openTime,
         closeTime: defaultTimePattern.closeTime,
         isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
+        notes: notes.length > 0 ? notes.join(', ') : null,
       });
       processedDays.add(day);
     }
@@ -342,7 +342,7 @@ function parseDaySpecificHoursWithPriority(
         openTime: defaultTimePattern.openTime,
         closeTime: defaultTimePattern.closeTime,
         isClosed: false,
-        notes: notes.length > 0 ? notes.join(', ') : undefined,
+        notes: notes.length > 0 ? notes.join(', ') : null,
       });
       processedDays.add(day);
     }
@@ -361,7 +361,7 @@ function parseDaySpecificHoursWithPriority(
           openTime: defaultTimePattern.openTime,
           closeTime: defaultTimePattern.closeTime,
           isClosed: false,
-          notes: notes.length > 0 ? notes.join(', ') : undefined,
+          notes: notes.length > 0 ? notes.join(', ') : null,
         });
         processedDays.add(day as DayOfWeek);
       }
@@ -381,7 +381,7 @@ function parseDaySpecificHoursWithPriority(
           openTime: defaultTimePattern.openTime,
           closeTime: defaultTimePattern.closeTime,
           isClosed: false,
-          notes: notes.length > 0 ? notes.join(', ') : undefined,
+          notes: notes.length > 0 ? notes.join(', ') : null,
         });
       }
     }

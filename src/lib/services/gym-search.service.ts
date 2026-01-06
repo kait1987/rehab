@@ -113,10 +113,10 @@ export class GymSearchService {
         // operatingHours 변환
         const operatingHours: OperatingHours[] = gym.operatingHours.map((oh) => ({
           dayOfWeek: oh.dayOfWeek as OperatingHours['dayOfWeek'],
-          openTime: oh.openTime || undefined,
-          closeTime: oh.closeTime || undefined,
+          openTime: oh.openTime || null,
+          closeTime: oh.closeTime || null,
           isClosed: oh.isClosed,
-          notes: oh.notes || undefined,
+          notes: oh.notes || null,
         }));
 
         const result: GymSearchResult & { ftsRank?: number } = {
