@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,7 @@ interface EquipmentType {
 }
 
 export function PainCheckModal({ children }: { children: React.ReactNode }) {
+  const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -198,13 +200,19 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // 인증 확인
+    if (!user?.id) {
+      setError("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
+      return;
+    }
+
     setIsSaving(true);
     setLoading(true);
     setError(null);
 
     try {
       // 최소 로딩 시간을 보장하여 사용자 경험 향상
-      const savePromise = savePainProfile({
+      const savePromise = savePainProfile(user.id, {
         bodyPartId,
         painLevel,
         experienceLevel,
