@@ -14,34 +14,9 @@ import { HomeHero } from "@/components/home-hero";
 export default async function Home() {
   return (
     <main className="min-h-[calc(100vh-80px)] relative overflow-hidden">
-      {/* 오로라 효과 배경 - 왼쪽 상단(민트)과 우측 하단(살구색) */}
-      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        {/* 왼쪽 상단 - 민트색 (Soft Teal) */}
-        <div 
-          className="absolute -top-[300px] -left-[300px] w-[600px] h-[600px] rounded-full blur-3xl opacity-50"
-          style={{
-            background: 'radial-gradient(circle, oklch(0.9 0.05 200 / 0.4) 0%, oklch(0.9 0.05 200 / 0.2) 30%, transparent 70%)'
-          }}
-        />
-        {/* 우측 하단 - 살구색 (Warm Beige/Peach) */}
-        <div 
-          className="absolute -bottom-[300px] -right-[300px] w-[600px] h-[600px] rounded-full blur-3xl opacity-50"
-          style={{
-            background: 'radial-gradient(circle, oklch(0.95 0.02 60 / 0.4) 0%, oklch(0.95 0.02 60 / 0.2) 30%, transparent 70%)'
-          }}
-        />
-      </div>
-      
       <div className="container mx-auto px-4 sm:px-6 md:px-8 py-12 sm:py-16 md:py-20 relative z-0">
         {/* Hero Section */}
-        <div className="relative text-center mb-12 sm:mb-16 md:mb-20 bg-gradient-to-b from-primary-light/20 via-transparent to-transparent rounded-3xl py-8 sm:py-12 px-4 sm:px-6">
-          {/* Blur Circle 효과 - 제목 주변 */}
-          <div 
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl opacity-40 -z-10"
-            style={{
-              background: 'radial-gradient(circle, oklch(0.92 0.04 150 / 0.3) 0%, oklch(0.92 0.04 150 / 0.1) 30%, transparent 70%)'
-            }}
-          />
+        <div className="relative text-center mb-12 sm:mb-16 md:mb-20 bg-gradient-to-b from-primary-light/10 via-transparent to-transparent rounded-3xl py-8 sm:py-12 px-4 sm:px-6">
           <h1 className="relative text-3xl sm:text-4xl md:text-6xl font-semibold text-foreground mb-4 sm:mb-6 leading-tight">
             오늘 내 몸에 딱 맞는 안전한 회복
           </h1>

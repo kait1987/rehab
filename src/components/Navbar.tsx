@@ -23,7 +23,7 @@ const Navbar = () => {
 
         {/* 데스크탑 메뉴 */}
         <div className="hidden sm:flex items-center gap-4">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <SignedIn>
             <Link href="/my" aria-label="마이페이지로 이동">
               <Button variant="ghost" size="icon" aria-label="마이페이지">
@@ -61,7 +61,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="sm:hidden absolute top-16 left-0 w-full bg-background border-b border-border shadow-lg">
           <div className="container px-4 py-4 flex flex-col gap-4">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <SignedIn>
               <Link 
                 href="/my" 

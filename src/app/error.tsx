@@ -53,12 +53,20 @@ export default function Error({
           </div>
         )}
 
-        <div className="flex gap-4 justify-center">
-          <Button onClick={reset} size="lg">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            onClick={reset} 
+            size="lg"
+            className="w-full sm:w-auto text-lg px-8 py-6 rounded-2xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-xl hover:shadow-2xl shadow-primary/10 hover:shadow-primary/20 hover:-translate-y-0.5"
+          >
             다시 시도
           </Button>
           <Link href="/">
-            <Button variant="outline" size="lg">
+            <Button 
+              variant="secondary" 
+              size="lg"
+              className="w-full sm:w-auto text-lg px-8 py-6 rounded-2xl bg-secondary hover:bg-secondary-hover text-secondary-foreground border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-secondary/20 hover:-translate-y-0.5"
+            >
               <Home className="h-4 w-4 mr-2" />
               홈으로 돌아가기
             </Button>

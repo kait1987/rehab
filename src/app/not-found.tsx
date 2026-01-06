@@ -34,9 +34,9 @@ export default function NotFound() {
           </Link>
           <Link href="/gyms">
             <Button 
-              variant="outline" 
+              variant="secondary" 
               size="lg" 
-              className="w-full sm:w-auto text-lg px-8 py-6 rounded-2xl border-2 hover:bg-primary-light transition-all duration-300"
+              className="w-full sm:w-auto text-lg px-8 py-6 rounded-2xl bg-secondary hover:bg-secondary-hover text-secondary-foreground border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-secondary/20 hover:-translate-y-0.5"
             >
               <Navigation className="h-4 w-4 mr-2" />
               헬스장 찾기
