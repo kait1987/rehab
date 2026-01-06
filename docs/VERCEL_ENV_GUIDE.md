@@ -1,0 +1,246 @@
+# Vercel 환경 변수 설정 가이드
+
+이 문서는 Vercel 배포 시 발생하는 `MIDDLEWARE_INVOCATION_FAILED` 에러를 해결하기 위한 환경 변수 설정 가이드입니다.
+
+## ⚠️ 중요: 환경 변수 공백 문제
+
+Vercel에서 환경 변수를 설정할 때 **앞뒤 공백**이 포함되면 Edge Runtime에서 `undefined`로 인식되어 middleware가 즉시 크래시합니다.
+
+### 문제 예시
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=" pk_test_XXXX "  ❌ (공백 포함)
+```
+
+이 경우 Edge Runtime에서 `process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`가 `undefined`로 인식되어 middleware가 실행되자마자 크래시합니다.
+
+### 해결 방법
+
+1. Vercel 대시보드에서 환경 변수 편집
+2. **값 전체를 지우고** 다시 붙여넣기
+3. 앞뒤 공백이 없는지 확인
+4. **Save** 클릭
+5. **반드시 Redeploy 수행** (이거 안 하면 절대 안 바뀜)
+
+## 🔑 필수 환경 변수
+
+Clerk middleware가 정상 작동하려면 다음 환경 변수가 반드시 설정되어야 합니다:
+
+### 1. NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+**설명**: Clerk Publishable Key (클라이언트 사이드에서 사용)
+
+**형식**:
+- 테스트 환경: `pk_test_[YOUR_PUBLISHABLE_KEY]`
+- 프로덕션 환경: `pk_live_[YOUR_PUBLISHABLE_KEY]`
+
+**특징**:
+- `NEXT_PUBLIC_` 접두사가 붙어 있어 클라이언트 사이드에서 접근 가능
+- 공개되어도 안전한 키 (하지만 보안을 위해 공개 저장소에 커밋하지 않는 것을 권장)
+
+### 2. CLERK_SECRET_KEY
+
+**설명**: Clerk Secret Key (서버 사이드 전용)
+
+**형식**:
+- 테스트 환경: `sk_test_[YOUR_SECRET_KEY]`
+- 프로덕션 환경: `sk_live_[YOUR_SECRET_KEY]`
+
+**특징**:
+- 서버 사이드에서만 사용되는 비밀 키
+- **절대 클라이언트에 노출되면 안 됨**
+- **절대 공개 저장소에 커밋하지 마세요**
+
+## 🚀 Vercel 환경 변수 설정 방법
+
+### Step 1: Vercel 대시보드 접속
+
+1. [Vercel 대시보드](https://vercel.com/dashboard)에 로그인
+2. 프로젝트 선택
+
+### Step 2: 환경 변수 설정 페이지 이동
+
+1. 프로젝트 대시보드에서 **Settings** 탭 클릭
+2. 좌측 메뉴에서 **Environment Variables** 클릭
+
+### Step 3: 환경 변수 추가
+
+#### NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY 추가
+
+1. **Add New** 버튼 클릭
+2. 다음 정보 입력:
+   - **Key**: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - **Value**: Clerk 대시보드에서 복사한 Publishable Key
+     - ⚠️ **앞뒤 공백 없이** 입력
+   - **Environment**: 
+     - ✅ Production
+     - ✅ Preview
+     - ✅ Development
+     - (모든 환경에 적용)
+3. **Save** 버튼 클릭
+
+#### CLERK_SECRET_KEY 추가
+
+1. **Add New** 버튼 클릭
+2. 다음 정보 입력:
+   - **Key**: `CLERK_SECRET_KEY`
+   - **Value**: Clerk 대시보드에서 복사한 Secret Key
+     - ⚠️ **앞뒤 공백 없이** 입력
+   - **Environment**: 
+     - ✅ Production
+     - ✅ Preview
+     - ✅ Development
+     - (모든 환경에 적용)
+3. **Save** 버튼 클릭
+
+### Step 4: 환경 변수 확인
+
+1. 추가된 환경 변수 목록 확인
+2. 각 환경 변수의 값이 올바르게 설정되었는지 확인
+3. 키 이름의 대소문자와 언더스코어(`_`)가 정확한지 확인
+4. **앞뒤 공백이 없는지 확인** ⚠️
+
+## 🔄 Vercel Redeploy 필수 단계
+
+**중요**: middleware.ts를 수정하거나 환경 변수를 변경한 경우, 이전 빌드에서 middleware.ts가 캐시되어 있으면 코드를 고쳐도 반영이 안 될 수 있습니다.
+
+### Redeploy 시 필수 체크사항
+
+1. Vercel 대시보드 → 프로젝트 → **Deployments** 탭
+2. 최신 배포의 **⋯** 메뉴 클릭
+3. **Redeploy** 선택
+4. **⚠️ "Use existing Build Cache" 체크박스를 반드시 해제** ✅
+   - 이유: 이전 빌드에서 middleware.ts가 캐시되어 있으면 새 코드가 반영되지 않음
+   - 확실하게 새 코드를 적용하기 위함
+5. **Redeploy** 버튼 클릭
+
+### 자동 재배포 vs 수동 재배포
+
+**자동 재배포**:
+- Vercel은 환경 변수 변경 시 자동으로 재배포를 트리거합니다
+- 하지만 **Build Cache가 활성화되어 있으면** middleware.ts 변경이 반영되지 않을 수 있습니다
+- 따라서 **수동 재배포 시 Build Cache 해제를 권장**합니다
+
+**수동 재배포** (권장):
+- 환경 변수 변경 후에는 수동으로 재배포하는 것을 권장합니다
+- Build Cache를 해제하여 확실하게 새 코드를 적용합니다
+
+## ✅ 환경별 설정 체크리스트
+
+다음 체크리스트를 확인하여 모든 환경에 환경 변수가 올바르게 설정되었는지 확인하세요:
+
+- [ ] Production 환경에 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 설정
+- [ ] Production 환경에 `CLERK_SECRET_KEY` 설정
+- [ ] Preview 환경에 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 설정
+- [ ] Preview 환경에 `CLERK_SECRET_KEY` 설정
+- [ ] Development 환경에 `.env` 파일 설정
+- [ ] 모든 환경 변수에 **공백 없음** 확인
+- [ ] Redeploy 수행 완료
+- [ ] **Redeploy 시 "Use existing Build Cache" 체크박스 해제 확인** ✅
+
+## 🔍 Clerk 키 확인 방법
+
+### Step 1: Clerk 대시보드 접속
+
+1. [Clerk 대시보드](https://dashboard.clerk.com/)에 로그인
+2. 프로젝트 선택
+
+### Step 2: API Keys 페이지 이동
+
+1. 좌측 메뉴에서 **API Keys** 클릭
+2. 또는 **Configure** → **API Keys** 메뉴로 이동
+
+### Step 3: 키 복사
+
+1. **Publishable Key** 섹션에서 키 복사
+   - 이 키를 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`에 설정
+2. **Secret Key** 섹션에서 **Reveal** 버튼 클릭 후 키 복사
+   - 이 키를 `CLERK_SECRET_KEY`에 설정
+
+**주의사항**:
+- Secret Key는 한 번만 표시되므로 복사 시 주의하세요
+- 키를 잃어버린 경우 Clerk 대시보드에서 재생성할 수 있습니다
+- **복사한 키를 Vercel에 붙여넣을 때 앞뒤 공백이 포함되지 않도록 주의하세요**
+
+## 🔧 문제 해결
+
+### 문제 1: "MIDDLEWARE_INVOCATION_FAILED" 에러
+
+**원인**: 
+- 환경 변수가 설정되지 않았거나 잘못 설정됨
+- 환경 변수 앞뒤에 공백이 포함됨
+- Build Cache로 인해 middleware.ts 변경이 반영되지 않음
+
+**해결 방법**:
+1. Vercel 대시보드에서 환경 변수 설정 확인
+2. 키 이름이 정확한지 확인 (대소문자, 언더스코어)
+3. 키 값이 올바른지 확인 (Clerk 대시보드에서 재확인)
+4. **앞뒤 공백이 없는지 확인** ⚠️
+5. 환경 변수 값 전체를 지우고 다시 붙여넣기
+6. **Build Cache를 해제하고 재배포** ✅
+
+### 문제 2: "Clerk: Missing publishableKey" 에러
+
+**원인**: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`가 설정되지 않음
+
+**해결 방법**:
+1. Vercel 환경 변수에 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 추가
+2. 값이 올바른지 확인
+3. **앞뒤 공백이 없는지 확인** ⚠️
+4. Build Cache를 해제하고 재배포
+
+### 문제 3: 인증이 작동하지 않음
+
+**원인**: `CLERK_SECRET_KEY`가 설정되지 않았거나 잘못 설정됨
+
+**해결 방법**:
+1. Vercel 환경 변수에 `CLERK_SECRET_KEY` 추가
+2. Secret Key가 올바른지 확인 (테스트/프로덕션 키 구분)
+3. **앞뒤 공백이 없는지 확인** ⚠️
+4. Build Cache를 해제하고 재배포
+
+### 문제 4: 환경 변수가 로드되지 않음
+
+**원인**: 
+- 환경 변수 변경 후 재배포가 되지 않음
+- Build Cache로 인해 변경사항이 반영되지 않음
+
+**해결 방법**:
+1. Vercel 대시보드에서 수동 재배포 실행
+2. **"Use existing Build Cache" 체크박스 해제** ✅
+3. 또는 코드를 약간 수정하여 커밋/푸시 (자동 재배포 트리거)
+
+## 🔒 보안 주의사항
+
+1. **Secret Key 보호**:
+   - `CLERK_SECRET_KEY`는 절대 클라이언트 사이드에서 사용하지 마세요
+   - 공개 저장소(GitHub 등)에 커밋하지 마세요
+   - `.env` 파일은 `.gitignore`에 포함되어 있는지 확인
+
+2. **환경별 키 분리**:
+   - 테스트 환경: `pk_test_...`, `sk_test_...` 사용
+   - 프로덕션 환경: `pk_live_...`, `sk_live_...` 사용
+   - 프로덕션에서는 반드시 Live Key 사용
+
+3. **키 로테이션**:
+   - 정기적으로 키를 재생성하는 것을 권장
+   - 키 유출 시 즉시 재발급
+
+## 📚 참고 자료
+
+- [Clerk 공식 문서](https://clerk.com/docs)
+- [Clerk Next.js 가이드](https://clerk.com/docs/quickstarts/nextjs)
+- [Vercel 환경 변수 가이드](https://vercel.com/docs/concepts/projects/environment-variables)
+- [Next.js 환경 변수 가이드](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
+- [Vercel Build Cache 문서](https://vercel.com/docs/concepts/builds/build-cache)
+
+## 📞 추가 도움
+
+문제가 해결되지 않으면:
+
+1. Vercel 로그에서 상세한 에러 메시지 확인
+2. Clerk 대시보드에서 프로젝트 상태 확인
+3. 환경 변수 앞뒤 공백 확인
+4. Build Cache를 해제하고 재배포
+5. [Clerk 지원 센터](https://clerk.com/support)에 문의
+

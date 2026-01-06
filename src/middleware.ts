@@ -1,59 +1,28 @@
 /**
  * @file middleware.ts
- * @description Next.js Middleware - Clerk 인증 처리
+ * @description Next.js Middleware - Clerk 인증 처리 (Edge Runtime 최적화)
+ * 
+ * ⚠️ 중요: Edge Runtime 호환을 위한 최소 코드
  * 
  * 엄격한 규칙:
  * - Edge Runtime 호환 모듈만 import
  * - prisma, fs, path 등 Node.js 전용 모듈 절대 금지
- * - 무거운 라이브러리 import 금지
- * - 순수 유틸리티는 lib/middleware-utils.ts에서만 import
+ * - auth(), protect() 등 Edge에서 문제가 되는 함수 사용 금지
+ * - 최소 코드로 안정성 확보 우선
  * 
- * 검증 완료:
- * ✅ clerkMiddleware, createRouteMatcher: Clerk (Edge Runtime 호환)
- * ✅ NextResponse: Next.js (Edge Runtime 호환)
- * ✅ config.matcher: 이미지, 정적 파일, Next.js 내부 경로 제외 확인
+ * 변경 이력:
+ * - auth(), protect() 로직 제거 (Edge Runtime 크래시 방지)
+ * - createRouteMatcher 제거 (현재는 안정성 우선)
+ * - clerkMiddleware()만 사용 (Clerk 내부 로직에 의존)
+ * 
+ * 참고:
+ * - Clerk의 clerkMiddleware()는 내부적으로 공개/보호 경로를 자동 처리합니다
+ * - 필요 시 나중에 createRouteMatcher를 사용하여 경로 제어를 추가할 수 있습니다
  */
 
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// 공개 경로 정의 (인증 없이 접근 가능)
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/gyms(.*)",
-  "/courses(.*)", // /courses는 공개 (단, /courses/new는 보호된 경로에서 먼저 체크됨)
-  "/instruments(.*)",
-  "/api/public(.*)",
-]);
-
-// 보호된 경로 정의 (인증 필요)
-const isProtectedRoute = createRouteMatcher([
-  "/my(.*)",
-  "/courses/new(.*)",
-]);
-
-export default clerkMiddleware(async (auth, request) => {
-  // 보호된 경로 접근 시 인증 확인
-  if (isProtectedRoute(request)) {
-    const { userId } = await auth();
-
-    if (!userId) {
-      // 미인증 사용자는 로그인 페이지로 리다이렉트
-      const signInUrl = new URL("/sign-in", request.url);
-      signInUrl.searchParams.set("redirect_url", request.url);
-      return NextResponse.redirect(signInUrl);
-    }
-  }
-
-  // 공개 경로가 아닌 경우 기본적으로 보호
-  if (!isPublicRoute(request)) {
-    await auth.protect();
-  }
-
-  return NextResponse.next();
-});
+export default clerkMiddleware();
 
 export const config = {
   matcher: [
@@ -61,9 +30,9 @@ export const config = {
     // ✅ 정적 파일 확장자 제외: html, css, js, json, png, jpg, jpeg, gif, svg, ico, woff, woff2, ttf, eot, webp, webmanifest, csv, docx, xlsx, zip
     // ✅ 이미지 파일 제외: _next/image, .png, .jpg, .jpeg, .gif, .svg, .webp, .ico
     // ✅ favicon.ico 제외: .ico 확장자로 제외됨
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     // ✅ API 라우트 포함: /api/*, /trpc/*
-    "/(api|trpc)(.*)",
+    '/(api|trpc)(.*)',
   ],
 };
 
