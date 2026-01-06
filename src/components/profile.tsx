@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { LuUser, LuLogOut } from "react-icons/lu";
 import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/src/app/login/actions";
+import { signOut } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -72,3 +72,4 @@ export async function Profile() {
     </DropdownMenu>
   );
 }
+
