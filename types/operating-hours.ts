@@ -16,6 +16,13 @@ export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
  * 
  * 요일별 운영시간을 나타냅니다.
  * DB의 gym_operating_hours 테이블과 일치합니다.
+ * 
+ * 브레이크 타임 처리:
+ * - 브레이크 타임(휴게시간, 점심시간 등)은 별도 필드가 없으며,
+ *   notes 필드에 저장됩니다.
+ * - 예시: "브레이크: 15:00~17:00", "점심시간: 12:00-13:00"
+ * - 자정 넘김 운영시간도 notes 필드에 명시할 수 있습니다.
+ *   예시: "22:00~02:00 (자정 넘김)"
  */
 export interface OperatingHours {
   /** 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일) */
@@ -26,7 +33,12 @@ export interface OperatingHours {
   closeTime?: string;
   /** 휴무일 여부 */
   isClosed: boolean;
-  /** 특이사항 (예: "점심시간 12:00-13:00") */
+  /** 
+   * 특이사항
+   * - 브레이크 타임 정보: "브레이크: 15:00~17:00", "점심시간: 12:00-13:00" 등
+   * - 자정 넘김 운영시간: "22:00~02:00 (자정 넘김)" 등
+   * - 기타 운영시간 관련 메모
+   */
   notes?: string;
 }
 
@@ -34,6 +46,10 @@ export interface OperatingHours {
  * 운영시간 입력 데이터
  * 
  * 파싱된 운영시간 정보를 DB에 저장하기 전의 형태입니다.
+ * 
+ * 브레이크 타임 처리:
+ * - 브레이크 타임 정보는 notes 필드에 저장됩니다.
+ * - DB 스키마에 isBreakTime 필드가 없으므로 notes 필드를 활용합니다.
  */
 export interface OperatingHoursInput {
   /** 요일 */
@@ -44,7 +60,11 @@ export interface OperatingHoursInput {
   closeTime?: string;
   /** 휴무일 여부 */
   isClosed?: boolean;
-  /** 특이사항 */
+  /** 
+   * 특이사항
+   * - 브레이크 타임 정보 저장용
+   * - 자정 넘김 운영시간 명시용
+   */
   notes?: string;
 }
 

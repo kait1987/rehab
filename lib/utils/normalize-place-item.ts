@@ -14,6 +14,7 @@
 import { convertNaverToWGS84 } from './coordinate-converter';
 import type { PlaceItem } from '@/types/naver-map';
 import { validatePlaceItem } from '@/lib/validations/validate-place-item';
+import { parseOperatingHoursFromDescription } from './parse-operating-hours';
 
 /**
  * 네이버 API 응답을 표준 PlaceItem 형식으로 정규화
@@ -39,6 +40,8 @@ export function normalizePlaceItem(
     validate?: boolean;
     /** 상세 로그 출력 여부 (기본값: 개발 환경에서만) */
     verbose?: boolean;
+    /** 운영시간 파싱 수행 여부 (기본값: true, description이 있을 때만) */
+    parseOperatingHours?: boolean;
   }
 ): PlaceItem {
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -91,6 +94,29 @@ export function normalizePlaceItem(
     }
   }
   
+  // 운영시간 파싱 (옵션)
+  let operatingHours = undefined;
+  const shouldParseOperatingHours = options?.parseOperatingHours ?? true;
+  if (shouldParseOperatingHours && cleanDescription) {
+    try {
+      operatingHours = parseOperatingHoursFromDescription(cleanDescription);
+      if (verbose && operatingHours.length > 0) {
+        console.log(
+          `[normalizePlaceItem] 운영시간 파싱 성공: ${cleanTitle} - ` +
+          `${operatingHours.length}개 요일 정보 추출`
+        );
+      }
+    } catch (error) {
+      if (verbose) {
+        console.warn(
+          `[normalizePlaceItem] 운영시간 파싱 실패: ${cleanTitle} - ` +
+          `${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+      // 파싱 실패 시 undefined 유지 (기본값 사용)
+    }
+  }
+
   const normalized: PlaceItem = {
     title: cleanTitle,
     address: rawItem.address || '',
@@ -107,7 +133,7 @@ export function normalizePlaceItem(
     lat,
     lng,
     distance: rawItem.distance || undefined,
-    operatingHours: undefined, // 운영시간 파싱 기능 제거 (향후 관리자 입력 기능에서 사용 예정)
+    operatingHours,
   };
 
   // 검증 수행 (옵션)
