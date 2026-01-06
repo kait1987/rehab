@@ -70,18 +70,18 @@
   --card-foreground: oklch(0.25 0.01 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.25 0.01 250);
-  /* Terracotta/Coral - 메인 브랜드 컬러 */
-  --primary: oklch(0.65 0.12 30); /* #E07A5F - 테라코타/코랄, 따뜻하고 친근함 */
+  /* Terracotta/Coral - 메인 브랜드 컬러 (이미지 참고: 따뜻한 muted 오렌지) */
+  --primary: oklch(0.62 0.10 35); /* 따뜻한 muted 테라코타/오렌지 */
   --primary-foreground: oklch(1 0 0); /* 흰색 텍스트 */
-  --primary-hover: oklch(0.6 0.13 30); /* 약간 어두운 테라코타 - 호버 상태 */
+  --primary-hover: oklch(0.58 0.11 35); /* 약간 어두운 테라코타 - 호버 상태 */
   --primary-light: oklch(0.95 0.03 30); /* 연한 테라코타 - 배경/강조용 */
   --primary-dark: oklch(0.55 0.14 30); /* 진한 테라코타 - 강조 텍스트 */
-  /* Sand Beige - 보조 브랜드 컬러 */
-  --secondary: oklch(0.85 0.08 70); /* #F6E05E 계열 - 샌드 베이지, 따뜻한 노란 베이지 */
-  --secondary-foreground: oklch(0.25 0.01 250);
-  --secondary-hover: oklch(0.8 0.09 70); /* 약간 어두운 샌드 베이지 */
-  --secondary-light: oklch(0.96 0.04 70); /* 연한 샌드 베이지 - 배경용 */
-  --secondary-dark: oklch(0.7 0.1 70); /* 진한 샌드 베이지 - 강조 텍스트 */
+  /* Cream Beige - 보조 브랜드 컬러 (이미지 참고: 밝은 크림 베이지) */
+  --secondary: oklch(0.82 0.06 75); /* 밝은 크림 베이지 */
+  --secondary-foreground: oklch(0.25 0.01 250); /* 짙은 차콜 텍스트 */
+  --secondary-hover: oklch(0.78 0.07 75); /* 약간 어두운 크림 베이지 */
+  --secondary-light: oklch(0.96 0.04 70); /* 연한 크림 베이지 - 배경용 */
+  --secondary-dark: oklch(0.75 0.08 75); /* 진한 크림 베이지 - 강조 텍스트 */
   --muted: oklch(0.97 0.003 60); /* 연한 크림 베이지 배경 */
   --muted-foreground: oklch(0.45 0.01 250); /* 중간 차콜 텍스트 */
   --accent: oklch(0.9 0.05 50); /* 따뜻한 베이지 액센트 */
@@ -116,36 +116,36 @@
 }
 
 .dark {
-  /* REHAB 디자인 시스템 - 치유/회복 무드 (다크 모드) */
-  --background: oklch(0.12 0.005 60); /* 따뜻한 다크 (약간의 웜 톤) */
-  --foreground: oklch(0.95 0 0); /* #F2F2F2 - 부드러운 화이트 */
-  --card: oklch(0.18 0.002 60); /* 카드 배경 (약간의 웜 톤) */
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  /* Sage Green - 다크 모드에서도 유지 */
-  --primary: oklch(0.65 0.1 150); /* Sage Green 유지 */
-  --primary-foreground: oklch(0.95 0 0);
-  --primary-hover: oklch(0.7 0.1 150);
-  --primary-light: oklch(0.25 0.05 150); /* 다크 모드용 연한 배경 */
-  --primary-dark: oklch(0.55 0.12 150);
-  /* Soft Teal - 다크 모드에서도 유지 */
-  --secondary: oklch(0.6 0.12 200); /* Soft Teal 유지 */
-  --secondary-foreground: oklch(0.95 0 0);
-  --secondary-hover: oklch(0.65 0.12 200);
-  --secondary-light: oklch(0.25 0.05 200);
-  --secondary-dark: oklch(0.5 0.14 200);
-  --muted: oklch(0.22 0 0); /* #383838 - 연한 배경 */
-  --muted-foreground: oklch(0.65 0 0); /* #A6A6A6 - 중간 텍스트 */
-  --accent: oklch(0.75 0.04 60);
-  --accent-foreground: oklch(0.95 0 0);
-  --accent-light: oklch(0.25 0.02 60);
-  --accent-lavender: oklch(0.7 0.08 300);
-  --accent-lavender-light: oklch(0.25 0.04 300);
-  --destructive: oklch(0.65 0.22 25);
-  --border: oklch(0.3 0 0); /* #4D4D4D - 보더 */
-  --input: oklch(0.18 0 0); /* #2E2E2E - 입력 필드 */
-  --ring: oklch(0.65 0.1 150);
+  /* REHAB 디자인 시스템 - 다크 모드 + 테라코타 포인트 컬러 */
+  --background: oklch(0.18 0.015 60); /* 어두운 크림 베이지 톤 - 따뜻한 다크 */
+  --foreground: oklch(0.98 0 0); /* 흰색 */
+  --card: oklch(0.22 0.02 60); /* 약간 밝은 크림 베이지 톤 - 카드 배경 */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.22 0.02 60);
+  --popover-foreground: oklch(0.98 0 0);
+  /* Terracotta/Coral - Primary 버튼 포인트 컬러 (이미지 참고: 따뜻한 muted 오렌지) */
+  --primary: oklch(0.62 0.10 35); /* 따뜻한 muted 테라코타/오렌지 */
+  --primary-foreground: oklch(0.98 0 0); /* 흰색 텍스트 */
+  --primary-hover: oklch(0.67 0.11 35); /* 약간 밝은 테라코타 - 호버 상태 */
+  --primary-light: oklch(0.25 0.04 30); /* 다크 모드용 연한 테라코타 배경 */
+  --primary-dark: oklch(0.58 0.11 35); /* 진한 테라코타 - 강조 텍스트 */
+  /* Cream Beige - Secondary 버튼 포인트 컬러 (이미지 참고: 밝은 크림 베이지) */
+  --secondary: oklch(0.82 0.06 75); /* 밝은 크림 베이지 */
+  --secondary-foreground: oklch(0.20 0.01 250); /* 짙은 차콜 텍스트 */
+  --secondary-hover: oklch(0.85 0.07 75); /* 약간 밝은 크림 베이지 */
+  --secondary-light: oklch(0.25 0.03 70); /* 다크 모드용 연한 샌드 베이지 배경 */
+  --secondary-dark: oklch(0.78 0.07 75); /* 진한 크림 베이지 - 강조 텍스트 */
+  --muted: oklch(0.24 0.02 60); /* 연한 크림 베이지 톤 배경 */
+  --muted-foreground: oklch(0.75 0.01 60); /* 중간 크림 베이지 텍스트 */
+  --accent: oklch(0.78 0.08 55); /* 따뜻한 크림 베이지 액센트 */
+  --accent-foreground: oklch(0.98 0 0);
+  --accent-light: oklch(0.26 0.03 55); /* 다크 모드용 크림 베이지 배경 */
+  --accent-lavender: oklch(0.7 0.08 300); /* 라벤더 (유지) */
+  --accent-lavender-light: oklch(0.25 0.04 300); /* 라벤더 라이트 (유지) */
+  --destructive: oklch(0.65 0.22 25); /* 통증 위험 색상 (유지) */
+  --border: oklch(0.35 0.02 60); /* 크림 베이지 톤 보더 */
+  --input: oklch(0.22 0.02 60); /* 크림 베이지 톤 입력 필드 */
+  --ring: oklch(0.65 0.12 30); /* 테라코타 포커스 링 */
   /* 통증 신호등 시스템 - 다크 모드 */
   --pain-safe: oklch(0.7 0.15 150);
   --pain-safe-light: oklch(0.25 0.06 150);
@@ -153,19 +153,19 @@
   --pain-caution-light: oklch(0.25 0.06 70);
   --pain-danger: oklch(0.65 0.22 25);
   --pain-danger-light: oklch(0.25 0.08 25);
-  --chart-1: oklch(0.65 0.15 150);
-  --chart-2: oklch(0.6 0.12 200);
-  --chart-3: oklch(0.75 0.15 70);
-  --chart-4: oklch(0.75 0.04 60);
-  --chart-5: oklch(0.75 0.08 300);
-  --sidebar: oklch(0.18 0 0);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.65 0.1 150);
-  --sidebar-primary-foreground: oklch(0.95 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.3 0 0);
-  --sidebar-ring: oklch(0.65 0.1 150);
+  --chart-1: oklch(0.65 0.12 30); /* Terracotta */
+  --chart-2: oklch(0.75 0.08 70); /* Sand Beige */
+  --chart-3: oklch(0.75 0.15 70); /* Caution Yellow (유지) */
+  --chart-4: oklch(0.80 0.06 50); /* Warm Beige */
+  --chart-5: oklch(0.75 0.08 300); /* Lavender (유지) */
+  --sidebar: oklch(0.20 0.01 60);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.65 0.12 30);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.24 0.01 60);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.32 0.01 60);
+  --sidebar-ring: oklch(0.65 0.12 30);
 }
 
 @layer base {

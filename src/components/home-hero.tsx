@@ -45,8 +45,7 @@ export function HomeHero() {
           <Button 
             asChild 
             size="lg" 
-            variant="outline" 
-            className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 rounded-2xl border-2 hover:bg-primary-light transition-all duration-300"
+            className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 rounded-2xl bg-secondary hover:bg-secondary-hover text-secondary-foreground border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-secondary/20 hover:-translate-y-0.5"
           >
             <Link href="/gyms">헬스장 찾기</Link>
           </Button>
