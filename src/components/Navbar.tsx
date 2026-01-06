@@ -35,10 +35,14 @@ const Navbar = () => {
           <SignedOut>
             <div className="flex items-center gap-2">
               <SignInButton mode="modal">
-                <Button variant="ghost">로그인</Button>
+                <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                  로그인
+                </Button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <Button>회원가입</Button>
+                <Button variant="secondary" className="rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                  회원가입
+                </Button>
               </SignUpButton>
             </div>
           </SignedOut>
@@ -75,12 +79,12 @@ const Navbar = () => {
             <SignedOut>
               <div className="flex flex-col gap-2">
                 <SignInButton mode="modal">
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5" onClick={() => setIsOpen(false)}>
                     로그인
                   </Button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <Button className="w-full justify-start" onClick={() => setIsOpen(false)}>
+                  <Button variant="secondary" className="w-full justify-start rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5" onClick={() => setIsOpen(false)}>
                     회원가입
                   </Button>
                 </SignUpButton>
