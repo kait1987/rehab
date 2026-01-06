@@ -19,16 +19,18 @@ const geistMono = Geist_Mono({
 });
 
 // 환경 변수 안전하게 가져오기
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
 
 // 환경 변수 누락 시 명확한 에러 메시지
 if (!publishableKey) {
-  throw new Error('❌ Missing Publishable Key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required');
+  throw new Error(
+    "❌ Missing Publishable Key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required",
+  );
 }
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.com",
   ),
   title: {
     default: "REHAB",
@@ -87,9 +89,7 @@ export default function RootLayout({
           >
             <SyncUserProvider>
               <Navbar />
-              <div className="relative">
-                {children}
-              </div>
+              <div className="relative">{children}</div>
             </SyncUserProvider>
           </ThemeProvider>
         </body>
@@ -97,4 +97,3 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
-
