@@ -1,6 +1,5 @@
 'use server';
 
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -10,19 +9,21 @@ import { revalidatePath } from "next/cache";
  * Clerk 인증 사용자의 통증 정보를 UserPainProfile 테이블에 저장합니다.
  * 같은 bodyPartId에 대한 기존 프로필이 있으면 업데이트하고, 없으면 새로 생성합니다.
  * 
+ * @param clerkUserId Clerk 사용자 ID (클라이언트에서 전달)
  * @param data 통증 프로필 데이터
  * @returns 저장된 통증 프로필 또는 에러
  */
-export async function savePainProfile(data: {
-  bodyPartId: string;
-  painLevel: number;
-  experienceLevel: string;
-  equipmentAvailable: string[];
-}) {
+export async function savePainProfile(
+  clerkUserId: string,
+  data: {
+    bodyPartId: string;
+    painLevel: number;
+    experienceLevel: string;
+    equipmentAvailable: string[];
+  }
+) {
   try {
-    // Clerk 인증 확인
-    const { userId: clerkUserId } = await auth();
-
+    // 클라이언트에서 전달받은 userId 검증
     if (!clerkUserId) {
       return {
         success: false,
