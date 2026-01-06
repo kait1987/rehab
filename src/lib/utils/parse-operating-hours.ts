@@ -323,7 +323,9 @@ function parseDaySpecificHoursWithPriority(
       const finalTimePattern = dayTimePattern || defaultTimePattern;
       
       const notes: string[] = [];
-      if (finalTimePattern.notes) notes.push(finalTimePattern.notes);
+      if ('notes' in finalTimePattern && finalTimePattern.notes && typeof finalTimePattern.notes === 'string') {
+        notes.push(finalTimePattern.notes);
+      }
       if (breakTimeNotes) notes.push(breakTimeNotes);
 
       for (const day of days) {

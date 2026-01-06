@@ -27,8 +27,8 @@ const Navbar = () => {
           {/* <ThemeToggle /> */}
           <SignedIn>
             <Link href="/my" aria-label="마이페이지로 이동">
-              <Button variant="ghost" className="h-[30px] w-[30px] p-0" aria-label="마이페이지">
-                <User className="h-[30px] w-[30px]" strokeWidth={1.5} />
+              <Button variant="ghost" className="h-9 w-9 p-0" aria-label="마이페이지">
+                <User className="h-9 w-9" strokeWidth={1.5} />
                 <span className="sr-only">마이페이지</span>
               </Button>
             </Link>
