@@ -29,7 +29,7 @@ export const mergeRequestSchema = z.object({
   bodyParts: z
     .array(bodyPartSelectionSchema)
     .min(1, "최소 1개 이상의 부위를 선택해야 합니다.")
-    .max(10, "최대 10개까지 부위를 선택할 수 있습니다."),
+    .max(5, "최대 5개까지 부위를 선택할 수 있습니다."),
   painLevel: z
     .number()
     .int("통증 정도는 정수여야 합니다.")

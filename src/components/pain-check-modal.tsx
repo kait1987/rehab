@@ -14,6 +14,8 @@ import { HeartPulse, ChevronLeft, ChevronRight, Check, RefreshCw } from "lucide-
 import { savePainProfile } from "@/actions/pain-check";
 import { cn } from "@/lib/utils";
 import StepLoader from "@/components/ui/step-loader";
+import { BodyPartSelector } from "@/components/body-part-selector";
+import type { BodyPartSelection } from "@/types/body-part-merge";
 
 /**
  * 통증 체크 모달 컴포넌트
@@ -50,8 +52,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
   const [success, setSuccess] = useState(false);
 
   // 폼 데이터
-  const [bodyPartId, setBodyPartId] = useState<string>("");
-  const [painLevel, setPainLevel] = useState<number | null>(null);
+  const [selectedBodyParts, setSelectedBodyParts] = useState<BodyPartSelection[]>([]);
   const [equipmentAvailable, setEquipmentAvailable] = useState<string[]>([]);
   const [experienceLevel, setExperienceLevel] = useState<string>("");
 
@@ -64,8 +65,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
   // 상태 초기화 함수
   const resetState = () => {
     setStep(1);
-    setBodyPartId("");
-    setPainLevel(null);
+    setSelectedBodyParts([]);
     setEquipmentAvailable([]);
     setExperienceLevel("");
     setSuccess(false);
@@ -152,24 +152,26 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
   const handleNext = () => {
     // 단계별 유효성 검사 및 구체적인 에러 메시지
     if (step === 1) {
-      if (!bodyPartId) {
-        setError("운동 부위를 선택해주세요. 가장 불편한 부위를 선택하시면 더 정확한 코스를 추천받을 수 있습니다.");
+      if (selectedBodyParts.length === 0) {
+        setError("최소 1개 이상의 부위를 선택해주세요. 가장 불편한 부위를 선택하시면 더 정확한 코스를 추천받을 수 있습니다.");
+        return;
+      }
+      // 모든 선택된 부위에 통증 정도가 설정되어 있는지 확인
+      const hasInvalidPainLevel = selectedBodyParts.some(
+        (bp) => !bp.painLevel || bp.painLevel < 1 || bp.painLevel > 5
+      );
+      if (hasInvalidPainLevel) {
+        setError("모든 선택된 부위에 통증 정도를 설정해주세요.");
         return;
       }
     }
     if (step === 2) {
-      if (painLevel === null) {
-        setError("통증 정도를 선택해주세요. 현재 느끼는 통증의 강도를 선택하시면 안전한 운동 범위를 설정할 수 있습니다.");
-        return;
-      }
-    }
-    if (step === 3) {
       if (equipmentAvailable.length === 0) {
         setError("사용 가능한 기구를 최소 하나 이상 선택해주세요. 사용할 수 있는 기구가 없다면 '없음'을 선택해주세요.");
         return;
       }
     }
-    if (step === 4) {
+    if (step === 3) {
       if (!experienceLevel) {
         setError("운동 경험을 선택해주세요. 평소 운동 빈도를 알려주시면 적절한 난이도의 코스를 추천해드립니다.");
         return;
@@ -177,7 +179,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
     }
 
     setError(null);
-    if (step < 4) {
+    if (step < 3) {
       setStep(step + 1);
     } else {
       handleSubmit();
@@ -195,7 +197,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
   // 폼 제출
   const handleSubmit = async () => {
     // 최종 유효성 검사
-    if (!bodyPartId || painLevel === null || !experienceLevel || equipmentAvailable.length === 0) {
+    if (selectedBodyParts.length === 0 || !experienceLevel || equipmentAvailable.length === 0) {
       setError("모든 항목을 입력해주세요. 빠진 항목이 있는지 확인해주세요.");
       return;
     }
@@ -211,20 +213,27 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
+      // 각 부위별로 별도의 프로필 저장 (스키마 변경 없이 기존 구조 활용)
+      const savePromises = selectedBodyParts.map((bodyPart) =>
+        savePainProfile(user.id, {
+          bodyPartId: bodyPart.bodyPartId,
+          painLevel: bodyPart.painLevel,
+          experienceLevel,
+          equipmentAvailable,
+        })
+      );
+
       // 최소 로딩 시간을 보장하여 사용자 경험 향상
-      const savePromise = savePainProfile(user.id, {
-        bodyPartId,
-        painLevel,
-        experienceLevel,
-        equipmentAvailable,
-      });
-      
-      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500)); // 최소 1.5초 로딩
-      
-      const result = await savePromise;
+      const delayPromise = new Promise((resolve) => setTimeout(resolve, 1500)); // 최소 1.5초 로딩
+
+      const results = await Promise.all(savePromises);
       await delayPromise; // 저장이 빨리 끝나도 최소 1.5초는 로딩 표시
 
-      if (result.success) {
+      // 모든 저장이 성공했는지 확인
+      const allSuccess = results.every((result) => result.success);
+      const firstError = results.find((result) => !result.success);
+
+      if (allSuccess) {
         setSuccess(true);
         // 2초 후 모달 닫기 (상태 초기화는 handleOpenChange에서 처리)
         setTimeout(() => {
@@ -232,14 +241,17 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
         }, 2000);
       } else {
         // 구체적인 에러 메시지 표시
-        const errorMessage = result.error || "저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        const errorMessage =
+          firstError?.error ||
+          "저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
         setError(errorMessage);
       }
     } catch (err) {
       console.error("Submit error:", err);
-      const errorMessage = err instanceof Error
-        ? `저장 중 오류가 발생했습니다: ${err.message}`
-        : "저장 중 예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+      const errorMessage =
+        err instanceof Error
+          ? `저장 중 오류가 발생했습니다: ${err.message}`
+          : "저장 중 예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
       setError(errorMessage);
     } finally {
       setIsSaving(false);
@@ -247,31 +259,6 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // 통증 레벨에 따른 색상 및 메시지 (CSS 변수 사용)
-  const getPainLevelInfo = (level: number) => {
-    if (level <= 2) {
-      return {
-        colorClass: "bg-[var(--pain-safe)]",
-        bgClass: "bg-[var(--pain-safe-light)]",
-        text: "안전하게 운동 가능",
-        label: "안전",
-      };
-    } else if (level === 3) {
-      return {
-        colorClass: "bg-[var(--pain-caution)]",
-        bgClass: "bg-[var(--pain-caution-light)]",
-        text: "가벼운 운동만 가능, 주의 필요",
-        label: "주의",
-      };
-    } else {
-      return {
-        colorClass: "bg-[var(--pain-danger)]",
-        bgClass: "bg-[var(--pain-danger-light)]",
-        text: "운동 중단 권장, 전문가 상담 필요",
-        label: "위험",
-      };
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -321,19 +308,18 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-muted-foreground">
-                  {step} / 4
+                  {step} / 3
                 </span>
                 <span className="text-sm font-medium text-foreground">
                   {step === 1 && "부위 선택"}
-                  {step === 2 && "통증 정도"}
-                  {step === 3 && "사용 가능한 기구"}
-                  {step === 4 && "운동 경험"}
+                  {step === 2 && "사용 가능한 기구"}
+                  {step === 3 && "운동 경험"}
                 </span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
                   className="bg-primary h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${(step / 4) * 100}%` }}
+                  style={{ width: `${(step / 3) * 100}%` }}
                 />
               </div>
             </div>
@@ -345,84 +331,21 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
-            {/* Step 1: 부위 선택 */}
+            {/* Step 1: 부위 선택 (다중 선택 + 통증 정도) */}
             {step === 1 && (
               <div className="space-y-3">
-                <p className="text-muted-foreground mb-4">
-                  어느 부위가 가장 불편한가요?
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {bodyParts.map((part) => (
-                    <button
-                      key={part.id}
-                      type="button"
-                      onClick={() => setBodyPartId(part.id)}
-                      className={cn(
-                        "p-4 rounded-xl border-2 transition-all duration-200 text-left",
-                        bodyPartId === part.id
-                          ? "border-primary bg-primary/10 shadow-md"
-                          : "border-border hover:border-primary/50 hover:bg-accent"
-                      )}
-                    >
-                      <span className="font-medium text-foreground">
-                        {part.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                <BodyPartSelector
+                  bodyParts={bodyParts}
+                  selectedBodyParts={selectedBodyParts}
+                  onSelectionChange={setSelectedBodyParts}
+                  maxSelections={5}
+                  disabled={loading || isSaving}
+                />
               </div>
             )}
 
-            {/* Step 2: 통증 정도 */}
+            {/* Step 2: 사용 가능한 기구 */}
             {step === 2 && (
-              <div className="space-y-4">
-                <p className="text-muted-foreground mb-4">
-                  통증 정도는 어느 정도인가요?
-                </p>
-                <div className="space-y-3">
-                  {[1, 2, 3, 4, 5].map((level) => {
-                    const info = getPainLevelInfo(level);
-                    return (
-                      <button
-                        key={level}
-                        type="button"
-                        onClick={() => setPainLevel(level)}
-                        className={cn(
-                          "w-full p-4 rounded-xl border-2 transition-all duration-200 text-left",
-                          painLevel === level
-                            ? "border-primary shadow-md"
-                            : "border-border hover:border-primary/50",
-                          painLevel === level && info.bgClass
-                        )}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={cn(
-                                "w-4 h-4 rounded-full",
-                                info.colorClass
-                              )}
-                            />
-                            <span className="font-medium text-foreground">
-                              {level}단계 - {info.label}
-                            </span>
-                          </div>
-                          {painLevel === level && (
-                            <Check className="w-5 h-5 text-primary" />
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {info.text}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: 사용 가능한 기구 */}
-            {step === 3 && (
               <div className="space-y-4">
                 <p className="text-muted-foreground mb-4">
                   현재 사용 가능한 기구를 선택해주세요 (복수 선택 가능)
@@ -455,8 +378,8 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
-            {/* Step 4: 운동 경험 */}
-            {step === 4 && (
+            {/* Step 3: 운동 경험 */}
+            {step === 3 && (
               <div className="space-y-4">
                 <p className="text-muted-foreground mb-4">
                   평소 운동 빈도는 어느 정도인가요?
@@ -515,7 +438,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                   step === 1 && "ml-auto"
                 )}
               >
-                {step === 4 ? (
+                {step === 3 ? (
                   loading ? (
                     "저장 중..."
                   ) : (
