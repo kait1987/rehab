@@ -28,7 +28,7 @@ import { generateLocationCacheTag } from './cache-key';
  * }
  */
 export function invalidatePlaceSearchCache(): void {
-  revalidateTag('place-search');
+  revalidateTag('place-search', {});
 }
 
 /**
@@ -57,12 +57,12 @@ export function invalidatePlaceSearchCacheByLocation(
   centerLng: number
 ): void {
   const locationTag = generateLocationCacheTag(centerLat, centerLng);
-  revalidateTag(locationTag);
+  revalidateTag(locationTag, {});
   
   // 전체 태그도 함께 무효화 (안전을 위해)
   // Note: 특정 위치 태그만 무효화하면 충분하지만,
   // 전체 태그도 무효화하면 더 확실합니다.
-  revalidateTag('place-search');
+  revalidateTag('place-search', {});
 }
 
 /**
