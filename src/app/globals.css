@@ -63,36 +63,36 @@
 
 :root {
   --radius: 1rem; /* 더 둥근 모서리 */
-  /* REHAB 디자인 시스템 - 치유/회복 무드 (라이트 모드) */
-  --background: oklch(0.98 0.005 60); /* #F9FAFB - 따뜻한 웜 그레이 */
-  --foreground: oklch(0.2 0 0); /* #333333 - 부드러운 검정 */
-  --card: oklch(0.995 0.002 60); /* 아주 미묘한 웜 톤의 흰색 */
-  --card-foreground: oklch(0.2 0 0);
+  /* REHAB 디자인 시스템 - 치유/회복 무드 (라이트 모드 - 테라코타 & 크림 베이지) */
+  --background: oklch(0.99 0.005 60); /* #FDFBF7 - 따뜻한 크림 베이지 */
+  --foreground: oklch(0.25 0.01 250); /* #2D3748 - 짙은 차콜/다크 브라운 */
+  --card: oklch(1 0.002 60); /* 순수한 크림 베이지 흰색 */
+  --card-foreground: oklch(0.25 0.01 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0 0);
-  /* Sage Green - 메인 브랜드 컬러 */
-  --primary: oklch(0.65 0.1 150); /* #87A98A - 심리적 안정 */
+  --popover-foreground: oklch(0.25 0.01 250);
+  /* Terracotta/Coral - 메인 브랜드 컬러 */
+  --primary: oklch(0.65 0.12 30); /* #E07A5F - 테라코타/코랄, 따뜻하고 친근함 */
   --primary-foreground: oklch(1 0 0); /* 흰색 텍스트 */
-  --primary-hover: oklch(0.6 0.1 150); /* #7A9680 - 호버 상태 */
-  --primary-light: oklch(0.92 0.04 150); /* #E8F0E9 - 배경/강조용 */
-  --primary-dark: oklch(0.5 0.12 150); /* #5F7A65 - 강조 텍스트 */
-  /* Soft Teal - 보조 브랜드 컬러 */
-  --secondary: oklch(0.6 0.12 200); /* #6BA5B8 - 신뢰와 전문성 */
-  --secondary-foreground: oklch(1 0 0);
-  --secondary-hover: oklch(0.55 0.12 200); /* #5E94A6 */
-  --secondary-light: oklch(0.9 0.05 200); /* #E0EDF2 */
-  --secondary-dark: oklch(0.45 0.14 200); /* #4A7A8A */
-  --muted: oklch(0.96 0 0); /* #F5F5F5 - 연한 회색 배경 */
-  --muted-foreground: oklch(0.5 0 0); /* #808080 - 중간 회색 텍스트 */
-  --accent: oklch(0.85 0.04 60); /* #E8DCC8 - 따뜻한 베이지 */
-  --accent-foreground: oklch(0.2 0 0);
-  --accent-light: oklch(0.95 0.02 60); /* #F9F6F2 */
-  --accent-lavender: oklch(0.75 0.08 300); /* #C4B5D8 - 평온함 */
-  --accent-lavender-light: oklch(0.94 0.04 300); /* #F4F1F8 */
-  --destructive: oklch(0.6 0.2 25); /* 통증 위험 색상 */
-  --border: oklch(0.88 0 0); /* #E0E0E0 - 부드러운 보더 */
-  --input: oklch(0.98 0 0); /* #FAFAFA - 입력 필드 */
-  --ring: oklch(0.65 0.1 150); /* Sage Green 포커스 링 */
+  --primary-hover: oklch(0.6 0.13 30); /* 약간 어두운 테라코타 - 호버 상태 */
+  --primary-light: oklch(0.95 0.03 30); /* 연한 테라코타 - 배경/강조용 */
+  --primary-dark: oklch(0.55 0.14 30); /* 진한 테라코타 - 강조 텍스트 */
+  /* Sand Beige - 보조 브랜드 컬러 */
+  --secondary: oklch(0.85 0.08 70); /* #F6E05E 계열 - 샌드 베이지, 따뜻한 노란 베이지 */
+  --secondary-foreground: oklch(0.25 0.01 250);
+  --secondary-hover: oklch(0.8 0.09 70); /* 약간 어두운 샌드 베이지 */
+  --secondary-light: oklch(0.96 0.04 70); /* 연한 샌드 베이지 - 배경용 */
+  --secondary-dark: oklch(0.7 0.1 70); /* 진한 샌드 베이지 - 강조 텍스트 */
+  --muted: oklch(0.97 0.003 60); /* 연한 크림 베이지 배경 */
+  --muted-foreground: oklch(0.45 0.01 250); /* 중간 차콜 텍스트 */
+  --accent: oklch(0.9 0.05 50); /* 따뜻한 베이지 액센트 */
+  --accent-foreground: oklch(0.25 0.01 250);
+  --accent-light: oklch(0.98 0.02 50); /* 연한 베이지 */
+  --accent-lavender: oklch(0.75 0.08 300); /* #C4B5D8 - 평온함 (유지) */
+  --accent-lavender-light: oklch(0.94 0.04 300); /* #F4F1F8 (유지) */
+  --destructive: oklch(0.6 0.2 25); /* 통증 위험 색상 (유지) */
+  --border: oklch(0.92 0.01 60); /* 부드러운 크림 베이지 보더 */
+  --input: oklch(0.99 0.003 60); /* 크림 베이지 입력 필드 */
+  --ring: oklch(0.65 0.12 30); /* 테라코타 포커스 링 */
   /* 통증 신호등 시스템 */
   --pain-safe: oklch(0.65 0.15 150); /* #7FB885 - 통증 없음, 안전한 운동 가능 */
   --pain-safe-light: oklch(0.95 0.06 150); /* #E8F5EA - 배경 */
@@ -100,19 +100,19 @@
   --pain-caution-light: oklch(0.96 0.06 70); /* #FDF8E8 - 배경 */
   --pain-danger: oklch(0.6 0.2 25); /* #D97757 - 심한 통증, 운동 중단 권장 */
   --pain-danger-light: oklch(0.96 0.08 25); /* #FDF0ED - 배경 */
-  --chart-1: oklch(0.65 0.15 150); /* Sage Green */
-  --chart-2: oklch(0.6 0.12 200); /* Soft Teal */
-  --chart-3: oklch(0.75 0.15 70); /* Caution Yellow */
-  --chart-4: oklch(0.85 0.04 60); /* Warm Beige */
-  --chart-5: oklch(0.75 0.08 300); /* Lavender */
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.2 0 0);
-  --sidebar-primary: oklch(0.65 0.1 150);
+  --chart-1: oklch(0.65 0.12 30); /* Terracotta */
+  --chart-2: oklch(0.85 0.08 70); /* Sand Beige */
+  --chart-3: oklch(0.75 0.15 70); /* Caution Yellow (유지) */
+  --chart-4: oklch(0.9 0.05 50); /* Warm Beige */
+  --chart-5: oklch(0.75 0.08 300); /* Lavender (유지) */
+  --sidebar: oklch(0.99 0.005 60);
+  --sidebar-foreground: oklch(0.25 0.01 250);
+  --sidebar-primary: oklch(0.65 0.12 30);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.96 0 0);
-  --sidebar-accent-foreground: oklch(0.2 0 0);
-  --sidebar-border: oklch(0.88 0 0);
-  --sidebar-ring: oklch(0.65 0.1 150);
+  --sidebar-accent: oklch(0.97 0.003 60);
+  --sidebar-accent-foreground: oklch(0.25 0.01 250);
+  --sidebar-border: oklch(0.92 0.01 60);
+  --sidebar-ring: oklch(0.65 0.12 30);
 }
 
 .dark {
