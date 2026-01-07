@@ -58,6 +58,9 @@ lerna-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Prisma generated files
+src/app/generated/
+
 # IDE
 .vscode/
 .idea/
