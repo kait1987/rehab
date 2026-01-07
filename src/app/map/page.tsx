@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function MapPage() {
   useEffect(() => {
     const clientId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
-    const scriptUrl = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
+    const scriptUrl = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
 
     // ncpClientId 값 확인
     console.log("🔍 [네이버 지도] ncpClientId 값 확인:");

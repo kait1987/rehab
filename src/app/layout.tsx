@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { MainLayout } from "@/components/layout/main-layout";
@@ -32,14 +33,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className="dark" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ClientProviders>
-          <MainLayout>{children}</MainLayout>
-        </ClientProviders>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="ko" className="dark" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ClientProviders>
+            <MainLayout>{children}</MainLayout>
+          </ClientProviders>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
