@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
@@ -17,16 +19,16 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Link href="/sign-up">
+              <SignUpButton mode="modal" forceRedirectUrl="/rehab">
                 <Button size="lg" className="rounded-xl">
                   시작하기
                 </Button>
-              </Link>
-              <Link href="/sign-in">
+              </SignUpButton>
+              <SignInButton mode="modal" forceRedirectUrl="/rehab">
                 <Button size="lg" variant="outline" className="rounded-xl">
                   로그인
                 </Button>
-              </Link>
+              </SignInButton>
             </div>
           </div>
         </div>

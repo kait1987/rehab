@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,20 +25,28 @@ const Navbar = () => {
 
         {/* 데스크탑 메뉴 */}
         <div className="hidden sm:flex items-center gap-3">
-          {/* 🔥 임시로 간단한 버튼만 */}
-          <Link href="/sign-in">
-            <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
-              로그인
-            </Button>
-          </Link>
-          <Link href="/sign-up">
-            <Button
-              variant="secondary"
-              className="rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
-            >
-              회원가입
-            </Button>
-          </Link>
+          <SignedOut>
+            <SignInButton mode="modal" forceRedirectUrl="/rehab">
+              <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
+                로그인
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal" forceRedirectUrl="/rehab">
+              <Button
+                variant="secondary"
+                className="rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
+              >
+                회원가입
+              </Button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/rehab">
+              <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
+                재활 코스
+              </Button>
+            </Link>
+          </SignedIn>
         </div>
 
         {/* 모바일 햄버거 버튼 */}
@@ -58,19 +67,28 @@ const Navbar = () => {
       {isOpen && (
         <div className="sm:hidden absolute top-16 left-0 w-full bg-background border-b border-border shadow-lg">
           <div className="container px-3 py-3 flex flex-col gap-2">
-            <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-              <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                로그인
-              </Button>
-            </Link>
-            <Link href="/sign-up" onClick={() => setIsOpen(false)}>
-              <Button
-                variant="secondary"
-                className="w-full justify-start rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-              >
-                회원가입
-              </Button>
-            </Link>
+            <SignedOut>
+              <SignInButton mode="modal" forceRedirectUrl="/rehab">
+                <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                  로그인
+                </Button>
+              </SignInButton>
+              <SignUpButton mode="modal" forceRedirectUrl="/rehab">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  회원가입
+                </Button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/rehab" onClick={() => setIsOpen(false)}>
+                <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                  재활 코스
+                </Button>
+              </Link>
+            </SignedIn>
           </div>
         </div>
       )}
