@@ -19,9 +19,12 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // 에러 로깅 (개발 환경)
-    if (process.env.NODE_ENV === "development") {
-      console.error("Error:", error);
+    // 에러 로깅 (모든 환경)
+    console.error("Error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    if (error.digest) {
+      console.error("Error digest:", error.digest);
     }
   }, [error]);
 
@@ -39,14 +42,22 @@ export default function Error({
           </p>
         </div>
 
-        {process.env.NODE_ENV === "development" && error.message && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
-            <p className="text-sm font-semibold text-red-800 mb-2">에러 상세:</p>
-            <p className="text-xs text-red-700 font-mono break-all">
+        {error.message && (
+          <div className="mb-8 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg text-left">
+            <p className="text-sm font-semibold text-red-800 dark:text-red-400 mb-2">에러 상세:</p>
+            <p className="text-xs text-red-700 dark:text-red-300 font-mono break-all">
               {error.message}
             </p>
+            {error.stack && (
+              <details className="mt-2">
+                <summary className="text-xs text-red-600 dark:text-red-400 cursor-pointer">스택 트레이스 보기</summary>
+                <pre className="text-xs text-red-600 dark:text-red-400 mt-2 whitespace-pre-wrap break-all">
+                  {error.stack}
+                </pre>
+              </details>
+            )}
             {error.digest && (
-              <p className="text-xs text-red-600 mt-2">
+              <p className="text-xs text-red-600 dark:text-red-400 mt-2">
                 Error ID: {error.digest}
               </p>
             )}

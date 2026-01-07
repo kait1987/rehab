@@ -12,6 +12,7 @@
  * - @/components/layout/page-wrapper: 페이지 래퍼 컴포넌트
  */
 
+import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
@@ -30,8 +31,19 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   return (
     <PageWrapper>
-      {/* 네비게이션 바 */}
-      <Navbar />
+      {/* 네비게이션 바 - Suspense로 감싸서 Clerk 초기화 대기 */}
+      <Suspense fallback={
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
+          <div className="w-full flex h-16 items-center justify-between px-3 sm:px-4 md:px-6 py-3">
+            <div className="flex items-center">
+              <span className="text-lg sm:text-xl font-semibold">REHAB</span>
+            </div>
+            <div className="h-9 w-9" /> {/* 로딩 중 플레이스홀더 */}
+          </div>
+        </header>
+      }>
+        <Navbar />
+      </Suspense>
 
       {/* 메인 콘텐츠 영역 */}
       <main className="relative">
