@@ -54,8 +54,7 @@ export class NaverMapClient {
    * 
    * @param query 검색어
    * @param options 검색 옵션
-   * @returns 검색 결과
-   * @throws API 호출 실패 시
+   * @returns 검색 결과 (API 실패 시 빈 결과 반환)
    */
   async searchPlaces(
     query: string,
@@ -97,10 +96,17 @@ export class NaverMapClient {
       }
     }
 
-    // 모든 재시도 실패
-    throw new Error(
-      `네이버맵 API 호출 실패 (${this.maxRetries}회 시도): ${lastError?.message}`
+    // 모든 재시도 실패 시 빈 결과 반환 (에러 던지지 않음)
+    console.warn(
+      `[NaverMapClient] 네이버맵 API 호출 실패 (${this.maxRetries}회 시도): ${lastError?.message}`
     );
+    
+    return {
+      items: [],
+      total: 0,
+      start: options?.start || 1,
+      display: options?.display || 5,
+    };
   }
 
   /**
