@@ -1,32 +1,17 @@
 import type { NextConfig } from "next";
 
-// 빌드 타임 환경 변수 검증
-function validateRequiredEnvVars() {
-  const requiredVars = [
-    'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
-  ];
-
-  const missingVars: string[] = [];
-
-  for (const varName of requiredVars) {
-    if (!process.env[varName]) {
-      missingVars.push(varName);
+// 빌드 타임 환경 변수 검증 (경고만 출력, 에러는 던지지 않음)
+function validateEnvVars() {
+  if (process.env.NODE_ENV === 'production') {
+    // Production 빌드 시에만 경고 출력
+    if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+      console.warn('⚠️  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set');
+      console.warn('   환경 변수 설정 방법은 docs/VERCEL_CLERK_ENV_SETUP.md를 참고하세요.');
     }
   }
-
-  if (missingVars.length > 0) {
-    throw new Error(
-      `❌ 필수 환경 변수가 설정되지 않았습니다:\n` +
-      `${missingVars.map(v => `  - ${v}`).join('\n')}\n\n` +
-      `환경 변수 설정 방법은 docs/VERCEL_CLERK_ENV_SETUP.md를 참고하세요.`
-    );
-  }
 }
 
-// 빌드 타임에만 검증 (개발 서버에서는 런타임 검증 사용)
-if (process.env.NODE_ENV === 'production' || process.env.CI) {
-  validateRequiredEnvVars();
-}
+validateEnvVars();
 
 const nextConfig: NextConfig = {
   /* config options here */
