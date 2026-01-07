@@ -27,6 +27,7 @@ import { getBusinessStatus } from "@/lib/utils/check-business-status";
 import { getDayOfWeek } from "@/lib/constants/operating-hours";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface GymCardProps {
   gym: GymSearchResult;
@@ -191,6 +192,19 @@ export function GymCard({ gym }: GymCardProps) {
             <span>주차</span>
           </div>
         )}
+      </div>
+
+      {/* 상세보기 버튼 */}
+      <div className="mt-4 pt-4 border-t border-border">
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/gyms/${gym.id}`);
+          }}
+          className="w-full bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+        >
+          상세보기
+        </Button>
       </div>
     </Card>
   );

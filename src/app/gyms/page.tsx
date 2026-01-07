@@ -18,16 +18,21 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Search, MapPin, Loader2, AlertCircle } from 'lucide-react';
 import { GymCard } from '@/components/gym-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { getBusinessStatus } from '@/lib/utils/check-business-status';
 import type { GymSearchResponse, GymSearchResult } from '@/types/gym-search';
 
 type SearchState = 'idle' | 'loading' | 'success' | 'error';
+type SortOption = 'distance' | 'rating';
 
 export default function GymsPage() {
   const [searchState, setSearchState] = useState<SearchState>('idle');
@@ -36,6 +41,13 @@ export default function GymsPage() {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [locationError, setLocationError] = useState<string | null>(null);
+  
+  // 필터 상태
+  const [sortBy, setSortBy] = useState<SortOption>('distance');
+  const [showOpenOnly, setShowOpenOnly] = useState<boolean>(false);
+  
+  // 페이지네이션
+  const [displayCount, setDisplayCount] = useState<number>(10);
 
   /**
    * 브라우저 위치 권한 요청 및 좌표 획득
@@ -141,6 +153,57 @@ export default function GymsPage() {
     }
   };
 
+  /**
+   * 필터링 및 정렬된 헬스장 목록
+   */
+  const filteredAndSortedGyms = useMemo(() => {
+    let filtered = [...gyms];
+
+    // 운영중만 보기 필터
+    if (showOpenOnly) {
+      filtered = filtered.filter((gym) => {
+        if (!gym.operatingHours || gym.operatingHours.length === 0) {
+          return false; // 운영시간 정보 없으면 제외
+        }
+        const status = getBusinessStatus(gym.operatingHours);
+        return status.isOpen;
+      });
+    }
+
+    // 정렬
+    if (sortBy === 'distance') {
+      filtered.sort((a, b) => a.distanceMeters - b.distanceMeters);
+    } else if (sortBy === 'rating') {
+      // 평점순은 향후 구현 (현재는 거리순과 동일하게 처리)
+      filtered.sort((a, b) => a.distanceMeters - b.distanceMeters);
+    }
+
+    return filtered;
+  }, [gyms, sortBy, showOpenOnly]);
+
+  /**
+   * 표시할 헬스장 목록 (페이지네이션 적용)
+   */
+  const displayedGyms = useMemo(() => {
+    return filteredAndSortedGyms.slice(0, displayCount);
+  }, [filteredAndSortedGyms, displayCount]);
+
+  /**
+   * 더 보기 버튼 클릭 핸들러
+   */
+  const handleLoadMore = () => {
+    setDisplayCount((prev) => prev + 10);
+  };
+
+  /**
+   * 검색 결과가 변경되면 표시 개수 초기화
+   */
+  useEffect(() => {
+    if (searchState === 'success') {
+      setDisplayCount(10);
+    }
+  }, [searchState, gyms.length]);
+
   return (
     <main className="min-h-[calc(100vh-80px)] container mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12">
       <div className="max-w-6xl mx-auto">
@@ -217,6 +280,53 @@ export default function GymsPage() {
           )}
         </Card>
 
+        {/* 필터 섹션 */}
+        {searchState === 'success' && gyms.length > 0 && (
+          <Card className="p-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full sm:w-auto">
+                {/* 정렬 옵션 */}
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="sort-select" className="text-sm text-muted-foreground whitespace-nowrap">
+                    정렬:
+                  </Label>
+                  <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                    <SelectTrigger id="sort-select" className="w-[140px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="distance">거리순</SelectItem>
+                      <SelectItem value="rating" disabled>평점순 (준비중)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* 운영중만 보기 */}
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="open-only"
+                    checked={showOpenOnly}
+                    onCheckedChange={setShowOpenOnly}
+                  />
+                  <Label htmlFor="open-only" className="text-sm text-foreground cursor-pointer">
+                    운영중만 보기
+                  </Label>
+                </div>
+              </div>
+
+              {/* 결과 개수 */}
+              <div className="text-sm text-muted-foreground">
+                {filteredAndSortedGyms.length}개 표시
+                {showOpenOnly && filteredAndSortedGyms.length < gyms.length && (
+                  <span className="text-xs ml-1">
+                    (전체 {gyms.length}개 중)
+                  </span>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* 검색 결과 */}
         {searchState === 'loading' && (
           <div className="flex flex-col items-center justify-center py-12">
@@ -251,16 +361,35 @@ export default function GymsPage() {
               </Card>
             ) : (
               <>
-                <div className="mb-4">
-                  <p className="text-sm text-muted-foreground">
-                    총 <span className="font-semibold text-foreground">{gyms.length}개</span>의 헬스장을 찾았습니다.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {gyms.map((gym) => (
-                    <GymCard key={gym.id} gym={gym} />
-                  ))}
-                </div>
+                {displayedGyms.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground text-lg mb-2">필터 조건에 맞는 헬스장이 없습니다</p>
+                    <p className="text-sm text-muted-foreground/80">
+                      필터를 조정하거나 다른 키워드로 검색해보세요.
+                    </p>
+                  </Card>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                      {displayedGyms.map((gym) => (
+                        <GymCard key={gym.id} gym={gym} />
+                      ))}
+                    </div>
+
+                    {/* 더 보기 버튼 */}
+                    {displayedGyms.length < filteredAndSortedGyms.length && (
+                      <div className="flex justify-center mt-8">
+                        <Button
+                          onClick={handleLoadMore}
+                          variant="outline"
+                          className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/30"
+                        >
+                          더 보기 ({filteredAndSortedGyms.length - displayedGyms.length}개 남음)
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
               </>
             )}
           </>
