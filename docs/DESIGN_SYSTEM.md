@@ -38,7 +38,7 @@
 - 넓은 여백과 부드러운 그림자
 
 **4. 심리적 안정 (Psychological Comfort)**
-- 강렬한 원색 대신 세이지 그린, 소프트 틸 등 차분한 색상
+- 강렬한 원색 대신 테라코타/코랄, 크림 베이지 등 차분한 색상
 - 긴장을 완화하는 시각적 요소
 - 회복을 상징하는 자연스러운 색감
 
@@ -55,21 +55,21 @@
 
 재활 운동 앱의 핵심 아이덴티티를 나타내는 색상입니다. 심리적 안정감을 주는 차분한 톤을 사용합니다.
 
-#### Sage Green (세이지 그린) - 메인 브랜드 컬러
+#### Terracotta/Coral (테라코타/코랄) - 메인 브랜드 컬러
 ```css
---primary: oklch(0.65 0.10 150);        /* #87A98A - 심리적 안정, 자연스러운 회복 */
---primary-hover: oklch(0.60 0.10 150);  /* #7A9680 - 호버 상태 */
---primary-light: oklch(0.92 0.04 150);  /* #E8F0E9 - 배경/강조용 */
---primary-dark: oklch(0.50 0.12 150);   /* #5F7A65 - 강조 텍스트 */
+--primary: oklch(0.62 0.10 35);        /* 따뜻한 muted 테라코타/오렌지 - 심리적 안정, 자연스러운 회복 */
+--primary-hover: oklch(0.58 0.11 35);  /* 약간 어두운 테라코타 - 호버 상태 */
+--primary-light: oklch(0.95 0.03 30);  /* 연한 테라코타 - 배경/강조용 */
+--primary-dark: oklch(0.55 0.14 30);   /* 진한 테라코타 - 강조 텍스트 */
 ```
 
 **심리적 효과:**
-- 차분함과 안정감 제공
+- 따뜻함과 안정감 제공
 - 자연스러운 회복을 상징
 - 눈의 피로 감소
 
 **사용 예시:**
-- 주요 CTA 버튼
+- 주요 CTA 버튼 (테라코타 배경 + 흰색 텍스트)
 - 브랜드 로고
 - 진행 상태 표시
 - 안전한 운동 표시
@@ -147,27 +147,27 @@ REHAB의 핵심 차별점: 운동 강도보다 통증 정도와 안전이 중요
 
 ### Neutral Colors (중립 색상)
 
-다크 모드 기반 그레이스케일입니다. 참고 이미지의 다크 퍼플/블랙 색상 스키마를 따릅니다.
+다크 모드 기반 그레이스케일입니다. **다크 모드가 기본이며 유일한 테마입니다 (라이트 모드 없음)**. 크림 베이지 톤의 따뜻한 다크 모드를 사용합니다.
 
-#### 다크 모드 (기본)
+#### 다크 모드 (기본, 고정)
 ```css
---background: oklch(0.10 0 0);          /* #1A1A1A - 어두운 회색/검정 계열 */
---foreground: oklch(0.95 0 0);          /* #F2F2F2 - 밝은 회색/흰색 텍스트 */
---card: oklch(0.15 0 0);                /* #262626 - 카드 배경 */
---card-foreground: oklch(0.95 0 0);
---muted: oklch(0.18 0 0);               /* #2E2E2E - 연한 어두운 배경 */
---muted-foreground: oklch(0.65 0 0);    /* #A6A6A6 - 중간 회색 텍스트 */
---border: oklch(0.25 0 0);              /* #404040 - 보더 (참고 이미지 기반) */
---input: oklch(0.12 0 0);               /* #1F1F1F - 입력 필드 */
---ring: oklch(0.55 0.15 300);           /* 퍼플 포커스 링 */
+--background: oklch(0.18 0.015 60);     /* 어두운 크림 베이지 톤 - 따뜻한 다크 */
+--foreground: oklch(0.98 0 0);          /* 흰색 텍스트 */
+--card: oklch(0.22 0.02 60);            /* 약간 밝은 크림 베이지 톤 - 카드 배경 */
+--card-foreground: oklch(0.98 0 0);
+--muted: oklch(0.24 0.02 60);           /* 연한 크림 베이지 톤 배경 */
+--muted-foreground: oklch(0.75 0.01 60); /* 중간 크림 베이지 텍스트 */
+--border: oklch(0.35 0.02 60);          /* 크림 베이지 톤 보더 */
+--input: oklch(0.22 0.02 60);           /* 크림 베이지 톤 입력 필드 */
+--ring: oklch(0.65 0.12 30);            /* 테라코타 포커스 링 */
 ```
 
-### 색상 사용 가이드라인 (다크 모드 기반)
+### 색상 사용 가이드라인 (다크 모드 고정)
 
-1. **Purple Accent**: 주요 액션 버튼, 선택된 상태, 인터랙티브 요소 (참고 이미지 기반)
-2. **Sage Green**: 보조 액션, 정보성 콘텐츠, 재활 앱 특성 유지
+1. **Terracotta Primary**: 주요 액션 버튼 (테라코타 배경 + 흰색 텍스트), 선택된 상태, 인터랙티브 요소
+2. **Cream Beige Secondary**: 보조 액션 버튼 (크림 베이지 배경 + 테라코타 텍스트), 정보성 콘텐츠
 3. **통증 신호등**: 통증 상태에 따라 Green/Yellow/Red 사용 (필수, 다크 모드에 맞게 조정)
-4. **Dark Background**: 기본 배경, 카드 배경, 입력 필드
+4. **Dark Background**: 기본 배경 (크림 베이지 톤), 카드 배경, 입력 필드
 5. **Light Text**: 기본 텍스트, 카드 텍스트, 높은 대비로 가독성 보장
 6. **Neutral Gray**: 보조 텍스트, 보더, 구분선
 
@@ -407,7 +407,7 @@ Planfit의 깔끔한 버튼 구조를 참고하되, 둥근 형태와 부드러�
 #### Primary Button
 ```css
 .btn-primary {
-  background: var(--primary); /* Sage Green */
+  background: var(--primary); /* 테라코타/코랄 */
   color: white;
   padding: 0.875rem 1.75rem;
   border-radius: 1rem; /* 둥근 모서리 */
@@ -420,7 +420,7 @@ Planfit의 깔끔한 버튼 구조를 참고하되, 둥근 형태와 부드러�
 .btn-primary:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(135, 169, 138, 0.25); /* 부드러운 그림자 */
+  box-shadow: 0 4px 12px rgba(210, 140, 100, 0.25); /* 테라코타 부드러운 그림자 */
 }
 ```
 
@@ -429,9 +429,9 @@ Planfit의 깔끔한 버튼 구조를 참고하되, 둥근 형태와 부드러�
 #### Secondary Button
 ```css
 .btn-secondary {
-  background: transparent;
-  color: var(--primary);
-  border: 2px solid var(--primary);
+  background: var(--secondary); /* 크림 베이지 배경 */
+  color: var(--primary); /* 테라코타 텍스트 */
+  border: 2px solid var(--secondary-dark);
   padding: 0.875rem 1.75rem;
   border-radius: 1rem; /* 둥근 모서리 */
   font-weight: 500;
@@ -439,8 +439,8 @@ Planfit의 깔끔한 버튼 구조를 참고하되, 둥근 형태와 부드러�
 }
 
 .btn-secondary:hover {
-  background: var(--primary-light);
-  border-color: var(--primary-hover);
+  background: var(--secondary-hover);
+  border-color: var(--secondary-dark);
 }
 ```
 
@@ -522,7 +522,7 @@ Planfit의 깔끔한 카드 UI 구조를 참고하되, 둥근 모서리와 부�
 .input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(135, 169, 138, 0.1); /* 부드러운 포커스 링 */
+  box-shadow: 0 0 0 4px rgba(210, 140, 100, 0.1); /* 테라코타 부드러운 포커스 링 */
 }
 ```
 
@@ -744,17 +744,17 @@ import { Heart, Shield, AlertTriangle, Circle } from "lucide-react";
 
 ```css
 @theme inline {
-  /* Primary Colors - Sage Green */
-  --color-primary: oklch(0.65 0.10 150);
-  --color-primary-hover: oklch(0.60 0.10 150);
-  --color-primary-light: oklch(0.92 0.04 150);
-  --color-primary-dark: oklch(0.50 0.12 150);
+  /* Primary Colors - Terracotta/Coral */
+  --color-primary: oklch(0.62 0.10 35);
+  --color-primary-hover: oklch(0.58 0.11 35);
+  --color-primary-light: oklch(0.95 0.03 30);
+  --color-primary-dark: oklch(0.55 0.14 30);
   
-  /* Secondary Colors - Soft Teal */
-  --color-secondary: oklch(0.60 0.12 200);
-  --color-secondary-hover: oklch(0.55 0.12 200);
-  --color-secondary-light: oklch(0.90 0.05 200);
-  --color-secondary-dark: oklch(0.45 0.14 200);
+  /* Secondary Colors - Cream Beige */
+  --color-secondary: oklch(0.82 0.06 75);
+  --color-secondary-hover: oklch(0.78 0.07 75);
+  --color-secondary-light: oklch(0.96 0.04 70);
+  --color-secondary-dark: oklch(0.75 0.08 75);
   
   /* Pain Traffic Light System */
   --color-pain-safe: oklch(0.65 0.15 150);
@@ -805,7 +805,7 @@ import { Heart, Shield, AlertTriangle, Circle } from "lucide-react";
 | 요소 | Planfit | REHAB |
 |------|---------|-------|
 | **무드** | 성능/근육 중심 | 치유/회복 중심 |
-| **컬러** | 강렬한 원색 | 세이지 그린, 소프트 틸 (심리적 안정) |
+| **컬러** | 강렬한 원색 | 테라코타/코랄, 크림 베이지 (심리적 안정) |
 | **형태** | 날카로운 모서리 | 둥근 모서리 (Rounded) |
 | **강조** | 운동 강도 | 통증 정도와 안전 |
 | **시각 요소** | 강렬한 대비 | 부드러운 그림자와 색상 |
@@ -832,7 +832,7 @@ import { Heart, Shield, AlertTriangle, Circle } from "lucide-react";
 
 ### 다크 모드 기반 앱 디자인 (6개 화면)
 
-다음 이미지는 REHAB 앱의 전체적인 UI/UX 디자인을 보여주는 6개의 스마트폰 화면입니다. 다크 퍼플/블랙 색상 스키마를 사용하며, 모바일 우선 디자인을 따릅니다.
+다음 이미지는 REHAB 앱의 전체적인 UI/UX 디자인을 보여주는 6개의 스마트폰 화면입니다. 다크 모드 (크림 베이지 톤) 색상 스키마를 사용하며, 모바일 우선 디자인을 따릅니다. **다크 모드가 기본이며 유일한 테마입니다 (라이트 모드 없음)**.
 
 ![REHAB 앱 전체 디자인](./images/rehab-app-design-6-screens.png)
 
@@ -842,41 +842,41 @@ import { Heart, Shield, AlertTriangle, Circle } from "lucide-react";
 - **헤더**: 사용자 프로필 사진, 알림 아이콘
 - **오늘의 재활 상태**: 원형 진행률 표시기 (35%)
 - **액션 버튼**: 
-  - "내 주변 헬스장 찾기" (퍼플 버튼)
-  - "맞춤 코스 생성" (퍼플 버튼)
+  - "내 주변 헬스장 찾기" (테라코타 버튼)
+  - "맞춤 코스 생성" (테라코타 버튼)
 - **최근 본 헬스장**: 가로 스크롤 카드
 - **하단 네비게이션**: 홈, 검색, 프로필
 
 #### 2. 헬스장 찾기 (지도)
-- **지도 뷰**: 퍼플 위치 핀으로 헬스장 표시
+- **지도 뷰**: 테라코타 위치 핀으로 헬스장 표시
 - **필터 옵션**: "조합함", "개월" 버튼
 - **헬스장 목록**: 스크롤 가능한 리스트 (이름, 거리, 태그)
 
 #### 3. 코스 생성 - 부위 선택
 - **질문**: "가장 불편한 부위는 어디인가요?"
-- **부위 옵션**: 허리, 어깨, 무릎, 목 (퍼플로 선택 표시)
+- **부위 옵션**: 허리, 어깨, 무릎, 목 (테라코타로 선택 표시)
 - **진행 표시기**: "1/5"
-- **다음 버튼**: 하단 퍼플 버튼
+- **다음 버튼**: 하단 테라코타 버튼
 
 #### 4. 오늘의 재활 루틴
 - **준비 (10분)**: 워밍업 운동 (비디오 썸네일)
 - **메인 (80분)**: 메인 운동 (비디오 썸네일)
 - **마무리 (10분)**: 쿨다운 운동 (비디오 썸네일)
-- **타임라인**: 세로 퍼플 라인으로 연결
+- **타임라인**: 세로 테라코타 라인으로 연결
 
 #### 5. 헬스장 상세
 - **헬스장 이미지**: 큰 이미지
-- **탭**: 개요, 시설, 리뷰 (퍼플로 선택 표시)
+- **탭**: 개요, 시설, 리뷰 (테라코타로 선택 표시)
 - **운영시간**: "운영시간 10:00 - 99 1:0"
 - **시설 아이콘**: 주차, 샤워, 락커 등
-- **액션 버튼**: "일기", "옮겨오기" (퍼플 버튼)
+- **액션 버튼**: "일기", "옮겨오기" (테라코타 버튼)
 - **최근 리뷰**: 별점과 텍스트 리뷰
 
 **디자인 특징:**
-- **색상 스키마**: 다크 퍼플/블랙 배경 + 화이트 텍스트 + 퍼플 액센트
+- **색상 스키마**: 다크 모드 (크림 베이지 톤) 배경 + 화이트 텍스트 + 테라코타 액센트
 - **모바일 우선**: 모든 화면이 모바일 최적화
 - **직관적인 네비게이션**: 명확한 정보 계층 구조
-- **퍼플 액센트**: 인터랙티브 요소에 퍼플 색상 사용
+- **테라코타 액센트**: 인터랙티브 요소에 테라코타 색상 사용
 
 **이미지 설명:**
 

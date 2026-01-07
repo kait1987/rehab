@@ -19,23 +19,23 @@ datasource db {
 // ============================================
 
 model User {
-  id          String    @id @default(uuid()) @db.Uuid
-  clerkId     String?   @unique @map("clerk_id")  // Clerk 사용자 ID
-  email       String?   @unique
-  name        String?   // 사용자 이름 (Clerk 동기화 API에서 사용)
-  displayName String?   @map("display_name")
-  isAdmin     Boolean   @default(false) @map("is_admin")
-  isActive    Boolean   @default(true) @map("is_active")
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id          String   @id @default(uuid()) @db.Uuid
+  clerkId     String?  @unique @map("clerk_id") // Clerk 사용자 ID
+  email       String?  @unique
+  name        String? // 사용자 이름 (Clerk 동기화 API에서 사용)
+  displayName String?  @map("display_name")
+  isAdmin     Boolean  @default(false) @map("is_admin")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  reviews            Review[]
-  courses            Course[]
-  userPainProfiles   UserPainProfile[]
-  userCourseHistory  UserCourseHistory[]
-  userFavorites      UserFavorite[]
-  events             Event[]
+  reviews           Review[]
+  courses           Course[]
+  userPainProfiles  UserPainProfile[]
+  userCourseHistory UserCourseHistory[]
+  userFavorites     UserFavorite[]
+  events            Event[]
 
   @@index([clerkId], map: "idx_users_clerk_id")
   @@index([isActive], map: "idx_users_is_active")
@@ -64,11 +64,11 @@ model Gym {
   updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  facilities        GymFacility?
-  operatingHours    GymOperatingHour[]
-  crowdLevels      GymCrowdLevel[]
-  reviews           Review[]
-  userFavorites     UserFavorite[]
+  facilities     GymFacility?
+  operatingHours GymOperatingHour[]
+  crowdLevels    GymCrowdLevel[]
+  reviews        Review[]
+  userFavorites  UserFavorite[]
 
   @@index([latitude, longitude], map: "idx_gyms_location")
   @@index([isActive], map: "idx_gyms_is_active")
@@ -77,19 +77,19 @@ model Gym {
 }
 
 model GymFacility {
-  id                  String    @id @default(uuid()) @db.Uuid
-  gymId               String    @unique @map("gym_id") @db.Uuid
-  isQuiet             Boolean   @default(false) @map("is_quiet")
-  hasRehabEquipment   Boolean   @default(false) @map("has_rehab_equipment")
-  hasPtCoach          Boolean   @default(false) @map("has_pt_coach")
-  hasShower           Boolean   @default(false) @map("has_shower")
-  hasParking          Boolean   @default(false) @map("has_parking")
-  hasLocker           Boolean   @default(false) @map("has_locker")
-  hasWaterDispenser   Boolean   @default(false) @map("has_water_dispenser")
-  hasAirConditioning Boolean   @default(false) @map("has_air_conditioning")
-  otherFacilities     String[]  @map("other_facilities")
-  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String   @id @default(uuid()) @db.Uuid
+  gymId              String   @unique @map("gym_id") @db.Uuid
+  isQuiet            Boolean  @default(false) @map("is_quiet")
+  hasRehabEquipment  Boolean  @default(false) @map("has_rehab_equipment")
+  hasPtCoach         Boolean  @default(false) @map("has_pt_coach")
+  hasShower          Boolean  @default(false) @map("has_shower")
+  hasParking         Boolean  @default(false) @map("has_parking")
+  hasLocker          Boolean  @default(false) @map("has_locker")
+  hasWaterDispenser  Boolean  @default(false) @map("has_water_dispenser")
+  hasAirConditioning Boolean  @default(false) @map("has_air_conditioning")
+  otherFacilities    String[] @map("other_facilities")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
@@ -102,15 +102,15 @@ model GymFacility {
 }
 
 model GymOperatingHour {
-  id        String    @id @default(uuid()) @db.Uuid
-  gymId     String    @map("gym_id") @db.Uuid
-  dayOfWeek Int       @map("day_of_week")
-  openTime  String?   @map("open_time")
-  closeTime String?   @map("close_time")
-  isClosed  Boolean   @default(false) @map("is_closed")
+  id        String   @id @default(uuid()) @db.Uuid
+  gymId     String   @map("gym_id") @db.Uuid
+  dayOfWeek Int      @map("day_of_week")
+  openTime  String?  @map("open_time")
+  closeTime String?  @map("close_time")
+  isClosed  Boolean  @default(false) @map("is_closed")
   notes     String?
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
@@ -122,15 +122,15 @@ model GymOperatingHour {
 }
 
 model GymCrowdLevel {
-  id          String    @id @default(uuid()) @db.Uuid
-  gymId       String    @map("gym_id") @db.Uuid
-  timeSlot    String    @map("time_slot") @db.VarChar(20)
-  dayOfWeek   Int?      @map("day_of_week")
-  crowdLevel  String    @map("crowd_level") @db.VarChar(20) // 'quiet', 'normal', 'busy'
-  source      String    @default("manual") @db.VarChar(20)
-  reportedAt  DateTime? @map("reported_at") @db.Timestamptz
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id         String    @id @default(uuid()) @db.Uuid
+  gymId      String    @map("gym_id") @db.Uuid
+  timeSlot   String    @map("time_slot") @db.VarChar(20)
+  dayOfWeek  Int?      @map("day_of_week")
+  crowdLevel String    @map("crowd_level") @db.VarChar(20) // 'quiet', 'normal', 'busy'
+  source     String    @default("manual") @db.VarChar(20)
+  reportedAt DateTime? @map("reported_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
@@ -146,13 +146,13 @@ model GymCrowdLevel {
 // ============================================
 
 model ReviewTag {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @unique
-  category     String?   @db.VarChar(50)
-  displayOrder Int       @default(0) @map("display_order")
-  isActive     Boolean   @default(true) @map("is_active")
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @unique
+  category     String?  @db.VarChar(50)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   reviewTagMappings ReviewTagMapping[]
@@ -163,18 +163,18 @@ model ReviewTag {
 }
 
 model Review {
-  id            String    @id @default(uuid()) @db.Uuid
-  gymId         String    @map("gym_id") @db.Uuid
-  userId        String?   @map("user_id") @db.Uuid
+  id            String   @id @default(uuid()) @db.Uuid
+  gymId         String   @map("gym_id") @db.Uuid
+  userId        String?  @map("user_id") @db.Uuid
   comment       String?
-  isAdminReview Boolean   @default(false) @map("is_admin_review")
-  isDeleted     Boolean   @default(false) @map("is_deleted")
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  isAdminReview Boolean  @default(false) @map("is_admin_review")
+  isDeleted     Boolean  @default(false) @map("is_deleted")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  gym             Gym                @relation(fields: [gymId], references: [id], onDelete: Cascade)
-  user            User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  gym               Gym                @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   reviewTagMappings ReviewTagMapping[]
 
   @@index([gymId], map: "idx_reviews_gym_id")
@@ -186,11 +186,11 @@ model Review {
 }
 
 model ReviewTagMapping {
-  id          String    @id @default(uuid()) @db.Uuid
-  reviewId    String    @map("review_id") @db.Uuid
-  reviewTagId String    @map("review_tag_id") @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id          String   @id @default(uuid()) @db.Uuid
+  reviewId    String   @map("review_id") @db.Uuid
+  reviewTagId String   @map("review_tag_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
@@ -207,30 +207,30 @@ model ReviewTagMapping {
 // ============================================
 
 model BodyPart {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @unique
-  displayOrder Int       @default(0) @map("display_order")
-  isActive     Boolean   @default(true) @map("is_active")
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @unique
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  exerciseTemplates            ExerciseTemplate[]
-  userPainProfiles             UserPainProfile[]
-  exerciseMappings             BodyPartExerciseMapping[]
-  contraindications            BodyPartContraindication[]
+  exerciseTemplates ExerciseTemplate[]
+  userPainProfiles  UserPainProfile[]
+  exerciseMappings  BodyPartExerciseMapping[]
+  contraindications BodyPartContraindication[]
 
   @@index([displayOrder], map: "idx_body_parts_display_order")
   @@map("body_parts")
 }
 
 model EquipmentType {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @unique
-  displayOrder Int       @default(0) @map("display_order")
-  isActive     Boolean   @default(true) @map("is_active")
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @unique
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   exerciseEquipmentMappings ExerciseEquipmentMapping[]
@@ -240,29 +240,29 @@ model EquipmentType {
 }
 
 model ExerciseTemplate {
-  id                String    @id @default(uuid()) @db.Uuid
+  id                String   @id @default(uuid()) @db.Uuid
   name              String
   description       String?
-  bodyPartId        String    @map("body_part_id") @db.Uuid
-  intensityLevel    Int?      @map("intensity_level")
-  durationMinutes   Int?      @map("duration_minutes")
+  bodyPartId        String   @map("body_part_id") @db.Uuid
+  intensityLevel    Int?     @map("intensity_level")
+  durationMinutes   Int?     @map("duration_minutes")
   reps              Int?
   sets              Int?
-  restSeconds       Int?      @map("rest_seconds")
-  difficultyScore   Int?      @map("difficulty_score")
-  contraindications String[]  @map("contraindications")
+  restSeconds       Int?     @map("rest_seconds")
+  difficultyScore   Int?     @map("difficulty_score")
+  contraindications String[] @map("contraindications")
   instructions      String?
   precautions       String?
-  isActive          Boolean   @default(true) @map("is_active")
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  bodyPart                  BodyPart                  @relation(fields: [bodyPartId], references: [id])
+  bodyPart                  BodyPart                   @relation(fields: [bodyPartId], references: [id])
   exerciseEquipmentMappings ExerciseEquipmentMapping[]
-  courseExercises            CourseExercise[]
-  bodyPartExerciseMappings   BodyPartExerciseMapping[]
-  bodyPartContraindications  BodyPartContraindication[]
+  courseExercises           CourseExercise[]
+  bodyPartExerciseMappings  BodyPartExerciseMapping[]
+  bodyPartContraindications BodyPartContraindication[]
 
   @@index([bodyPartId], map: "idx_exercise_templates_body_part_id")
   @@index([intensityLevel], map: "idx_exercise_templates_intensity_level")
@@ -271,16 +271,16 @@ model ExerciseTemplate {
 }
 
 model ExerciseEquipmentMapping {
-  id                 String    @id @default(uuid()) @db.Uuid
-  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
-  equipmentTypeId    String    @map("equipment_type_id") @db.Uuid
-  isRequired         Boolean   @default(false) @map("is_required")
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String   @id @default(uuid()) @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  equipmentTypeId    String   @map("equipment_type_id") @db.Uuid
+  isRequired         Boolean  @default(false) @map("is_required")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
-  equipmentType    EquipmentType   @relation(fields: [equipmentTypeId], references: [id], onDelete: Cascade)
+  equipmentType    EquipmentType    @relation(fields: [equipmentTypeId], references: [id], onDelete: Cascade)
 
   @@unique([exerciseTemplateId, equipmentTypeId], map: "exercise_equipment_mappings_unique")
   @@index([exerciseTemplateId], map: "idx_exercise_equipment_mappings_exercise_template_id")
@@ -289,18 +289,18 @@ model ExerciseEquipmentMapping {
 }
 
 model BodyPartExerciseMapping {
-  id                String    @id @default(uuid()) @db.Uuid
-  bodyPartId        String    @map("body_part_id") @db.Uuid
-  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
-  priority          Int
-  intensityLevel    Int?      @map("intensity_level")
-  painLevelRange    String?   @map("pain_level_range") @db.VarChar(20)
-  isActive          Boolean   @default(true) @map("is_active")
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String   @id @default(uuid()) @db.Uuid
+  bodyPartId         String   @map("body_part_id") @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  priority           Int
+  intensityLevel     Int?     @map("intensity_level")
+  painLevelRange     String?  @map("pain_level_range") @db.VarChar(20)
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  bodyPart        BodyPart        @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
+  bodyPart         BodyPart         @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
   exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
 
   @@unique([bodyPartId, exerciseTemplateId, painLevelRange], map: "body_part_exercise_mappings_unique")
@@ -312,18 +312,18 @@ model BodyPartExerciseMapping {
 }
 
 model BodyPartContraindication {
-  id                String    @id @default(uuid()) @db.Uuid
-  bodyPartId        String    @map("body_part_id") @db.Uuid
-  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
-  painLevelMin      Int?      @map("pain_level_min")
-  reason            String?
-  severity          String    @default("warning") @db.VarChar(20)
-  isActive          Boolean   @default(true) @map("is_active")
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String   @id @default(uuid()) @db.Uuid
+  bodyPartId         String   @map("body_part_id") @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  painLevelMin       Int?     @map("pain_level_min")
+  reason             String?
+  severity           String   @default("warning") @db.VarChar(20)
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  bodyPart        BodyPart        @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
+  bodyPart         BodyPart         @relation(fields: [bodyPartId], references: [id], onDelete: Cascade)
   exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
 
   @@unique([bodyPartId, exerciseTemplateId, painLevelMin], map: "body_part_contraindications_unique")
@@ -334,22 +334,22 @@ model BodyPartContraindication {
 }
 
 model Course {
-  id                  String    @id @default(uuid()) @db.Uuid
-  userId              String?   @map("user_id") @db.Uuid
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String?  @map("user_id") @db.Uuid
   // PRD.md 요구사항: 60, 90, 120분만 허용 (데이터베이스 레벨 CHECK 제약조건 존재)
   // 애플리케이션 레벨에서도 검증 필요
   totalDurationMinutes Int      @map("total_duration_minutes") // 60, 90, 120만 허용
-  painLevel           Int?      @map("pain_level")
-  experienceLevel     String?   @map("experience_level") @db.VarChar(20)
-  bodyParts           String[]  @map("body_parts")
-  equipmentAvailable  String[]  @map("equipment_available")
-  courseType          String    @default("warmup_main_cooldown") @map("course_type") @db.VarChar(20)
-  isTemplate          Boolean   @default(false) @map("is_template")
-  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  painLevel            Int?     @map("pain_level")
+  experienceLevel      String?  @map("experience_level") @db.VarChar(20)
+  bodyParts            String[] @map("body_parts")
+  equipmentAvailable   String[] @map("equipment_available")
+  courseType           String   @default("warmup_main_cooldown") @map("course_type") @db.VarChar(20)
+  isTemplate           Boolean  @default(false) @map("is_template")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user              User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
   courseExercises   CourseExercise[]
   userCourseHistory UserCourseHistory[]
 
@@ -361,21 +361,21 @@ model Course {
 }
 
 model CourseExercise {
-  id                 String    @id @default(uuid()) @db.Uuid
-  courseId           String    @map("course_id") @db.Uuid
-  exerciseTemplateId String    @map("exercise_template_id") @db.Uuid
-  section            String    // 'warmup', 'main', 'cooldown'
-  orderInSection     Int       @map("order_in_section")
-  durationMinutes    Int?      @map("duration_minutes")
+  id                 String   @id @default(uuid()) @db.Uuid
+  courseId           String   @map("course_id") @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  section            String // 'warmup', 'main', 'cooldown'
+  orderInSection     Int      @map("order_in_section")
+  durationMinutes    Int?     @map("duration_minutes")
   reps               Int?
   sets               Int?
-  restSeconds        Int?      @map("rest_seconds")
+  restSeconds        Int?     @map("rest_seconds")
   notes              String?
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  course           Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course           Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id])
 
   @@index([courseId], map: "idx_course_exercises_course_id")
@@ -389,18 +389,18 @@ model CourseExercise {
 // ============================================
 
 model UserPainProfile {
-  id                String    @id @default(uuid()) @db.Uuid
-  userId            String?   @map("user_id") @db.Uuid
-  bodyPartId        String    @map("body_part_id") @db.Uuid
-  painLevel         Int?      @map("pain_level")
-  experienceLevel   String?   @map("experience_level") @db.VarChar(20)
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String?  @map("user_id") @db.Uuid
+  bodyPartId         String   @map("body_part_id") @db.Uuid
+  painLevel          Int?     @map("pain_level")
+  experienceLevel    String?  @map("experience_level") @db.VarChar(20)
   equipmentAvailable String[] @map("equipment_available")
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bodyPart BodyPart  @relation(fields: [bodyPartId], references: [id])
+  user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyPart BodyPart @relation(fields: [bodyPartId], references: [id])
 
   @@index([userId], map: "idx_user_pain_profiles_user_id")
   @@index([bodyPartId], map: "idx_user_pain_profiles_body_part_id")
@@ -419,8 +419,8 @@ model UserCourseHistory {
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "idx_user_course_history_user_id")
   @@index([courseId], map: "idx_user_course_history_course_id")
@@ -430,16 +430,16 @@ model UserCourseHistory {
 }
 
 model UserFavorite {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String?   @map("user_id") @db.Uuid
-  gymId     String    @map("gym_id") @db.Uuid
-  savedAt   DateTime  @default(now()) @map("saved_at") @db.Timestamptz
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  gymId     String   @map("gym_id") @db.Uuid
+  savedAt   DateTime @default(now()) @map("saved_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  gym  Gym   @relation(fields: [gymId], references: [id], onDelete: Cascade)
 
   @@unique([userId, gymId], map: "user_favorites_unique")
   @@index([userId], map: "idx_user_favorites_user_id")
@@ -453,14 +453,14 @@ model UserFavorite {
 // ============================================
 
 model Event {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String?   @map("user_id") @db.Uuid
-  anonymousId String?   @map("anonymous_id")
-  eventName   String    @map("event_name") @db.VarChar(100)
-  eventData   Json?     @map("event_data") @db.JsonB
-  eventTime   DateTime  @default(now()) @map("event_time") @db.Timestamptz
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid
+  anonymousId String?  @map("anonymous_id")
+  eventName   String   @map("event_name") @db.VarChar(100)
+  eventData   Json?    @map("event_data") @db.JsonB
+  eventTime   DateTime @default(now()) @map("event_time") @db.Timestamptz
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)

@@ -201,16 +201,16 @@ export class GymSearchService {
   }
 
   /**
-   * Full Text Search를 사용한 헬스장 검색
+   * 키워드 검색을 사용한 헬스장 검색
    * 
-   * Phase 3.2: Full Text Search 통합
-   * - PostgreSQL의 tsvector와 tsquery를 사용하여 빠른 텍스트 검색
-   * - 검색어와 일치하는 헬스장을 관련도 순으로 반환
+   * 검색어가 있을 때 사용하는 LIKE 검색 로직
+   * - name, address, description 필드에서 검색어 포함 여부 확인
+   * - 전문 검색 기능이 구현되면 Full Text Search로 업그레이드 예정
    * 
    * @param query 검색어
    * @param bbox 좌표 범위
    * @param filters 필터 옵션
-   * @returns 헬스장 배열 (ftsRank 포함)
+   * @returns 헬스장 배열 (ftsRank 포함, 현재는 0으로 설정)
    */
   private async searchWithFullTextSearch(
     query: string,
@@ -219,10 +219,10 @@ export class GymSearchService {
   ) {
     // 검색어 정규화 (공백 제거)
     const normalizedQuery = query.trim();
+    const searchPattern = `%${normalizedQuery}%`;
     
-    // Prisma $queryRaw를 사용하여 Full Text Search 쿼리 실행
+    // Prisma $queryRaw를 사용하여 LIKE 검색 쿼리 실행
     // 템플릿 리터럴 방식을 사용하여 Prisma가 자동으로 파라미터 바인딩 처리 (SQL Injection 방지)
-    // ts_rank로 관련도 점수 계산
     const ftsResults = await prisma.$queryRaw<Array<{
       id: string;
       name: string;
@@ -247,16 +247,24 @@ export class GymSearchService {
         g.price_range,
         g.description,
         g.is_active,
-        ts_rank(g.search_vector, plainto_tsquery('simple', ${normalizedQuery})) as fts_rank
+        1 as fts_rank
       FROM public.gyms g
       WHERE
-        g.search_vector @@ plainto_tsquery('simple', ${normalizedQuery})
+        (g.name ILIKE ${searchPattern}
+         OR g.address ILIKE ${searchPattern}
+         OR g.description ILIKE ${searchPattern})
         AND g.latitude >= ${bbox.minLat}
         AND g.latitude <= ${bbox.maxLat}
         AND g.longitude >= ${bbox.minLng}
         AND g.longitude <= ${bbox.maxLng}
         AND g.is_active = true
-      ORDER BY fts_rank DESC
+      ORDER BY 
+        CASE 
+          WHEN g.name ILIKE ${searchPattern} THEN 1
+          WHEN g.address ILIKE ${searchPattern} THEN 2
+          ELSE 3
+        END,
+        g.name
       LIMIT 50
     `;
 
