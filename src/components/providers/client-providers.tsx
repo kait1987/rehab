@@ -9,14 +9,8 @@ import { ClerkProvider } from "@clerk/nextjs";
  * Clerk 인증만 제공
  */
 export function ClientProviders({ children }: { children: React.ReactNode }) {
-  // 빌드 타임에 환경 변수가 없을 때를 대비한 fallback
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
-
-  // 환경 변수가 없으면 ClerkProvider 없이 렌더링 (빌드 실패 방지)
-  if (!publishableKey) {
-    console.warn("⚠️ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY가 설정되지 않았습니다. Clerk 기능이 비활성화됩니다.");
-    return <>{children}</>;
-  }
+  // 환경 변수가 있으면 우선 사용, 없으면 fallback 키 사용
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_b3V0Z29pbmctY2hpbXAtMzguY2xlcmsuYWNjb3VudHMuZGV2JA";
 
   return (
     <ClerkProvider publishableKey={publishableKey}>
