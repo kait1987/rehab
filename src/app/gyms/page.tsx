@@ -19,8 +19,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, MapPin, Loader2, AlertCircle } from 'lucide-react';
+import { Search, MapPin, Loader2, AlertCircle, List, Map as MapIcon } from 'lucide-react';
 import { GymCard } from '@/components/gym-card';
+import { GymMap } from '@/components/gym-map';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -33,6 +34,7 @@ import type { GymSearchResponse, GymSearchResult } from '@/types/gym-search';
 
 type SearchState = 'idle' | 'loading' | 'success' | 'error';
 type SortOption = 'distance' | 'rating';
+type ViewMode = 'list' | 'map';
 
 export default function GymsPage() {
   const [searchState, setSearchState] = useState<SearchState>('idle');
@@ -48,6 +50,9 @@ export default function GymsPage() {
   
   // 페이지네이션
   const [displayCount, setDisplayCount] = useState<number>(10);
+  
+  // 뷰 모드 (리스트/지도)
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   /**
    * 브라우저 위치 권한 요청 및 좌표 획득
@@ -314,14 +319,44 @@ export default function GymsPage() {
                 </div>
               </div>
 
-              {/* 결과 개수 */}
-              <div className="text-sm text-muted-foreground">
-                {filteredAndSortedGyms.length}개 표시
-                {showOpenOnly && filteredAndSortedGyms.length < gyms.length && (
-                  <span className="text-xs ml-1">
-                    (전체 {gyms.length}개 중)
-                  </span>
-                )}
+              <div className="flex items-center gap-3">
+                {/* 결과 개수 */}
+                <div className="text-sm text-muted-foreground">
+                  {filteredAndSortedGyms.length}개 표시
+                  {showOpenOnly && filteredAndSortedGyms.length < gyms.length && (
+                    <span className="text-xs ml-1">
+                      (전체 {gyms.length}개 중)
+                    </span>
+                  )}
+                </div>
+
+                {/* 뷰 모드 토글 버튼 */}
+                <div className="flex items-center gap-2 border-l border-border pl-3">
+                  <Button
+                    onClick={() => setViewMode('list')}
+                    variant={viewMode === 'list' ? 'default' : 'outline'}
+                    size="sm"
+                    className={viewMode === 'list' 
+                      ? 'bg-primary hover:bg-primary-hover text-white' 
+                      : 'bg-transparent hover:bg-muted'
+                    }
+                  >
+                    <List className="h-4 w-4 mr-1" strokeWidth={1.5} />
+                    리스트
+                  </Button>
+                  <Button
+                    onClick={() => setViewMode('map')}
+                    variant={viewMode === 'map' ? 'default' : 'outline'}
+                    size="sm"
+                    className={viewMode === 'map' 
+                      ? 'bg-primary hover:bg-primary-hover text-white' 
+                      : 'bg-transparent hover:bg-muted'
+                    }
+                  >
+                    <MapIcon className="h-4 w-4 mr-1" strokeWidth={1.5} />
+                    지도
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
@@ -370,22 +405,34 @@ export default function GymsPage() {
                   </Card>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                      {displayedGyms.map((gym) => (
-                        <GymCard key={gym.id} gym={gym} />
-                      ))}
-                    </div>
+                    {viewMode === 'list' ? (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                          {displayedGyms.map((gym) => (
+                            <GymCard key={gym.id} gym={gym} />
+                          ))}
+                        </div>
 
-                    {/* 더 보기 버튼 */}
-                    {displayedGyms.length < filteredAndSortedGyms.length && (
-                      <div className="flex justify-center mt-8">
-                        <Button
-                          onClick={handleLoadMore}
-                          variant="outline"
-                          className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/30"
-                        >
-                          더 보기 ({filteredAndSortedGyms.length - displayedGyms.length}개 남음)
-                        </Button>
+                        {/* 더 보기 버튼 */}
+                        {displayedGyms.length < filteredAndSortedGyms.length && (
+                          <div className="flex justify-center mt-8">
+                            <Button
+                              onClick={handleLoadMore}
+                              variant="outline"
+                              className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/30"
+                            >
+                              더 보기 ({filteredAndSortedGyms.length - displayedGyms.length}개 남음)
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full">
+                        <GymMap
+                          gyms={displayedGyms}
+                          center={location}
+                          userLocation={location}
+                        />
                       </div>
                     )}
                   </>
