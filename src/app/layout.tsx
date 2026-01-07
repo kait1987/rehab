@@ -1,9 +1,29 @@
-// app/layout.tsx
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+
+import { MainLayout } from "@/components/layout/main-layout";
+import { ClientProviders } from "@/components/providers/client-providers";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "Your App",
+  title: "REHAB",
+  description: "동네 기반 재활 헬스장 추천 & 맞춤형 재활 코스 생성 서비스",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -11,23 +31,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 🔥 환경 변수 없으면 Clerk 없이 렌더링
-  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-  if (!clerkKey) {
-    console.warn("Clerk not configured - running without authentication");
-    return (
-      <html lang="ko">
-        <body>{children}</body>
-      </html>
-    );
-  }
-
   return (
-    <ClerkProvider>
-      <html lang="ko">
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="ko" className="dark" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClientProviders>
+          <MainLayout>{children}</MainLayout>
+        </ClientProviders>
+      </body>
+    </html>
   );
 }
