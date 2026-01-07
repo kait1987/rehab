@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Search, Home, Navigation, HeartPulse, Timer } from "lucide-react";
 
 /**
- * 404 페이지
+ * 404 페이지 (완전 정적 페이지)
  * 
  * 존재하지 않는 페이지에 접근했을 때 표시됩니다.
  * REHAB 앱의 주요 기능으로 안내합니다.
+ * 
+ * 주의: Clerk 컴포넌트를 사용하지 않아 prerender 시 안전합니다.
  */
 export default function NotFound() {
   return (
