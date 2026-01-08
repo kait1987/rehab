@@ -57,14 +57,14 @@ export default function NotFound() {
               헬스장 찾기
             </Link>
             <Link 
-              href="/courses/new" 
+              href="/rehab" 
               className="text-primary hover:text-primary-hover hover:underline transition-colors duration-200 flex items-center gap-1"
             >
               <HeartPulse className="h-4 w-4" strokeWidth={1.5} />
               재활 코스 만들기
             </Link>
             <Link 
-              href="/courses" 
+              href="/rehab" 
               className="text-primary hover:text-primary-hover hover:underline transition-colors duration-200 flex items-center gap-1"
             >
               <Timer className="h-4 w-4" strokeWidth={1.5} />

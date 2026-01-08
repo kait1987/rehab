@@ -42,7 +42,7 @@ export function HomeHero() {
             size="lg" 
             className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 rounded-2xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-xl hover:shadow-2xl shadow-primary/10 hover:shadow-primary/20 hover:-translate-y-0.5"
           >
-            <Link href="/courses">재활 코스 만들기</Link>
+            <Link href="/rehab">재활 코스 만들기</Link>
           </Button>
           <Button 
             asChild 
