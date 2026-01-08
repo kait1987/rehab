@@ -45,34 +45,36 @@ Tailwind CSS v4는 `globals.css` 파일에서 직접 설정합니다:
 
 ## 색상 시스템
 
-### 다크 모드 기반 컬러 팔레트 (참고 이미지 6개 화면 기반)
+### 다크 모드 기반 컬러 팔레트
 
-다크 퍼플/블랙 배경 + 화이트 텍스트 + 퍼플 액센트:
+테라코타 & 크림 베이지 기반 색상 시스템:
 
-#### 배경 색상 (다크 퍼플/블랙 계열)
+#### 배경 색상 (크림 베이지 톤)
 ```css
---background: oklch(0.10 0 0);         /* #1A1A1A - 어두운 회색/검정 계열 */
---foreground: oklch(0.95 0 0);         /* #F2F2F2 - 밝은 회색/흰색 */
---card: oklch(0.15 0 0);               /* #262626 - 약간 밝은 어두운 회색 */
---muted: oklch(0.12 0 0);              /* #1F1F1F - 어두운 배경 */
---border: oklch(0.25 0 0);             /* #404040 - 보더 색상 */
---input: oklch(0.12 0 0);              /* #1F1F1F - 어두운 입력 필드 */
+--background: oklch(0.18 0.015 60);     /* 어두운 크림 베이지 톤 - 따뜻한 다크 */
+--foreground: oklch(0.98 0 0);          /* 흰색 텍스트 */
+--card: oklch(0.22 0.02 60);            /* 약간 밝은 크림 베이지 톤 - 카드 배경 */
+--muted: oklch(0.24 0.02 60);           /* 연한 크림 베이지 톤 배경 */
+--border: oklch(0.35 0.02 60);          /* 크림 베이지 톤 보더 */
+--input: oklch(0.22 0.02 60);           /* 크림 베이지 톤 입력 필드 */
 ```
 
-#### Primary (퍼플) - 참고 이미지의 퍼플 버튼
+#### Primary (테라코타/코랄) - 메인 브랜드 컬러
 ```css
---primary: oklch(0.55 0.15 300);       /* #8B5CF6 - 퍼플 액센트 */
---primary-hover: oklch(0.60 0.15 300); /* 더 밝은 퍼플 - 호버 상태 */
---primary-light: oklch(0.25 0.08 300); /* 다크 모드용 연한 퍼플 배경 */
---primary-dark: oklch(0.50 0.16 300);   /* 진한 퍼플 - 강조 텍스트 */
+--primary: oklch(0.62 0.10 35);         /* 따뜻한 muted 테라코타/오렌지 */
+--primary-foreground: oklch(0.98 0 0);  /* 흰색 텍스트 */
+--primary-hover: oklch(0.67 0.11 35);  /* 약간 밝은 테라코타 - 호버 상태 */
+--primary-light: oklch(0.25 0.04 30);  /* 다크 모드용 연한 테라코타 배경 */
+--primary-dark: oklch(0.58 0.11 35);   /* 진한 테라코타 - 강조 텍스트 */
 ```
 
-#### Secondary (세이지 그린) - 재활 앱 특성 유지
+#### Secondary (소프트 틸) - 보조 브랜드 컬러
 ```css
---secondary: oklch(0.65 0.10 150);     /* #87A98A - 세이지 그린 */
---secondary-hover: oklch(0.60 0.10 150);
---secondary-light: oklch(0.20 0.05 150);
---secondary-dark: oklch(0.50 0.12 150);
+--secondary: oklch(0.60 0.12 200);      /* #6BA5B8 - 신뢰와 전문성 */
+--secondary-foreground: oklch(0.20 0.01 250); /* 짙은 차콜 텍스트 */
+--secondary-hover: oklch(0.55 0.12 200); /* #5E94A6 */
+--secondary-light: oklch(0.25 0.03 70); /* 다크 모드용 연한 샌드 베이지 배경 */
+--secondary-dark: oklch(0.45 0.14 200); /* #4A7A8A */
 ```
 
 ### Tailwind 클래스 사용
@@ -104,6 +106,7 @@ Tailwind CSS v4는 `globals.css` 파일에서 직접 설정합니다:
 - 라이트 모드 토글 기능 제거
 - `ThemeProvider` 및 `ThemeToggle` 제거됨
 - 모든 페이지가 다크 모드로 표시됨
+- `layout.tsx`에서 `className="dark"`가 기본으로 설정됨
 
 ## 반응형 디자인
 

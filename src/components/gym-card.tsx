@@ -174,12 +174,6 @@ export function GymCard({ gym }: GymCardProps) {
 
       {/* 편의시설 아이콘 */}
       <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
-        {gym.facilities.isQuiet && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Volume2 className="h-3 w-3" strokeWidth={1.5} />
-            <span>조용함</span>
-          </div>
-        )}
         {gym.facilities.hasRehabEquipment && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Dumbbell className="h-3 w-3" strokeWidth={1.5} />

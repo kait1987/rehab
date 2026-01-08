@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { MainLayout } from "@/components/layout/main-layout";
@@ -18,12 +18,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "REHAB",
   description: "동네 기반 재활 헬스장 추천 & 맞춤형 재활 코스 생성 서비스",
+  // 📱 Phase 4: PWA 메타데이터
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "REHAB",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
-export const viewport = {
+// 📱 Phase 3: viewport-fit=cover 추가 (노치 대응)
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#ef5b5b",
 };
 
 export default function RootLayout({
@@ -33,6 +45,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className="dark" suppressHydrationWarning>
+      <head>
+        {/* 📱 Phase 4: Apple Touch Icon */}
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -43,3 +59,4 @@ export default function RootLayout({
     </html>
   );
 }
+

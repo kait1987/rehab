@@ -8,6 +8,26 @@
 - [ ] Vercel 계정 및 프로젝트 생성 완료
 - [ ] GitHub 저장소와 Vercel 프로젝트 연동 완료
 
+## ⚠️ 주의사항: 환경 변수 공백 문제
+
+Vercel에서 환경 변수를 설정할 때 **앞뒤 공백**이 포함되면 Edge Runtime에서 `undefined`로 인식되어 middleware가 즉시 크래시합니다.
+
+### 문제 예시
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=" pk_test_XXXX "  ❌ (공백 포함)
+```
+
+이 경우 Edge Runtime에서 `process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`가 `undefined`로 인식되어 middleware가 실행되자마자 크래시합니다.
+
+### 해결 방법
+
+1. Vercel 대시보드에서 환경 변수 편집
+2. **값 전체를 지우고** 다시 붙여넣기
+3. 앞뒤 공백이 없는지 확인
+4. **Save** 클릭
+5. **반드시 Redeploy 수행** (이거 안 하면 절대 안 바뀜)
+
 ## 🔑 필수 환경 변수
 
 Clerk middleware가 정상 작동하려면 다음 환경 변수가 반드시 설정되어야 합니다:
@@ -124,6 +144,31 @@ Clerk middleware가 정상 작동하려면 다음 환경 변수가 반드시 설
 1. 프로젝트 대시보드에서 **Deployments** 탭 클릭
 2. 최신 배포의 **⋯** 메뉴 클릭
 3. **Redeploy** 선택
+
+### ⚠️ Vercel Redeploy 필수 단계
+
+**중요**: middleware.ts를 수정한 경우, 이전 빌드에서 middleware.ts가 캐시되어 있으면 코드를 고쳐도 반영이 안 될 수 있습니다.
+
+**Redeploy 시 필수 체크사항**:
+
+1. Vercel 대시보드 → 프로젝트 → **Deployments** 탭
+2. 최신 배포의 **⋯** 메뉴 클릭
+3. **Redeploy** 선택
+4. **⚠️ "Use existing Build Cache" 체크박스를 반드시 해제** ✅
+   - 이유: 이전 빌드에서 middleware.ts가 캐시되어 있으면 새 코드가 반영되지 않음
+   - 확실하게 새 코드를 적용하기 위함
+5. **Redeploy** 버튼 클릭
+
+### 환경별 설정 체크리스트
+
+- [ ] Production 환경에 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 설정
+- [ ] Production 환경에 `CLERK_SECRET_KEY` 설정
+- [ ] Preview 환경에 `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 설정
+- [ ] Preview 환경에 `CLERK_SECRET_KEY` 설정
+- [ ] Development 환경에 `.env` 파일 설정
+- [ ] 모든 환경 변수에 공백 없음 확인
+- [ ] Redeploy 수행 완료
+- [ ] **Redeploy 시 "Use existing Build Cache" 체크박스 해제 확인** ✅
 
 ## ✅ 설정 확인 방법
 

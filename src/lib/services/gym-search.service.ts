@@ -99,14 +99,11 @@ export class GymSearchService {
       if (distanceMeters <= radius) {
         // facilities가 없으면 기본값 생성
         const facilities = gym.facilities || {
-          isQuiet: false,
           hasRehabEquipment: false,
           hasPtCoach: false,
           hasShower: false,
           hasParking: false,
           hasLocker: false,
-          hasWaterDispenser: false,
-          hasAirConditioning: false,
           otherFacilities: [],
         };
 
@@ -131,15 +128,12 @@ export class GymSearchService {
           description: gym.description || undefined,
           distanceMeters,
           facilities: {
-            isQuiet: facilities.isQuiet,
             hasRehabEquipment: facilities.hasRehabEquipment,
             hasPtCoach: facilities.hasPtCoach,
             hasShower: facilities.hasShower,
             hasParking: facilities.hasParking,
             hasLocker: facilities.hasLocker,
-            hasWaterDispenser: facilities.hasWaterDispenser,
-            hasAirConditioning: facilities.hasAirConditioning,
-            otherFacilities: facilities.otherFacilities,
+            otherFacilities: facilities.otherFacilities || [],
           },
           operatingHours: operatingHours.length > 0 ? operatingHours : undefined,
           isActive: gym.isActive,
@@ -283,7 +277,6 @@ export class GymSearchService {
     // facilities 필터 추가
     if (filters) {
       const facilityConditions: any = {};
-      if (filters.isQuiet !== undefined) facilityConditions.isQuiet = filters.isQuiet;
       if (filters.hasRehabEquipment !== undefined) facilityConditions.hasRehabEquipment = filters.hasRehabEquipment;
       if (filters.hasPtCoach !== undefined) facilityConditions.hasPtCoach = filters.hasPtCoach;
       if (filters.hasShower !== undefined) facilityConditions.hasShower = filters.hasShower;
@@ -350,7 +343,6 @@ export class GymSearchService {
     // 필터 조건 추가
     if (filters) {
       const facilityConditions: any = {};
-      if (filters.isQuiet !== undefined) facilityConditions.isQuiet = filters.isQuiet;
       if (filters.hasRehabEquipment !== undefined) facilityConditions.hasRehabEquipment = filters.hasRehabEquipment;
       if (filters.hasPtCoach !== undefined) facilityConditions.hasPtCoach = filters.hasPtCoach;
       if (filters.hasShower !== undefined) facilityConditions.hasShower = filters.hasShower;
@@ -469,14 +461,11 @@ export class GymSearchService {
         description: placeItem.description || undefined,
         distanceMeters,
         facilities: {
-          isQuiet: false,
           hasRehabEquipment: false,
           hasPtCoach: false,
           hasShower: false,
           hasParking: false,
           hasLocker: false,
-          hasWaterDispenser: false,
-          hasAirConditioning: false,
           otherFacilities: [],
         },
         operatingHours: placeItem.operatingHours,
