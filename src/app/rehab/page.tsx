@@ -34,6 +34,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { classifyBySection } from "@/lib/utils/classify-by-section";
+import { useRecentCourses } from "@/hooks/use-recent-courses";
+import { useSwipe } from "@/hooks/use-swipe";
 import type { MergedExercise, MergeRequest } from "@/types/body-part-merge";
 
 interface CourseGenerationResponse {
@@ -80,8 +82,30 @@ function RehabPageContent() {
     cooldown: MergedExercise[];
   } | null>(null);
 
+  // 탭 상태 관리 및 스와이프 로직
+  const [activeTab, setActiveTab] = useState<string>("warmup");
+
+  const handleSwipeLeft = () => {
+    if (activeTab === "warmup") setActiveTab("main");
+    else if (activeTab === "main") setActiveTab("cooldown");
+  };
+
+  const handleSwipeRight = () => {
+    if (activeTab === "cooldown") setActiveTab("main");
+    else if (activeTab === "main") setActiveTab("warmup");
+  };
+
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: handleSwipeLeft,
+    onSwipeRight: handleSwipeRight,
+    threshold: 50,
+  });
+
   // 코스 생성 요청 데이터 (URL 파라미터 또는 로컬 스토리지에서 가져오기)
   const [requestData, setRequestData] = useState<MergeRequest | null>(null);
+
+  // 🆕 최근 코스 저장 훅
+  const { addCourse } = useRecentCourses();
 
   useEffect(() => {
     // URL 파라미터 또는 로컬 스토리지에서 코스 생성 요청 데이터 확인
@@ -147,6 +171,15 @@ function RehabPageContent() {
       // 섹션별로 분류
       const classified = classifyBySection(data.data.course.exercises);
       setSections(classified);
+
+      // 🆕 최근 코스에 자동 저장
+      addCourse({
+        bodyParts: request.bodyParts.map((bp) => bp.bodyPartName),
+        painLevel: request.painLevel,
+        totalDuration: data.data.course.totalDuration,
+        exerciseCount: data.data.course.exercises.length,
+      });
+      console.log('[RehabPage] Course saved to recent courses');
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
@@ -289,7 +322,8 @@ function RehabPageContent() {
         )}
 
         {/* 섹션별 운동 탭 */}
-        <Tabs defaultValue="warmup" className="mb-8">
+        <div {...swipeHandlers.onTouchStart} {...swipeHandlers.onTouchMove} {...swipeHandlers.onTouchEnd}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="warmup">
               준비 운동 ({sections.warmup.length})
@@ -362,6 +396,7 @@ function RehabPageContent() {
             </div>
           </TabsContent>
         </Tabs>
+        </div>
 
         {/* 하단 액션 버튼 영역 */}
         <Card className="mb-6">

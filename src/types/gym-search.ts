@@ -18,14 +18,11 @@ export type PriceRange = 'low' | 'medium' | 'high' | 'premium';
  * GymFacility 테이블의 정보를 반영합니다.
  */
 export interface GymFacilities {
-  isQuiet: boolean;
   hasRehabEquipment: boolean;
   hasPtCoach: boolean;
   hasShower: boolean;
   hasParking: boolean;
   hasLocker: boolean;
-  hasWaterDispenser: boolean;
-  hasAirConditioning: boolean;
   otherFacilities: string[];
 }
 
@@ -33,8 +30,6 @@ export interface GymFacilities {
  * 헬스장 검색 필터 옵션
  */
 export interface GymSearchFilter {
-  /** 조용한 분위기 */
-  isQuiet?: boolean;
   /** 재활 기구 구비 */
   hasRehabEquipment?: boolean;
   /** PT/재활 코치 여부 */

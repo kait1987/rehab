@@ -35,14 +35,11 @@ export type GymUpsertData = {
  * GymFacility upsert 데이터 타입
  */
 export type GymFacilityUpsertData = {
-  isQuiet: boolean;
   hasRehabEquipment: boolean;
   hasPtCoach: boolean;
   hasShower: boolean;
   hasParking: boolean;
   hasLocker: boolean;
-  hasWaterDispenser: boolean;
-  hasAirConditioning: boolean;
   otherFacilities: string[];
 };
 
@@ -97,14 +94,11 @@ export function convertPlaceItemToGymFacilityData(
   // 네이버 API에서는 시설 정보를 제공하지 않으므로 모두 기본값(false)
   // description에서 일부 키워드를 추출할 수 있지만, 정확도가 낮으므로 기본값 사용
   return {
-    isQuiet: false,
     hasRehabEquipment: false,
     hasPtCoach: false,
     hasShower: false,
     hasParking: false,
     hasLocker: false,
-    hasWaterDispenser: false,
-    hasAirConditioning: false,
     otherFacilities: [],
   };
 }

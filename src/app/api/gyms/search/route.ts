@@ -11,7 +11,6 @@
  * - lng (필수): 중심 좌표 경도
  * - radius (선택): 검색 반경 (미터, 기본값: 1000m = 1km)
  * - 필터 옵션 (모두 선택):
- *   - isQuiet: 조용한 분위기 (boolean)
  *   - hasRehabEquipment: 재활 기구 구비 (boolean)
  *   - hasPtCoach: PT/재활 코치 여부 (boolean)
  *   - hasShower: 샤워실 (boolean)
@@ -62,7 +61,6 @@ export async function GET(request: NextRequest) {
 
     // 4. 필터 옵션 추출
     const filters: any = {};
-    const isQuietParam = searchParams.get('isQuiet');
     const hasRehabEquipmentParam = searchParams.get('hasRehabEquipment');
     const hasPtCoachParam = searchParams.get('hasPtCoach');
     const hasShowerParam = searchParams.get('hasShower');
@@ -70,9 +68,6 @@ export async function GET(request: NextRequest) {
     const hasLockerParam = searchParams.get('hasLocker');
     const priceRangeParam = searchParams.get('priceRange');
 
-    if (isQuietParam !== null) {
-      filters.isQuiet = isQuietParam === 'true';
-    }
     if (hasRehabEquipmentParam !== null) {
       filters.hasRehabEquipment = hasRehabEquipmentParam === 'true';
     }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>REHAB - 오프라인</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #ef5b5b;
+    }
+    p {
+      font-size: 1rem;
+      color: #a0a0a0;
+      max-width: 280px;
+      line-height: 1.5;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      background-color: #ef5b5b;
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      min-height: 44px;
+      min-width: 44px;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+  <div class="icon">📴</div>
+  <h1>오프라인 상태입니다</h1>
+  <p>인터넷 연결을 확인해 주세요. 연결되면 자동으로 복구됩니다.</p>
+  <button onclick="location.reload()">다시 시도</button>
+
+  <script>
+    // 온라인 상태 복구 시 자동 새로고침
+    window.addEventListener('online', () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>

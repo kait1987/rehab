@@ -40,7 +40,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  /* Primary Colors - Sage Green */
+  /* Primary Colors - Terracotta */
   --color-primary-hover: var(--primary-hover);
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
@@ -171,23 +171,45 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* 📱 Phase 1: 터치 최적화 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
   }
   html,
   body {
     margin: 0;
     padding: 0;
+    /* 📱 Phase 3: 스크롤 바운스 방지 */
+    overscroll-behavior: none;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-geist-sans), sans-serif;
     line-height: 1.7; /* 넓은 줄간격으로 가독성 향상 */
-    /* 노이즈 텍스처 (종이 질감) - 아주 연하게 */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-    background-size: 400px 400px;
-    background-position: 0 0;
+    position: relative;
   }
   main {
     @apply max-w-7xl mx-auto px-4;
+  }
+
+  /* 📱 Phase 1: 최소 탭 영역 (Apple 권장 44px) */
+  button,
+  a,
+  [role="button"],
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  /* 📱 Phase 1: 터치 피드백 */
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
   }
 }
 
@@ -201,6 +223,29 @@
       circle at center,
       var(--tw-gradient-stops)
     );
+  }
+
+  /* 📱 Phase 3: Safe Area 대응 (노치, 홈바) */
+  .safe-area-padding {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* 📱 Phase 3: 동적 뷰포트 높이 (키보드 대응) */
+  .full-screen {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .min-full-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
 
@@ -220,8 +265,8 @@
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  /* 앱 테마 색상: Amber-600 */
-  background: #d97706;
+  /* 앱 테마 색상: Terracotta */
+  background: oklch(0.62 0.10 35);
   animation: loading-bounce 0.5s ease-in-out infinite alternate;
 }
 
@@ -234,7 +279,7 @@
   width: 45px;
   border-radius: 4px;
   /* 그림자 색상: 부드러운 회색조 */
-  box-shadow: 0 5px 0 #e7e5e4, -35px 50px 0 #e7e5e4, -70px 95px 0 #e7e5e4;
+  box-shadow: 0 5px 0 oklch(0.35 0.02 60), -35px 50px 0 oklch(0.35 0.02 60), -70px 95px 0 oklch(0.35 0.02 60);
   animation: loading-step 1s ease-in-out infinite;
 }
 
@@ -256,14 +301,14 @@
 @keyframes loading-step {
   0% {
     box-shadow: 0 10px 0 rgba(0, 0, 0, 0),
-      0 10px 0 #e7e5e4,
-      -35px 50px 0 #e7e5e4,
-      -70px 90px 0 #e7e5e4;
+      0 10px 0 oklch(0.35 0.02 60),
+      -35px 50px 0 oklch(0.35 0.02 60),
+      -70px 90px 0 oklch(0.35 0.02 60);
   }
   100% {
-    box-shadow: 0 10px 0 #e7e5e4,
-      -35px 50px 0 #e7e5e4,
-      -70px 90px 0 #e7e5e4,
+    box-shadow: 0 10px 0 oklch(0.35 0.02 60),
+      -35px 50px 0 oklch(0.35 0.02 60),
+      -70px 90px 0 oklch(0.35 0.02 60),
       -70px 90px 0 rgba(0, 0, 0, 0);
   }
 }

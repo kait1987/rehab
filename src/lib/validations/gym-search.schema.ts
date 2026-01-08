@@ -18,8 +18,6 @@ export const priceRangeSchema = z.enum(['low', 'medium', 'high', 'premium'], {
  * 헬스장 검색 필터 스키마
  */
 export const gymSearchFilterSchema = z.object({
-  /** 조용한 분위기 */
-  isQuiet: z.boolean().optional(),
   /** 재활 기구 구비 */
   hasRehabEquipment: z.boolean().optional(),
   /** PT/재활 코치 여부 */

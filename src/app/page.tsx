@@ -1,9 +1,13 @@
 "use client";
 
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const { isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
+
   return (
     <main className="flex min-h-screen flex-col">
       {/* Hero Section */}
@@ -19,16 +23,34 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <SignUpButton mode="modal" forceRedirectUrl="/rehab">
-                <Button size="lg" className="rounded-xl">
-                  시작하기
+              {isLoaded && !isSignedIn && (
+                <>
+                  <Button 
+                    size="lg" 
+                    className="rounded-xl"
+                    onClick={() => router.push('/sign-up')}
+                  >
+                    시작하기
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="rounded-xl"
+                    onClick={() => router.push('/sign-in')}
+                  >
+                    로그인
+                  </Button>
+                </>
+              )}
+              {isLoaded && isSignedIn && (
+                <Button 
+                  size="lg" 
+                  className="rounded-xl"
+                  onClick={() => router.push('/rehab')}
+                >
+                  재활 코스 시작하기
                 </Button>
-              </SignUpButton>
-              <SignInButton mode="modal" forceRedirectUrl="/rehab">
-                <Button size="lg" variant="outline" className="rounded-xl">
-                  로그인
-                </Button>
-              </SignInButton>
+              )}
             </div>
           </div>
         </div>

@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
@@ -25,28 +28,30 @@ const Navbar = () => {
 
         {/* 데스크탑 메뉴 */}
         <div className="hidden sm:flex items-center gap-3">
-          <SignedOut>
-            <SignInButton mode="modal" forceRedirectUrl="/rehab">
-              <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
+          {isLoaded && !isSignedIn && (
+            <>
+              <Button 
+                onClick={() => router.push('/sign-in')}
+                className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
+              >
                 로그인
               </Button>
-            </SignInButton>
-            <SignUpButton mode="modal" forceRedirectUrl="/rehab">
               <Button
+                onClick={() => router.push('/sign-up')}
                 variant="secondary"
                 className="rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
               >
                 회원가입
               </Button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
+            </>
+          )}
+          {isLoaded && isSignedIn && (
             <Link href="/rehab">
               <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
                 재활 코스
               </Button>
             </Link>
-          </SignedIn>
+          )}
         </div>
 
         {/* 모바일 햄버거 버튼 */}
@@ -67,28 +72,36 @@ const Navbar = () => {
       {isOpen && (
         <div className="sm:hidden absolute top-16 left-0 w-full bg-background border-b border-border shadow-lg">
           <div className="container px-3 py-3 flex flex-col gap-2">
-            <SignedOut>
-              <SignInButton mode="modal" forceRedirectUrl="/rehab">
-                <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+            {isLoaded && !isSignedIn && (
+              <>
+                <Button 
+                  onClick={() => {
+                    router.push('/sign-in');
+                    setIsOpen(false);
+                  }}
+                  className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                >
                   로그인
                 </Button>
-              </SignInButton>
-              <SignUpButton mode="modal" forceRedirectUrl="/rehab">
                 <Button
+                  onClick={() => {
+                    router.push('/sign-up');
+                    setIsOpen(false);
+                  }}
                   variant="secondary"
                   className="w-full justify-start rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
                   회원가입
                 </Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
+              </>
+            )}
+            {isLoaded && isSignedIn && (
               <Link href="/rehab" onClick={() => setIsOpen(false)}>
                 <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                   재활 코스
                 </Button>
               </Link>
-            </SignedIn>
+            )}
           </div>
         </div>
       )}
