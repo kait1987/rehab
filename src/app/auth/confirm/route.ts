@@ -17,5 +17,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=verification_failed`);
+  return NextResponse.redirect(`${origin}/sign-in?error=verification_failed`);
 }
