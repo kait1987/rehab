@@ -345,9 +345,9 @@ function RehabPageContent() {
                   </CardContent>
                 </Card>
               ) : (
-                sections.warmup.map((exercise) => (
+                sections.warmup.map((exercise, index) => (
                   <CourseExerciseCard
-                    key={exercise.exerciseTemplateId}
+                    key={`warmup-${index}-${exercise.exerciseTemplateId}`}
                     exercise={exercise}
                     section="warmup"
                   />
@@ -365,9 +365,9 @@ function RehabPageContent() {
                   </CardContent>
                 </Card>
               ) : (
-                sections.main.map((exercise) => (
+                sections.main.map((exercise, index) => (
                   <CourseExerciseCard
-                    key={exercise.exerciseTemplateId}
+                    key={`main-${index}-${exercise.exerciseTemplateId}`}
                     exercise={exercise}
                     section="main"
                   />
@@ -385,9 +385,9 @@ function RehabPageContent() {
                   </CardContent>
                 </Card>
               ) : (
-                sections.cooldown.map((exercise) => (
+                sections.cooldown.map((exercise, index) => (
                   <CourseExerciseCard
-                    key={exercise.exerciseTemplateId}
+                    key={`cooldown-${index}-${exercise.exerciseTemplateId}`}
                     exercise={exercise}
                     section="cooldown"
                   />

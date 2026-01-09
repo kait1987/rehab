@@ -157,89 +157,99 @@ export function distributeTime(
 
   const result: MergedExercise[] = [];
 
-  // Warmup 시간 배분
-  if (exercises.warmup.length > 0) {
-    const warmupTimePerExercise = Math.min(
-      timeConfig.maxWarmupCooldownTime,
-      Math.max(
-        timeConfig.minExerciseTime,
-        timeConfig.warmupTime / exercises.warmup.length
-      )
-    );
+  // Helper function to calculate how many exercises needed for target time
+  const calculateExerciseCount = (
+    targetTime: number,
+    maxTimePerExercise: number,
+    minTimePerExercise: number
+  ): number => {
+    // At minimum, use minTimePerExercise per exercise to calculate max count
+    return Math.ceil(targetTime / Math.max(minTimePerExercise, 5));
+  };
 
-    exercises.warmup.forEach((ex) => {
-      const { sets, reps } = calculateSetsAndReps(
-        ex.durationMinutes,
-        warmupTimePerExercise,
-        ex.sets,
-        ex.reps,
-        'warmup'
+  // Helper function to repeat exercises to fill time
+  const repeatExercisesToFillTime = (
+    exerciseList: MergedExercise[],
+    targetTime: number,
+    maxTimePerExercise: number,
+    section: 'warmup' | 'main' | 'cooldown'
+  ): MergedExercise[] => {
+    if (exerciseList.length === 0) return [];
+
+    const sectionResult: MergedExercise[] = [];
+    let accumulatedTime = 0;
+    let exerciseIndex = 0;
+    let orderCounter = 0;
+
+    // Keep adding exercises until we reach target time
+    while (accumulatedTime < targetTime) {
+      const sourceExercise = exerciseList[exerciseIndex % exerciseList.length];
+      const remainingTime = targetTime - accumulatedTime;
+      
+      // Calculate time for this exercise
+      const timeForThisExercise = Math.min(
+        maxTimePerExercise,
+        Math.max(timeConfig.minExerciseTime, remainingTime)
       );
 
-      result.push({
-        ...ex,
-        durationMinutes: Math.round(warmupTimePerExercise * 10) / 10, // 소수점 1자리
+      // Skip if remaining time is too small
+      if (remainingTime < timeConfig.minExerciseTime && sectionResult.length > 0) {
+        break;
+      }
+
+      const { sets, reps } = calculateSetsAndReps(
+        sourceExercise.durationMinutes,
+        timeForThisExercise,
+        sourceExercise.sets,
+        sourceExercise.reps,
+        section
+      );
+
+      sectionResult.push({
+        ...sourceExercise,
+        orderInSection: orderCounter,
+        durationMinutes: Math.round(timeForThisExercise * 10) / 10,
         sets,
         reps,
       });
-    });
-  }
 
-  // Main 시간 배분
-  if (exercises.main.length > 0) {
-    const mainTimePerExercise = Math.min(
-      timeConfig.maxMainExerciseTime,
-      Math.max(
-        timeConfig.minExerciseTime,
-        actualMainTime / exercises.main.length
-      )
-    );
+      accumulatedTime += timeForThisExercise;
+      exerciseIndex++;
+      orderCounter++;
 
-    exercises.main.forEach((ex) => {
-      const { sets, reps } = calculateSetsAndReps(
-        ex.durationMinutes,
-        mainTimePerExercise,
-        ex.sets,
-        ex.reps,
-        'main'
-      );
+      // Safety limit: prevent infinite loops
+      if (orderCounter > 20) break;
+    }
 
-      result.push({
-        ...ex,
-        durationMinutes: Math.round(mainTimePerExercise * 10) / 10,
-        sets,
-        reps,
-      });
-    });
-  }
+    return sectionResult;
+  };
 
-  // Cooldown 시간 배분
-  if (exercises.cooldown.length > 0) {
-    const cooldownTimePerExercise = Math.min(
-      timeConfig.maxWarmupCooldownTime,
-      Math.max(
-        timeConfig.minExerciseTime,
-        timeConfig.cooldownTime / exercises.cooldown.length
-      )
-    );
+  // Warmup 시간 배분 (반복하여 시간 채우기)
+  const warmupExercises = repeatExercisesToFillTime(
+    exercises.warmup,
+    timeConfig.warmupTime,
+    timeConfig.maxWarmupCooldownTime,
+    'warmup'
+  );
+  result.push(...warmupExercises);
 
-    exercises.cooldown.forEach((ex) => {
-      const { sets, reps } = calculateSetsAndReps(
-        ex.durationMinutes,
-        cooldownTimePerExercise,
-        ex.sets,
-        ex.reps,
-        'cooldown'
-      );
+  // Main 시간 배분 (반복하여 시간 채우기)
+  const mainExercises = repeatExercisesToFillTime(
+    exercises.main,
+    actualMainTime,
+    timeConfig.maxMainExerciseTime,
+    'main'
+  );
+  result.push(...mainExercises);
 
-      result.push({
-        ...ex,
-        durationMinutes: Math.round(cooldownTimePerExercise * 10) / 10,
-        sets,
-        reps,
-      });
-    });
-  }
+  // Cooldown 시간 배분 (반복하여 시간 채우기)
+  const cooldownExercises = repeatExercisesToFillTime(
+    exercises.cooldown,
+    timeConfig.cooldownTime,
+    timeConfig.maxWarmupCooldownTime,
+    'cooldown'
+  );
+  result.push(...cooldownExercises);
 
   return result;
 }
