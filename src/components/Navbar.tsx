@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { PainCheckModal } from "@/components/pain-check-modal";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,11 +47,11 @@ const Navbar = () => {
             </>
           )}
           {isLoaded && isSignedIn && (
-            <Link href="/rehab">
+            <PainCheckModal>
               <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
                 재활 코스
               </Button>
-            </Link>
+            </PainCheckModal>
           )}
         </div>
 
@@ -96,11 +97,14 @@ const Navbar = () => {
               </>
             )}
             {isLoaded && isSignedIn && (
-              <Link href="/rehab" onClick={() => setIsOpen(false)}>
-                <Button className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+              <PainCheckModal>
+                <Button 
+                  className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                  onClick={() => setIsOpen(false)}
+                >
                   재활 코스
                 </Button>
-              </Link>
+              </PainCheckModal>
             )}
           </div>
         </div>

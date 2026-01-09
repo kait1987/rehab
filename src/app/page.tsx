@@ -3,6 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { PainCheckModal } from "@/components/pain-check-modal";
 
 export default function HomePage() {
   const { isLoaded, isSignedIn } = useUser();
@@ -43,13 +44,14 @@ export default function HomePage() {
                 </>
               )}
               {isLoaded && isSignedIn && (
-                <Button 
-                  size="lg" 
-                  className="rounded-xl"
-                  onClick={() => router.push('/rehab')}
-                >
-                  재활 코스 시작하기
-                </Button>
+                <PainCheckModal>
+                  <Button 
+                    size="lg" 
+                    className="rounded-xl"
+                  >
+                    내 몸 상태로 재활 코스 만들기
+                  </Button>
+                </PainCheckModal>
               )}
             </div>
           </div>

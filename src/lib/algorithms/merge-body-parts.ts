@@ -96,6 +96,11 @@ export async function mergeBodyParts(
 
     if (!bodyPart) continue;
 
+    // ✅ 비활성 운동 필터링 (isActive: false인 운동 제외)
+    if (!mapping.exerciseTemplate.isActive) {
+      continue;
+    }
+
     // pain_level_range 매칭 확인
     if (
       !matchesPainLevelRange(
@@ -106,19 +111,29 @@ export async function mergeBodyParts(
       continue;
     }
 
-    // 기구 필터링 (선택적)
-    if (request.equipmentAvailable.length > 0) {
-      const requiredEquipment = mapping.exerciseTemplate.exerciseEquipmentMappings
-        .filter((eem) => eem.isRequired)
-        .map((eem) => eem.equipmentType.name);
+    // 기구 필터링: 정확한 기구 매칭
+    const exerciseEquipment = mapping.exerciseTemplate.exerciseEquipmentMappings
+      .map((eem) => eem.equipmentType.name);
 
-      const hasRequiredEquipment = requiredEquipment.every((eq) =>
-        request.equipmentAvailable.includes(eq)
-      );
+    // 사용자가 선택한 기구 Set
+    const userEquipmentSet = new Set(request.equipmentAvailable || []);
 
-      if (!hasRequiredEquipment && requiredEquipment.length > 0) {
-        continue;
-      }
+    // 운동 가능 조건 체크
+    // 1. "없음"만 필요한 운동 → 항상 가능 (맨손 운동)
+    const isNoEquipmentExercise = 
+      exerciseEquipment.length === 1 && exerciseEquipment[0] === '없음';
+
+    // 2. 특정 기구 필요 → 사용자가 해당 기구를 모두 가지고 있어야 함
+    //    (또는 "없음"으로 대체 가능한 경우)
+    const hasAllRequiredEquipment = exerciseEquipment.every(eq => 
+      eq === '없음' || userEquipmentSet.has(eq)
+    );
+
+    // 필터링: 맨손 운동이 아니고, 필요한 기구도 없으면 제외
+    if (!isNoEquipmentExercise && !hasAllRequiredEquipment) {
+      // Debug log (운영 시 제거 가능)
+      // console.log(`⏭️ [${mapping.exerciseTemplate.name}] 기구 부족: 필요=${exerciseEquipment.join(',')}, 보유=${Array.from(userEquipmentSet).join(',')}`);
+      continue;
     }
 
     // 우선순위 점수 계산
