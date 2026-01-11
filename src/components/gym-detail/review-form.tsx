@@ -243,6 +243,7 @@ export function ReviewForm({
             maxLength={500}
             rows={5}
             className="resize-none"
+            data-testid="review-comment"
           />
           <div className="flex justify-between items-center">
             <p className="text-xs text-muted-foreground">
@@ -268,6 +269,7 @@ export function ReviewForm({
             onClick={handleSubmit}
             disabled={isSubmitting || success || selectedTagIds.length === 0}
             className="flex-1 bg-primary hover:bg-primary-hover text-white"
+            data-testid="submit-review"
           >
             {isSubmitting ? (
               <>

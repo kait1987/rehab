@@ -207,6 +207,7 @@ export function distributeTime(
 
       sectionResult.push({
         ...sourceExercise,
+        section, // 섹션 속성을 명시적으로 설정
         orderInSection: orderCounter,
         durationMinutes: Math.round(timeForThisExercise * 10) / 10,
         sets,

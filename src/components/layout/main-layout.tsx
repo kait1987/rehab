@@ -9,11 +9,13 @@
  * 
  * @dependencies
  * - @/components/Navbar: 네비게이션 바 컴포넌트
+ * - @/components/Footer: 푸터 컴포넌트
  * - @/components/layout/page-wrapper: 페이지 래퍼 컴포넌트
  */
 
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
 interface MainLayoutProps {
@@ -25,6 +27,7 @@ interface MainLayoutProps {
  * 
  * 전체 페이지의 기본 레이아웃을 제공합니다.
  * - Navbar 포함
+ * - Footer 포함 (이용약관, 개인정보처리방침 링크)
  * - 다크 배경
  * - 모바일 우선 반응형
  */
@@ -46,10 +49,14 @@ export function MainLayout({ children }: MainLayoutProps) {
       </Suspense>
 
       {/* 메인 콘텐츠 영역 */}
-      <main className="relative">
+      <main className="relative flex-1">
         {children}
       </main>
+
+      {/* 푸터 - 이용약관, 개인정보처리방침 링크 */}
+      <Footer />
     </PageWrapper>
   );
 }
+
 

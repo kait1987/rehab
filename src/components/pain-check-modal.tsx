@@ -468,6 +468,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                       key={option.value}
                       type="button"
                       onClick={() => setTotalDurationMinutes(option.value)}
+                      data-testid={`duration-${option.value}`}
                       className={cn(
                         "w-full p-4 rounded-xl border-2 transition-all duration-200 text-left",
                         totalDurationMinutes === option.value
@@ -515,6 +516,7 @@ export function PainCheckModal({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={handleNext}
                 disabled={loading}
+                data-testid={step === 4 ? "generate-course" : undefined}
                 className={cn(
                   "flex-1",
                   step === 1 && "ml-auto"

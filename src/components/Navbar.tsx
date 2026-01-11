@@ -2,16 +2,29 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useClerk, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PainCheckModal } from "@/components/pain-check-modal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
   const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
@@ -47,11 +60,67 @@ const Navbar = () => {
             </>
           )}
           {isLoaded && isSignedIn && (
-            <PainCheckModal>
-              <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
-                재활 코스
-              </Button>
-            </PainCheckModal>
+            <>
+              <PainCheckModal>
+                <Button className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm">
+                  재활 코스
+                </Button>
+              </PainCheckModal>
+              
+              {/* 프로필 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="rounded-full p-2 hover:bg-muted"
+                    aria-label="프로필 메뉴"
+                  >
+                    {user?.imageUrl ? (
+                      <img
+                        src={user.imageUrl}
+                        alt="프로필"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-6 h-6" strokeWidth={1.5} />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-3 py-2">
+                    <p className="text-sm font-medium truncate">
+                      {user?.fullName || user?.primaryEmailAddress?.emailAddress || '사용자'}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.primaryEmailAddress?.emailAddress}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => router.push('/mypage')}
+                    className="cursor-pointer"
+                  >
+                    <User className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    마이페이지
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push('/settings')}
+                    className="cursor-pointer"
+                  >
+                    <Settings className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    설정
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    로그아웃
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           )}
         </div>
 
@@ -97,14 +166,61 @@ const Navbar = () => {
               </>
             )}
             {isLoaded && isSignedIn && (
-              <PainCheckModal>
-                <Button 
-                  className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                  onClick={() => setIsOpen(false)}
-                >
-                  재활 코스
-                </Button>
-              </PainCheckModal>
+              <>
+                <PainCheckModal>
+                  <Button 
+                    className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    재활 코스
+                  </Button>
+                </PainCheckModal>
+                
+                {/* 모바일 프로필 메뉴 */}
+                <div className="border-t border-border pt-2 mt-2">
+                  <div className="px-2 py-2 mb-2">
+                    <p className="text-sm font-medium truncate">
+                      {user?.fullName || user?.primaryEmailAddress?.emailAddress || '사용자'}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.primaryEmailAddress?.emailAddress}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      router.push('/mypage');
+                      setIsOpen(false);
+                    }}
+                    className="w-full justify-start"
+                  >
+                    <User className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    마이페이지
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      router.push('/settings');
+                      setIsOpen(false);
+                    }}
+                    className="w-full justify-start"
+                  >
+                    <Settings className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    설정
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsOpen(false);
+                    }}
+                    className="w-full justify-start text-destructive hover:text-destructive"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                    로그아웃
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </div>

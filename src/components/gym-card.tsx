@@ -132,6 +132,7 @@ export function GymCard({ gym }: GymCardProps) {
     <Card
       className="p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
       onClick={handleClick}
+      data-testid="gym-card"
     >
       {/* 헤더: 이름 + 영업 상태 배지 */}
       <div className="flex items-start justify-between gap-2 mb-3">

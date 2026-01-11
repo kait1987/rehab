@@ -1,0 +1,91 @@
+
+> nextjs-supabase-boilerplate@0.1.0 test:e2e C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main
+> playwright test "--project=setup"
+
+[dotenv@17.2.3] injecting env (13) from .env.local -- tip: ?뵍 prevent building .env in docker: https://dotenvx.com/prebuild
+
+Running 1 test using 1 worker
+
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ?뵍 prevent building .env in docker: https://dotenvx.com/prebuild
+?뵍 Clerk 濡쒓렇??吏꾪뻾 以?..
+?뜧 Auth Setup Cookies: [
+  {
+    "name": "__cf_bm",
+    "value": "lPx_HeRoNKUHAoQE_xvgstueYpblI_wnSwoR1CR06iM-1768112021-1.0.1.1-ZrePS1AtSLtGSqTCKdb2XWWpM8vVDqcnqJoNOqQz1VBesLauG_IX2Hea.Z7HXf7A90o37DaB5L0jhM5BMNho4KE7TZpCcnfMXFHiGZIZNbU",
+    "domain": ".outgoing-chimp-38.clerk.accounts.dev",
+    "path": "/",
+    "expires": 1768113822.888516,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "_cfuvid",
+    "value": "K9vZg3aqcJRZrgInICBpk8z8XAcs5wh_1TEMMl4yPQQ-1768112021320-0.0.1.1-604800000",
+    "domain": ".outgoing-chimp-38.clerk.accounts.dev",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "__clerk_db_jwt_vBxofsge",
+    "value": "dvb_386FHQLONNuCiz1qP1C8OqfkZCE",
+    "domain": "localhost",
+    "path": "/",
+    "expires": 1799648029,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "__clerk_db_jwt",
+    "value": "dvb_386FHQLONNuCiz1qP1C8OqfkZCE",
+    "domain": "localhost",
+    "path": "/",
+    "expires": 1799648029,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "__client_uat_vBxofsge",
+    "value": "0",
+    "domain": "localhost",
+    "path": "/",
+    "expires": 1799648027,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Strict"
+  },
+  {
+    "name": "__client_uat",
+    "value": "0",
+    "domain": "localhost",
+    "path": "/",
+    "expires": 1799648027,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Strict"
+  }
+]
+???덉쑝濡?由щ떎?대젆?몃릺?덉쑝???ъ쟾??濡쒓렇??踰꾪듉??蹂댁엯?덈떎.
+??濡쒓렇???ㅽ뙣: Error: 濡쒓렇???ㅽ뙣: ?몄뀡???좎??섏? ?딆쓬
+    at C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\tests\e2e\auth.setup.ts:73:13
+    at C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\workerMain.js:322:9
+    at C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable (C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\timeoutManager.js:67:14)
+    at TestInfoImpl._runWithTimeout (C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\testInfo.js:309:7)
+    at C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\workerMain.js:320:7
+    at WorkerMain._runTest (C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\workerMain.js:295:5)
+    at WorkerMain.runTestGroup (C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\worker\workerMain.js:199:11)
+    at process.<anonymous> (C:\coding\REHAP_APP\nextjs-supabase-boilerplate-main\node_modules\.pnpm\playwright@1.57.0\node_modules\playwright\lib\common\process.js:65:22)
+  ?? 1 [setup] ??tests\e2e\auth.setup.ts:15:6 ??authenticate (12.1s)
+
+  1 passed (16.0s)
+
+To open last HTML report run:
+[36m[39m
+[36m  pnpm exec playwright show-report[39m
+[36m[39m
