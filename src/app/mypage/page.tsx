@@ -10,7 +10,7 @@ import { useRecentCourses } from "@/hooks/use-recent-courses";
 export default function MyPage() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
-  const { courses } = useRecentCourses();
+  const { recentCourses } = useRecentCourses();
 
   if (!isLoaded) {
     return (
@@ -84,13 +84,13 @@ export default function MyPage() {
             <CardTitle>최근 생성한 코스</CardTitle>
           </CardHeader>
           <CardContent>
-            {courses.length === 0 ? (
+            {recentCourses.length === 0 ? (
               <p className="text-muted-foreground text-center py-4">
                 아직 생성한 코스가 없습니다.
               </p>
             ) : (
               <ul className="space-y-3">
-                {courses.slice(0, 5).map((course, index) => (
+                {recentCourses.slice(0, 5).map((course, index) => (
                   <li key={index} className="p-3 bg-muted/50 rounded-lg">
                     <div className="flex justify-between items-center">
                       <div>
