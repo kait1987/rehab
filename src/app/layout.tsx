@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { MainLayout } from "@/components/layout/main-layout";
 import { ClientProviders } from "@/components/providers/client-providers";
@@ -55,8 +56,11 @@ export default function RootLayout({
         <ClientProviders>
           <MainLayout>{children}</MainLayout>
         </ClientProviders>
+        {/* Vercel Analytics */}
+        <Analytics />
       </body>
     </html>
   );
 }
+
 

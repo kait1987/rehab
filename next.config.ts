@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 // 빌드 타임 환경 변수 검증 (경고만 출력, 에러는 던지지 않음)
 function validateEnvVars() {
@@ -34,4 +35,21 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry 설정 옵션
+const sentryBuildOptions = {
+  // 소스맵 업로드 설정 (SENTRY_AUTH_TOKEN 필요)
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  
+  // 소스맵 삭제 (배포 후 보안)
+  hideSourceMaps: true,
+  
+  // 빌드 시간 단축을 위해 소스맵 업로드 비활성화 (선택)
+  disableServerWebpackPlugin: !process.env.SENTRY_AUTH_TOKEN,
+  disableClientWebpackPlugin: !process.env.SENTRY_AUTH_TOKEN,
+  
+  // 자동 계측
+  automaticVercelMonitors: true,
+};
+
+export default withSentryConfig(nextConfig, sentryBuildOptions);
+

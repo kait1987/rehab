@@ -48,6 +48,7 @@ export default function HomePage() {
                   <Button 
                     size="lg" 
                     className="rounded-xl"
+                    data-testid="home-start-rehab"
                   >
                     내 몸 상태로 재활 코스 만들기
                   </Button>
