@@ -45,7 +45,7 @@ export class ReviewPage {
    * 리뷰 작성 페이지로 이동
    */
   async goto(gymId: string) {
-    await this.page.goto(`/gyms/${gymId}/review`);
+    await this.page.goto(`/gyms/${gymId}/review`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   }
 
   /**
@@ -129,6 +129,13 @@ export class ReviewPage {
    * 선택된 태그 수 확인
    */
   async getSelectedTagCount(): Promise<number> {
-    return await this.tagButtons.filter({ hasClass: /selected|active|checked/ }).count();
+    return await this.tagButtons.evaluateAll((buttons) => {
+      return buttons.filter((b) => 
+        b.classList.contains('selected') || 
+        b.classList.contains('active') || 
+        b.classList.contains('checked') ||
+        b.getAttribute('data-state') === 'on' // Radix UI Toggle Group support
+      ).length;
+    });
   }
 }

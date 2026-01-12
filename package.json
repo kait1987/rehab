@@ -34,7 +34,13 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "verify": "run-s verify:precheck verify:seed verify:unit verify:e2e verify:build",
+    "verify:precheck": "dotenv -e .env.local -- node ./scripts/precheck.mjs",
+    "verify:seed": "dotenv -e .env.local -- node scripts/seed-master-data.js",
+    "verify:unit": "dotenv -e .env.local -- npm run test:all",
+    "verify:e2e": "dotenv -e .env.local -- npm run test:e2e",
+    "verify:build": "dotenv -e .env.local -- npm run build"
   },
   "dependencies": {
     "@clerk/localizations": "^3.32.1",
@@ -104,8 +110,10 @@
     "@types/react": "18.2.66",
     "@types/react-dom": "18.2.22",
     "@vitest/coverage-v8": "^4.0.16",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.7",
+    "npm-run-all": "^4.1.5",
     "prisma": "6.0.0",
     "tailwindcss": "^4",
     "typescript": "^5",

@@ -56,6 +56,9 @@ export async function GET(
                 reviewTag: true,
               },
             },
+            _count: {
+              select: { votes: true },
+            },
           },
           orderBy: { createdAt: 'desc' },
         },
@@ -75,6 +78,7 @@ export async function GET(
     // 2. 현재 사용자 확인 (즐겨찾기 여부 확인용)
     const user = await currentUser();
     let isFavorite = false;
+    let votedReviewIds: Set<string> = new Set();
 
     if (user) {
       const dbUser = await prisma.user.findUnique({
@@ -89,6 +93,16 @@ export async function GET(
           },
         });
         isFavorite = !!favorite;
+
+        // 사용자가 투표한 리뷰 ID 목록 조회
+        const userVotes = await prisma.reviewVote.findMany({
+          where: {
+            userId: dbUser.id,
+            reviewId: { in: gym.reviews.map(r => r.id) },
+          },
+          select: { reviewId: true },
+        });
+        votedReviewIds = new Set(userVotes.map(v => v.reviewId));
       }
     }
 
@@ -141,8 +155,7 @@ export async function GET(
       }
     }
 
-    // 5. 리뷰 변환
-    const reviews: ReviewWithTags[] = gym.reviews.map((review) => ({
+    const reviews: (ReviewWithTags & { voteCount: number; hasVoted: boolean })[] = gym.reviews.map((review) => ({
       id: review.id,
       userId: review.userId,
       comment: review.comment,
@@ -153,6 +166,8 @@ export async function GET(
         category: mapping.reviewTag.category,
       })),
       createdAt: review.createdAt,
+      voteCount: review._count.votes,
+      hasVoted: votedReviewIds.has(review.id),
     }));
 
     // 6. 리뷰 태그 통계 계산

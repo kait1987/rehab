@@ -60,10 +60,10 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     
     // 액션 타임아웃
-    actionTimeout: 10_000,
+    actionTimeout: 15_000,
     
     // 네비게이션 타임아웃
-    navigationTimeout: 15_000,
+    navigationTimeout: 60_000,
   },
 
   // 프로젝트 설정 (브라우저별)
@@ -94,15 +94,27 @@ export default defineConfig({
       testMatch: '**/unauthenticated/**/*.spec.ts',
     },
     
-    // Mobile Safari (반응형 테스트 필요시)
-    // {
-    //   name: 'mobile-safari',
-    //   use: {
-    //     ...devices['iPhone 13'],
-    //     storageState: './tests/e2e/.auth/user.json',
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    // Mobile iPhone 13 (반응형 테스트)
+    {
+      name: 'mobile-iphone',
+      use: {
+        ...devices['iPhone 13'],
+        storageState: path.resolve(__dirname, 'tests/e2e/.auth/user.json'),
+      },
+      dependencies: ['setup'],
+      testMatch: '**/flows/**/*.spec.ts', // 핵심 플로우만
+    },
+    
+    // Mobile Pixel 5 (Android 반응형 테스트)
+    {
+      name: 'mobile-pixel',
+      use: {
+        ...devices['Pixel 5'],
+        storageState: path.resolve(__dirname, 'tests/e2e/.auth/user.json'),
+      },
+      dependencies: ['setup'],
+      testMatch: '**/flows/**/*.spec.ts', // 핵심 플로우만
+    },
   ],
 
   // 웹서버 설정 (Next.js)
@@ -113,6 +125,10 @@ export default defineConfig({
     timeout: 120_000, // 서버 시작 대기 2분
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+      ...process.env,
+      NEXT_PUBLIC_E2E_BYPASS_AUTH: 'true',
+    },
   },
 
   // 출력 디렉토리

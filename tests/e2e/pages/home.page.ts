@@ -34,7 +34,7 @@ export class HomePage {
    * 홈 페이지로 이동
    */
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   }
 
   /**

@@ -36,11 +36,36 @@ model User {
   userCourseHistory UserCourseHistory[]
   userFavorites     UserFavorite[]
   events            Event[]
+  fitnessProfile    UserFitnessProfile?  // NEW: 운동 프로필
+  gymReports        GymReport[]          // NEW: 헬스장 제보
+  reviewVotes       ReviewVote[]         @relation("ReviewVotes") // NEW: 리뷰 투표
+  progressLogs      UserProgressLog[]    @relation("UserProgressLogs") // NEW: 진행 로그
 
   @@index([clerkId], map: "idx_users_clerk_id")
   @@index([isActive], map: "idx_users_is_active")
   @@index([isAdmin], map: "idx_users_is_admin")
   @@map("users")
+}
+
+// 사용자 피트니스 프로필 (ENG-S4-01)
+model UserFitnessProfile {
+  id                  String    @id @default(uuid()) @db.Uuid
+  userId              String    @unique @map("user_id") @db.Uuid
+  fitnessLevel        Int       @default(2) @map("fitness_level")  // 1-5
+  rehabPhase          String    @default("initial") @map("rehab_phase")  // initial, recovery, strengthening
+  lastAssessment      DateTime? @map("last_assessment") @db.Timestamptz
+  avgCompletionRate   Float?    @map("avg_completion_rate")  // 0.0-1.0
+  avgPainReduction    Float?    @map("avg_pain_reduction")   // 평균 통증 감소율
+  totalCoursesCompleted Int     @default(0) @map("total_courses_completed")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([fitnessLevel], map: "idx_user_fitness_profiles_fitness_level")
+  @@index([rehabPhase], map: "idx_user_fitness_profiles_rehab_phase")
+  @@map("user_fitness_profiles")
 }
 
 // ============================================
@@ -69,11 +94,38 @@ model Gym {
   crowdLevels    GymCrowdLevel[]
   reviews        Review[]
   userFavorites  UserFavorite[]
+  reports        GymReport[]
 
   @@index([latitude, longitude], map: "idx_gyms_location")
   @@index([isActive], map: "idx_gyms_is_active")
   @@index([priceRange], map: "idx_gyms_price_range")
   @@map("gyms")
+}
+
+// 헬스장 사용자 제보 (P2-LOC-S1-01)
+model GymReport {
+  id             String    @id @default(uuid()) @db.Uuid
+  gymId          String    @map("gym_id") @db.Uuid
+  userId         String?   @map("user_id") @db.Uuid
+  reportType     String    @map("report_type") @db.VarChar(30)  // "info_wrong", "closed", "moved", "hours_changed", "other"
+  fieldName      String?   @map("field_name") @db.VarChar(50)   // "name", "address", "phone", "operatingHours"
+  currentValue   String?   @map("current_value")
+  suggestedValue String?   @map("suggested_value")
+  description    String?
+  status         String    @default("pending") @db.VarChar(20)  // "pending", "approved", "rejected"
+  reviewedBy     String?   @map("reviewed_by") @db.Uuid
+  reviewNote     String?   @map("review_note")
+  reviewedAt     DateTime? @map("reviewed_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  gym  Gym   @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([gymId], map: "idx_gym_reports_gym_id")
+  @@index([status], map: "idx_gym_reports_status")
+  @@index([createdAt], map: "idx_gym_reports_created_at")
+  @@map("gym_reports")
 }
 
 model GymFacility {
@@ -108,6 +160,7 @@ model GymOperatingHour {
   openTime  String?  @map("open_time")
   closeTime String?  @map("close_time")
   isClosed  Boolean  @default(false) @map("is_closed")
+  isVerified Boolean  @default(false) @map("is_verified") // 관리자 검증 여부
   notes     String?
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -176,6 +229,7 @@ model Review {
   gym               Gym                @relation(fields: [gymId], references: [id], onDelete: Cascade)
   user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   reviewTagMappings ReviewTagMapping[]
+  votes             ReviewVote[]       // 리뷰 투표
 
   @@index([gymId], map: "idx_reviews_gym_id")
   @@index([userId], map: "idx_reviews_user_id")
@@ -202,6 +256,23 @@ model ReviewTagMapping {
   @@map("review_tag_mappings")
 }
 
+// 리뷰 투표 (P2-S2-03)
+model ReviewVote {
+  id        String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @map("review_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation("ReviewVotes", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId], map: "review_votes_unique")
+  @@index([reviewId], map: "idx_review_votes_review_id")
+  @@index([userId], map: "idx_review_votes_user_id")
+  @@map("review_votes")
+}
+
 // ============================================
 // 4️⃣ 재활 코스 관련 테이블
 // ============================================
@@ -209,17 +280,26 @@ model ReviewTagMapping {
 model BodyPart {
   id           String   @id @default(uuid()) @db.Uuid
   name         String   @unique
+  parentId     String?  @map("parent_id") @db.Uuid  // 상위 부위 (계층 구조)
+  level        Int      @default(1)                  // 계층 레벨 (1=대분류, 2=소분류)
+  synonyms     String[] @default([])                 // 동의어 배열
   displayOrder Int      @default(0) @map("display_order")
   isActive     Boolean  @default(true) @map("is_active")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  // Relations
+  // Self-relation for hierarchy
+  parent       BodyPart?  @relation("BodyPartHierarchy", fields: [parentId], references: [id])
+  children     BodyPart[] @relation("BodyPartHierarchy")
+
+  // Other relations
   exerciseTemplates ExerciseTemplate[]
   userPainProfiles  UserPainProfile[]
   exerciseMappings  BodyPartExerciseMapping[]
   contraindications BodyPartContraindication[]
+  progressLogs      UserProgressLog[]    @relation("ProgressLogs") // NEW: 진행 로그
 
+  @@index([parentId], map: "idx_body_parts_parent_id")
   @@index([displayOrder], map: "idx_body_parts_display_order")
   @@map("body_parts")
 }
@@ -315,9 +395,11 @@ model BodyPartContraindication {
   id                 String   @id @default(uuid()) @db.Uuid
   bodyPartId         String   @map("body_part_id") @db.Uuid
   exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
-  painLevelMin       Int?     @map("pain_level_min")
+  painLevelMin       Int?     @map("pain_level_min")     // 최소 통증 레벨
+  painLevelMax       Int?     @map("pain_level_max")     // 최대 통증 레벨 (NEW)
+  condition          String?  @db.VarChar(50)            // 조건: "급성", "만성", "수술후" (NEW)
   reason             String?
-  severity           String   @default("warning") @db.VarChar(20)
+  severity           String   @default("warning") @db.VarChar(20) // "soft" | "hard"
   isActive           Boolean  @default(true) @map("is_active")
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -471,3 +553,28 @@ model Event {
   @@index([eventTime(sort: Desc)], map: "idx_events_event_time")
   @@map("events")
 }
+
+// ============================================
+// 7️⃣ 사용자 진행 상황 추적 (P2-3-S2)
+// ============================================
+
+model UserProgressLog {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  bodyPartId    String   @map("body_part_id") @db.Uuid
+  painLevel     Int      @map("pain_level")                     // 1-10 스케일
+  rangeOfMotion Int?     @map("range_of_motion")                // 0-100% (선택)
+  notes         String?                                          // 메모
+  recordedAt    DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user     User     @relation("UserProgressLogs", fields: [userId], references: [id], onDelete: Cascade)
+  bodyPart BodyPart @relation("ProgressLogs", fields: [bodyPartId], references: [id])
+
+  @@index([userId], map: "idx_user_progress_logs_user_id")
+  @@index([bodyPartId], map: "idx_user_progress_logs_body_part_id")
+  @@index([recordedAt(sort: Desc)], map: "idx_user_progress_logs_recorded_at")
+  @@map("user_progress_logs")
+}
+

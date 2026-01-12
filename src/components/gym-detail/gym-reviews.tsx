@@ -36,6 +36,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Edit2, Trash2, Loader2 } from 'lucide-react';
+import { ReviewVoteButton } from './review-vote-button';
 import type { ReviewTagStats, ReviewWithTags } from '@/types/gym-detail';
 
 interface GymReviewsProps {
@@ -169,14 +170,21 @@ export function GymReviews({ reviews, tagStats, gymId, currentUserId }: GymRevie
                 <p className="text-sm mb-2 leading-relaxed text-foreground">{review.comment}</p>
               )}
 
-              {/* 작성일 및 액션 버튼 */}
+              {/* 작성일, 투표 버튼 및 액션 버튼 */}
               <div className="flex items-center justify-between gap-2">
-                <time className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(review.createdAt), {
-                    addSuffix: true,
-                    locale: ko,
-                  })}
-                </time>
+                <div className="flex items-center gap-3">
+                  <time className="text-xs text-muted-foreground">
+                    {formatDistanceToNow(new Date(review.createdAt), {
+                      addSuffix: true,
+                      locale: ko,
+                    })}
+                  </time>
+                  <ReviewVoteButton
+                    reviewId={review.id}
+                    initialVoteCount={(review as any).voteCount ?? 0}
+                    initialHasVoted={(review as any).hasVoted ?? false}
+                  />
+                </div>
                 
                 {/* 수정/삭제 버튼 (본인 리뷰인 경우만) */}
                 {isOwnReview(review.userId) && (
