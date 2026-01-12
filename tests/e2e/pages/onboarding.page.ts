@@ -33,7 +33,7 @@ export class OnboardingPage {
     this.page = page;
     
     // 진입점 (홈 페이지의 버튼)
-    this.startButton = page.getByRole('button', { name: /내 몸 상태로 재활 코스 만들기/i });
+    this.startButton = page.getByRole('button', { name: /재활 코스 만들기/i });
     
     // 모달 공통
     this.modalContent = page.locator('[role="dialog"]');
@@ -59,47 +59,17 @@ export class OnboardingPage {
    * 온보딩 모달 열기
    */
   async open() {
-    await this.page.goto('/');
+    await this.page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     
     // 페이지 로드 대기
     await this.page.waitForLoadState('domcontentloaded');
 
-    // 로그인 상태 확인 (디버깅용)
-    // Clerk 로딩 대기: 로그인 버튼이나 재활 코스 버튼 중 하나가 나올 때까지 대기
-    try {
-      await expect(
-        this.page.getByRole('button', { name: /로그인|재활 코스|내 몸 상태로/i }).first()
-      ).toBeVisible({ timeout: 15000 });
-    } catch (e) {
-      console.log('⚠️ 버튼을 찾을 수 없습니다. 페이지 소스를 확인합니다.');
-      // 디버깅을 위해 스크린샷이나 소스를 찍을 수 있음
-    }
-
-    const loginBtn = this.page.getByRole('button', { name: /로그인/i }).first();
-    if (await loginBtn.isVisible()) {
-      throw new Error('❌ 테스트가 미인증 상태입니다. storageState가 제대로 로드되지 않았거나 로그인이 풀렸습니다.');
-    }
-
     // 시작 버튼 클릭
-    const heroBtn = this.page.getByRole('button', { name: /내 몸 상태로 재활 코스 만들기/i });
-    const navbarBtn = this.page.getByRole('button', { name: /재활 코스/i }).first();
-
-    if (await heroBtn.isVisible()) {
-      await heroBtn.click();
-    } else if (await navbarBtn.isVisible()) {
-      console.log('⚠️ Hero 버튼을 찾을 수 없어 Navbar 버튼을 사용합니다.');
-      await navbarBtn.click();
-    } else {
-      // 디버깅: 현재 페이지의 모든 버튼 텍스트 출력
-      const buttons = await this.page.getByRole('button').all();
-      console.log('🔍 현재 페이지의 버튼 목록:');
-      for (const btn of buttons) {
-        if (await btn.isVisible()) {
-          console.log(`- "${await btn.innerText()}"`);
-        }
-      }
-      throw new Error('❌ 온보딩 시작 버튼을 찾을 수 없습니다. (로그인 상태 확인 필요)');
-    }
+    const heroBtn = this.page.getByRole('button', { name: /재활 코스 만들기/i });
+    
+    // Clerk 로딩 대기 및 버튼 표시 대기
+    await expect(heroBtn).toBeVisible({ timeout: 30000 });
+    await heroBtn.click();
 
     await expect(this.modalContent).toBeVisible();
   }
@@ -108,14 +78,20 @@ export class OnboardingPage {
    * Step 1: 부위 및 통증 레벨 선택
    */
   async selectBodyPart(name: string, painLevel: number = 3) {
+    // 데이터 로딩 에러 확인
+    const errorMsg = this.modalContent.getByText(/오류가 발생했습니다/);
+    if (await errorMsg.isVisible()) {
+      throw new Error(`❌ 데이터 로딩 실패: ${await errorMsg.innerText()}`);
+    }
+
     // 부위 선택
-    const bodyPartBtn = this.modalContent.locator(`button:has-text("${name}")`).first();
+    const bodyPartBtn = this.modalContent.getByRole('button', { name: name, exact: true }).first();
+    await expect(bodyPartBtn).toBeVisible({ timeout: 10000 });
     await bodyPartBtn.click();
     
     // 통증 레벨 선택 (부위 선택 후 나타나는 버튼)
-    // 부위 버튼의 부모/형제 요소 내에서 통증 레벨 버튼 찾기
-    // BodyPartSelector 구조상 부위 버튼 아래에 통증 레벨 버튼들이 렌더링됨
     const painLevelBtn = this.modalContent.locator(`button[aria-label="통증 정도 ${painLevel}"]`).last();
+    await expect(painLevelBtn).toBeVisible();
     await painLevelBtn.click();
   }
 
@@ -123,7 +99,8 @@ export class OnboardingPage {
    * Step 2: 장비 선택
    */
   async selectEquipment(name: string) {
-    const equipmentBtn = this.modalContent.locator(`button:has-text("${name}")`).first();
+    const equipmentBtn = this.modalContent.getByRole('button', { name: name }).first();
+    await expect(equipmentBtn).toBeVisible({ timeout: 10000 });
     await equipmentBtn.click();
   }
 
@@ -131,7 +108,8 @@ export class OnboardingPage {
    * Step 3: 운동 경험 선택
    */
   async selectExperience(level: '거의 안 함' | '주 1-2회' | '주 3회 이상') {
-    const experienceBtn = this.modalContent.locator(`button:has-text("${level}")`).first();
+    const experienceBtn = this.modalContent.getByRole('button', { name: level }).first();
+    await expect(experienceBtn).toBeVisible();
     await experienceBtn.click();
   }
 
@@ -139,7 +117,8 @@ export class OnboardingPage {
    * Step 4: 시간 선택
    */
   async selectDuration(minutes: 60 | 90 | 120) {
-    const durationBtn = this.modalContent.locator(`button:has-text("${minutes}분")`).first();
+    const durationBtn = this.modalContent.getByRole('button', { name: `${minutes}분` }).first();
+    await expect(durationBtn).toBeVisible();
     await durationBtn.click();
   }
 

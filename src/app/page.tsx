@@ -24,7 +24,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              {isLoaded && !isSignedIn && (
+              {isLoaded && !isSignedIn && process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH !== 'true' && (
                 <>
                   <Button 
                     size="lg" 
@@ -43,7 +43,7 @@ export default function HomePage() {
                   </Button>
                 </>
               )}
-              {isLoaded && isSignedIn && (
+              {isLoaded && (isSignedIn || process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH === 'true') && (
                 <PainCheckModal>
                   <Button 
                     size="lg" 

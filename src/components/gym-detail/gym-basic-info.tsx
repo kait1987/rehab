@@ -24,6 +24,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Phone, Globe } from 'lucide-react';
 import { getBusinessStatus } from '@/lib/utils/check-business-status';
+import GymReportButton from './gym-report-button';
 import type { OperatingHours } from '@/types/operating-hours';
 
 interface GymBasicInfoProps {
@@ -104,7 +105,10 @@ export function GymBasicInfo({ gym }: GymBasicInfoProps) {
         {/* 헬스장 이름 + 영업 상태 배지 */}
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-3xl font-bold text-foreground">{gym.name}</h1>
-          <BusinessStatusBadge hours={gym.operatingHours} />
+          <div className="flex flex-col items-end gap-2">
+            <BusinessStatusBadge hours={gym.operatingHours} />
+            <GymReportButton gymId={gym.id} gymName={gym.name} />
+          </div>
         </div>
 
         {/* 주소 */}

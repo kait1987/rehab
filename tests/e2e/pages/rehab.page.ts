@@ -35,6 +35,8 @@ export class RehabPage {
     // 결과 섹션 (탭 컨텐츠)
     this.courseResult = page.locator('main');
     this.warmupSection = page.locator('[role="tabpanel"][data-state="active"]'); // 현재 활성 탭
+    this.mainSection = page.locator('[role="tabpanel"]').nth(1);
+    this.cooldownSection = page.locator('[role="tabpanel"]').nth(2);
     
     // 탭 트리거
     this.warmupTab = page.getByRole('tab', { name: /준비/i });
@@ -55,7 +57,7 @@ export class RehabPage {
    * 재활 코스 페이지로 이동 (직접 이동 시 데이터 없음 에러 발생 가능)
    */
   async goto() {
-    await this.page.goto('/rehab');
+    await this.page.goto('/rehab', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   }
 
   /**
