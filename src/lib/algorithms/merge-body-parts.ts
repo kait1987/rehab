@@ -47,10 +47,12 @@ function matchesPainLevelRange(
  * 여러 부위의 추천 운동을 병합하여 최종 코스를 생성합니다.
  * 
  * @param request 병합 요청
+ * @param intensityAdjustment 강도 조정 (-1: 하향, 0: 유지, +1: 상향) - P2-F1-01
  * @returns 병합 결과
  */
 export async function mergeBodyParts(
-  request: MergeRequest
+  request: MergeRequest,
+  intensityAdjustment: number = 0
 ): Promise<MergeResult> {
   const warnings: string[] = [];
   const bodyPartIds = request.bodyParts.map((bp) => bp.bodyPartId);

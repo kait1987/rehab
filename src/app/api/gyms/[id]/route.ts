@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma/client';
+import { calculateTrustScore } from '@/lib/utils/calculate-trust-score';
 import type { GymDetailResponse, GymDetail, ReviewWithTags, ReviewTagStats } from '@/types/gym-detail';
 import type { OperatingHours } from '@/types/operating-hours';
 import type { GymFacilities } from '@/types/gym-search';
@@ -155,20 +156,33 @@ export async function GET(
       }
     }
 
-    const reviews: (ReviewWithTags & { voteCount: number; hasVoted: boolean })[] = gym.reviews.map((review) => ({
-      id: review.id,
-      userId: review.userId,
-      comment: review.comment,
-      isAdminReview: review.isAdminReview,
-      tags: review.reviewTagMappings.map((mapping) => ({
-        id: mapping.reviewTag.id,
-        name: mapping.reviewTag.name,
-        category: mapping.reviewTag.category,
-      })),
-      createdAt: review.createdAt,
-      voteCount: review._count.votes,
-      hasVoted: votedReviewIds.has(review.id),
-    }));
+    // P2-F2-01/02: 리뷰에 trustScore 추가 및 정렬
+    const reviews: (ReviewWithTags & { voteCount: number; hasVoted: boolean; trustScore: number; tier: string })[] = gym.reviews
+      .map((review) => {
+        const voteCount = review._count.votes;
+        const trustResult = calculateTrustScore({
+          voteCount,
+          authorTotalReviews: 1, // 간단화: 향후 작성자별 리뷰 수 집계 가능
+          hasImages: false, // 현재 이미지 필드 없음
+        });
+        return {
+          id: review.id,
+          userId: review.userId,
+          comment: review.comment,
+          isAdminReview: review.isAdminReview,
+          tags: review.reviewTagMappings.map((mapping) => ({
+            id: mapping.reviewTag.id,
+            name: mapping.reviewTag.name,
+            category: mapping.reviewTag.category,
+          })),
+          createdAt: review.createdAt,
+          voteCount,
+          hasVoted: votedReviewIds.has(review.id),
+          trustScore: trustResult.score,
+          tier: trustResult.tier,
+        };
+      })
+      .sort((a, b) => b.trustScore - a.trustScore); // 신뢰도순 정렬
 
     // 6. 리뷰 태그 통계 계산
     const tagStatsMap = new Map<string, { name: string; category: string | null; count: number }>();

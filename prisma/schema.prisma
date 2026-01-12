@@ -40,6 +40,7 @@ model User {
   gymReports        GymReport[]          // NEW: 헬스장 제보
   reviewVotes       ReviewVote[]         @relation("ReviewVotes") // NEW: 리뷰 투표
   progressLogs      UserProgressLog[]    @relation("UserProgressLogs") // NEW: 진행 로그
+  wearableData      WearableData[]       @relation("UserWearableData") // P3-W1-01
 
   @@index([clerkId], map: "idx_users_clerk_id")
   @@index([isActive], map: "idx_users_is_active")
@@ -578,3 +579,21 @@ model UserProgressLog {
   @@map("user_progress_logs")
 }
 
+// P3-W1-01: 웨어러블 건강 데이터
+model WearableData {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  source     String   @db.VarChar(30)      // healthkit | googlefit | manual
+  dataType   String   @map("data_type") @db.VarChar(30) // steps | heart_rate | sleep | calories
+  value      Float
+  unit       String?  @db.VarChar(20)      // count | bpm | hours | kcal
+  recordedAt DateTime @map("recorded_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user User @relation("UserWearableData", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dataType, recordedAt], map: "idx_wearable_data_user_type_date")
+  @@index([userId], map: "idx_wearable_data_user_id")
+  @@map("wearable_data")
+}
