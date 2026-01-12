@@ -1,6 +1,8 @@
 /**
  * P2-LOC-S1-06: 관리자 제보 처리 API
  * PATCH /api/admin/reports/[id]
+ * 
+ * P2-F2-03: 승인 시 Gym 데이터 자동 업데이트 + 로그
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,6 +14,14 @@ const actionSchema = z.object({
   action: z.enum(['approve', 'reject']),
   reviewNote: z.string().max(500).optional()
 });
+
+// 자동 업데이트 가능한 Gym 필드
+const UPDATABLE_GYM_FIELDS = ['name', 'address', 'phone', 'website', 'priceRange', 'description'] as const;
+type UpdatableGymField = typeof UPDATABLE_GYM_FIELDS[number];
+
+function isUpdatableField(field: string | null | undefined): field is UpdatableGymField {
+  return UPDATABLE_GYM_FIELDS.includes(field as UpdatableGymField);
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -33,9 +43,14 @@ export async function PATCH(
     // 2. 파라미터 추출
     const { id: reportId } = await params;
 
-    // 3. 제보 존재 확인
+    // 3. 제보 존재 확인 (Gym 정보 포함)
     const report = await prisma.gymReport.findUnique({
-      where: { id: reportId }
+      where: { id: reportId },
+      include: {
+        gym: {
+          select: { id: true, name: true, address: true, phone: true, website: true, priceRange: true, description: true }
+        }
+      }
     });
 
     if (!report) {
@@ -68,7 +83,45 @@ export async function PATCH(
       select: { id: true }
     });
 
-    // 6. 제보 상태 업데이트
+    // 6. 승인 시 Gym 데이터 자동 업데이트 (P2-F2-03)
+    let gymUpdated = false;
+    let previousValue: string | null = null;
+    
+    if (action === 'approve' && report.fieldName && report.suggestedValue) {
+      if (isUpdatableField(report.fieldName)) {
+        // 현재 값 저장
+        previousValue = report.gym[report.fieldName as keyof typeof report.gym] as string | null;
+        
+        // Gym 데이터 업데이트
+        await prisma.gym.update({
+          where: { id: report.gymId },
+          data: {
+            [report.fieldName]: report.suggestedValue,
+            lastUpdatedAt: new Date()
+          }
+        });
+        
+        gymUpdated = true;
+        
+        // 업데이트 로그 (Event 테이블 활용)
+        await prisma.event.create({
+          data: {
+            userId: admin?.id,
+            eventName: 'gym_report_auto_update',
+            eventData: {
+              reportId,
+              gymId: report.gymId,
+              fieldName: report.fieldName,
+              previousValue,
+              newValue: report.suggestedValue,
+              approvedBy: admin?.id
+            }
+          }
+        });
+      }
+    }
+
+    // 7. 제보 상태 업데이트
     const updatedReport = await prisma.gymReport.update({
       where: { id: reportId },
       data: {
@@ -80,14 +133,24 @@ export async function PATCH(
       select: {
         id: true,
         status: true,
-        reviewedAt: true
+        reviewedAt: true,
+        fieldName: true,
+        suggestedValue: true
       }
     });
 
     return NextResponse.json({
       success: true,
-      data: updatedReport,
-      message: action === 'approve' ? '제보가 승인되었습니다.' : '제보가 거절되었습니다.'
+      data: {
+        ...updatedReport,
+        gymUpdated,
+        previousValue: gymUpdated ? previousValue : undefined
+      },
+      message: action === 'approve' 
+        ? gymUpdated 
+          ? `제보가 승인되었습니다. ${report.fieldName} 필드가 자동 업데이트되었습니다.`
+          : '제보가 승인되었습니다.'
+        : '제보가 거절되었습니다.'
     });
 
   } catch (error) {
@@ -98,3 +161,4 @@ export async function PATCH(
     );
   }
 }
+

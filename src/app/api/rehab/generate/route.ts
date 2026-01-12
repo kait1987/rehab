@@ -7,6 +7,8 @@
  * 사용자가 선택한 부위, 통증 정도, 기구, 경험 수준, 운동 시간을 기반으로
  * 맞춤형 재활 코스를 생성합니다.
  * 
+ * P2-F1-01: 로그인 사용자의 경우 UserPainProfile/UserProgressLog를 자동 반영합니다.
+ * 
  * 요청 본문:
  * {
  *   bodyParts: [
@@ -21,12 +23,16 @@
  * @dependencies
  * - lib/algorithms/merge-body-parts: 코스 생성 로직
  * - lib/validations/merge-request.schema: 요청 검증 스키마
+ * - lib/utils/get-user-personalization: 개인화 데이터 조회
  * - types/body-part-merge: 타입 정의
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma/client";
 import { mergeRequestSchema } from "@/lib/validations/merge-request.schema";
 import { mergeBodyParts } from "@/lib/algorithms/merge-body-parts";
+import { getUserPersonalization, mergePersonalizationWithRequest } from "@/lib/utils/get-user-personalization";
 import type { MergeRequest, MergeResult } from "@/types/body-part-merge";
 
 /**
@@ -36,6 +42,18 @@ import type { MergeRequest, MergeResult } from "@/types/body-part-merge";
  */
 export async function POST(request: NextRequest) {
   try {
+    // 0. 로그인 사용자 확인 (선택적)
+    const { userId: clerkId } = await auth();
+    let internalUserId: string | null = null;
+    
+    if (clerkId) {
+      const user = await prisma.user.findUnique({
+        where: { clerkId },
+        select: { id: true }
+      });
+      internalUserId = user?.id ?? null;
+    }
+
     // 1. 요청 본문 파싱
     let body: unknown;
     try {
@@ -69,12 +87,82 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validatedRequest: MergeRequest = validationResult.data;
+    let validatedRequest: MergeRequest = validationResult.data;
+    
+    // 3. 개인화 데이터 반영 (로그인 사용자만)
+    let personalizationApplied = false;
+    let appliedProfiles: string[] = [];
+    let intensityAdjustment = 0;
+    let progressTrendInfo: string | null = null;
+    let fatigueInfo: string | null = null;
 
-    // 3. 코스 생성 로직 호출
-    const result: MergeResult = await mergeBodyParts(validatedRequest);
+    if (internalUserId) {
+      const personalization = await getUserPersonalization(internalUserId);
+      
+      if (personalization) {
+        // 개인화 데이터 병합
+        const merged = mergePersonalizationWithRequest(
+          validatedRequest.bodyParts,
+          personalization
+        );
+        
+        validatedRequest = {
+          ...validatedRequest,
+          bodyParts: merged.mergedBodyParts
+        };
+        
+        appliedProfiles = merged.appliedProfiles;
+        intensityAdjustment = merged.intensityAdjustment;
+        personalizationApplied = appliedProfiles.length > 0 || personalization.progressTrend !== null;
+        
+        // 진행 추세 정보
+        if (personalization.progressTrend) {
+          const trend = personalization.progressTrend;
+          if (trend.trend === 'improving') {
+            progressTrendInfo = `통증이 개선되고 있습니다 (${trend.avgOlderPain} → ${trend.avgRecentPain}). 강도를 높여도 좋습니다.`;
+          } else if (trend.trend === 'worsening') {
+            progressTrendInfo = `통증이 악화되고 있습니다 (${trend.avgOlderPain} → ${trend.avgRecentPain}). 강도를 낮춥니다.`;
+          }
+        }
+      }
 
-    // 4. Fallback 처리: 운동이 없거나 부족한 경우
+      // P3-W2-03: 웨어러블 데이터 기반 피로도 체크
+      try {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        
+        const stepsData = await prisma.wearableData.findMany({
+          where: {
+            userId: internalUserId,
+            dataType: 'steps',
+            recordedAt: { gte: sevenDaysAgo }
+          },
+          select: { value: true, recordedAt: true },
+          orderBy: { recordedAt: 'desc' }
+        });
+
+        if (stepsData.length >= 3) {
+          // 피로도 계산을 위한 동적 import (선택적)
+          const { calculateFatigue, summarizeStepsForFatigue } = await import('@/lib/utils/calculate-fatigue');
+          const recentSteps = summarizeStepsForFatigue(stepsData);
+          const fatigue = calculateFatigue({ recentSteps });
+
+          if (fatigue.level === 'high') {
+            intensityAdjustment -= 1;
+            fatigueInfo = `피로도가 높습니다 (${fatigue.score}점). 강도를 낮춥니다.`;
+          } else if (fatigue.level === 'moderate') {
+            fatigueInfo = `적당한 피로도입니다 (${fatigue.score}점).`;
+          }
+        }
+      } catch {
+        // 웨어러블 데이터 없거나 오류 시 무시
+      }
+    }
+
+    // 4. 코스 생성 로직 호출
+    const result: MergeResult = await mergeBodyParts(validatedRequest, intensityAdjustment);
+
+    // 5. Fallback 처리: 운동이 없거나 부족한 경우
     if (result.exercises.length === 0) {
       return NextResponse.json(
         {
@@ -94,7 +182,20 @@ export async function POST(request: NextRequest) {
       result.warnings = warnings;
     }
 
-    // 5. 성공 응답 반환
+    // 개인화 관련 메시지 추가
+    if (appliedProfiles.length > 0) {
+      const warnings = result.warnings || [];
+      warnings.push(`프로필 기반으로 "${appliedProfiles.join(', ')}" 부위가 추가되었습니다.`);
+      result.warnings = warnings;
+    }
+    
+    if (progressTrendInfo) {
+      const warnings = result.warnings || [];
+      warnings.push(progressTrendInfo);
+      result.warnings = warnings;
+    }
+
+    // 6. 성공 응답 반환
     return NextResponse.json(
       {
         success: true,
@@ -105,6 +206,11 @@ export async function POST(request: NextRequest) {
             stats: result.stats,
           },
           warnings: result.warnings,
+          personalization: personalizationApplied ? {
+            applied: true,
+            addedBodyParts: appliedProfiles,
+            intensityAdjustment: intensityAdjustment > 0 ? 'increased' : intensityAdjustment < 0 ? 'decreased' : 'none'
+          } : null
         },
       },
       { status: 200 }
@@ -127,4 +233,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
