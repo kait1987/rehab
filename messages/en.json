@@ -1,0 +1,60 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "back": "Back",
+    "next": "Next",
+    "prev": "Previous",
+    "home": "Home"
+  },
+  "nav": {
+    "rehab": "Rehab Exercise",
+    "gyms": "Gyms",
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "rehab": {
+    "title": "Rehabilitation Exercise",
+    "generateCourse": "Generate Course",
+    "selectBodyParts": "Select Body Parts",
+    "selectDuration": "Select Duration",
+    "selectEquipment": "Select Equipment",
+    "painLevel": "Pain Level",
+    "experienceLevel": "Experience Level",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "warmup": "Warm-up",
+    "main": "Main Workout",
+    "cooldown": "Cool-down",
+    "sets": "Sets",
+    "reps": "Reps",
+    "duration": "Duration",
+    "minutes": "min",
+    "noEquipment": "No Equipment"
+  },
+  "gym": {
+    "title": "Find Gyms",
+    "search": "Search Gyms",
+    "nearby": "Nearby Gyms",
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Hours",
+    "price": "Price Range"
+  },
+  "auth": {
+    "loginRequired": "Login required",
+    "welcome": "Welcome"
+  }
+}

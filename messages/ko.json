@@ -1,0 +1,60 @@
+{
+  "common": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "save": "저장",
+    "cancel": "취소",
+    "confirm": "확인",
+    "delete": "삭제",
+    "edit": "수정",
+    "search": "검색",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공",
+    "back": "뒤로",
+    "next": "다음",
+    "prev": "이전",
+    "home": "홈"
+  },
+  "nav": {
+    "rehab": "재활 운동",
+    "gyms": "헬스장",
+    "profile": "프로필",
+    "admin": "관리자"
+  },
+  "rehab": {
+    "title": "재활 운동",
+    "generateCourse": "코스 생성",
+    "selectBodyParts": "부위 선택",
+    "selectDuration": "시간 선택",
+    "selectEquipment": "장비 선택",
+    "painLevel": "통증 정도",
+    "experienceLevel": "경험 수준",
+    "beginner": "초급",
+    "intermediate": "중급",
+    "advanced": "고급",
+    "warmup": "워밍업",
+    "main": "본운동",
+    "cooldown": "쿨다운",
+    "sets": "세트",
+    "reps": "반복",
+    "duration": "시간",
+    "minutes": "분",
+    "noEquipment": "기구 없음"
+  },
+  "gym": {
+    "title": "헬스장 찾기",
+    "search": "헬스장 검색",
+    "nearby": "주변 헬스장",
+    "reviews": "리뷰",
+    "rating": "평점",
+    "address": "주소",
+    "phone": "전화번호",
+    "hours": "영업시간",
+    "price": "가격대"
+  },
+  "auth": {
+    "loginRequired": "로그인이 필요합니다",
+    "welcome": "환영합니다"
+  }
+}

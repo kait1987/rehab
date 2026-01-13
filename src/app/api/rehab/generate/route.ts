@@ -157,6 +157,44 @@ export async function POST(request: NextRequest) {
       } catch {
         // 웨어러블 데이터 없거나 오류 시 무시
       }
+
+      // P3-AI-07: AI 코치 - 이슈 감지 및 자동 수정
+      try {
+        const { detectExerciseIssues } = await import('@/lib/utils/detect-exercise-issues');
+        const { analyzeUserPreferences } = await import('@/lib/utils/analyze-user-preferences');
+        const { autoAdjustRoutine } = await import('@/lib/algorithms/auto-adjust-routine');
+
+        const [issues, preferences] = await Promise.all([
+          detectExerciseIssues({ userId: internalUserId }),
+          analyzeUserPreferences(internalUserId)
+        ]);
+
+        if (issues.length > 0 || preferences.hasEnoughData) {
+          const adjustmentResult = autoAdjustRoutine({
+            issues,
+            preferences,
+            requestedBodyParts: validatedRequest.bodyParts
+          });
+
+          // 조정 적용
+          validatedRequest = {
+            ...validatedRequest,
+            bodyParts: adjustmentResult.adjustedBodyParts
+          };
+          intensityAdjustment += adjustmentResult.intensityAdjustment;
+
+          // 회피 운동 ID 저장 (merge-body-parts에서 사용 가능하도록)
+          (validatedRequest as unknown as { _avoidExerciseIds?: string[] })._avoidExerciseIds = adjustmentResult.avoidExerciseIds;
+
+          // 경고 추가
+          if (adjustmentResult.warnings.length > 0) {
+            if (!fatigueInfo) fatigueInfo = '';
+            fatigueInfo += (fatigueInfo ? ' ' : '') + adjustmentResult.warnings.join(' ');
+          }
+        }
+      } catch {
+        // AI 코치 오류 시 무시 (기존 로직 계속)
+      }
     }
 
     // 4. 코스 생성 로직 호출

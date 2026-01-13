@@ -41,6 +41,7 @@ model User {
   reviewVotes       ReviewVote[]         @relation("ReviewVotes") // NEW: 리뷰 투표
   progressLogs      UserProgressLog[]    @relation("UserProgressLogs") // NEW: 진행 로그
   wearableData      WearableData[]       @relation("UserWearableData") // P3-W1-01
+  courseCompletionLogs CourseCompletionLog[] @relation("UserCompletionLogs") // P3-AI-01
 
   @@index([clerkId], map: "idx_users_clerk_id")
   @@index([isActive], map: "idx_users_is_active")
@@ -344,6 +345,10 @@ model ExerciseTemplate {
   courseExercises           CourseExercise[]
   bodyPartExerciseMappings  BodyPartExerciseMapping[]
   bodyPartContraindications BodyPartContraindication[]
+  courseCompletionLogs      CourseCompletionLog[] @relation("ExerciseCompletionLogs") // P3-AI-01
+  exerciseMedia             ExerciseMedia[]       // P3-M1-01
+  postureGuides             PostureGuide[]        // P3-M1-02
+  localizedExercises        LocalizedExercise[]   // P3-G1-01
 
   @@index([bodyPartId], map: "idx_exercise_templates_body_part_id")
   @@index([intensityLevel], map: "idx_exercise_templates_intensity_level")
@@ -435,6 +440,7 @@ model Course {
   user              User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
   courseExercises   CourseExercise[]
   userCourseHistory UserCourseHistory[]
+  courseCompletionLogs CourseCompletionLog[] @relation("CourseCompletionLogs") // P3-AI-01
 
   @@index([userId], map: "idx_courses_user_id")
   @@index([painLevel], map: "idx_courses_pain_level")
@@ -596,4 +602,81 @@ model WearableData {
   @@index([userId, dataType, recordedAt], map: "idx_wearable_data_user_type_date")
   @@index([userId], map: "idx_wearable_data_user_id")
   @@map("wearable_data")
+}
+
+// P3-AI-01: 코스 완료 로그 (운동별 완료/스킵 기록)
+model CourseCompletionLog {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  courseId           String   @map("course_id") @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  status             String   @db.VarChar(20) // completed | skipped | modified
+  actualDuration     Int?     @map("actual_duration") // 실제 수행 시간(분)
+  userRating         Int?     @map("user_rating") // 1-5 만족도
+  painAfter          Int?     @map("pain_after") // 운동 후 통증 1-10
+  notes              String?
+  completedAt        DateTime @default(now()) @map("completed_at") @db.Timestamptz
+
+  // Relations
+  user             User             @relation("UserCompletionLogs", fields: [userId], references: [id], onDelete: Cascade)
+  course           Course           @relation("CourseCompletionLogs", fields: [courseId], references: [id], onDelete: Cascade)
+  exerciseTemplate ExerciseTemplate @relation("ExerciseCompletionLogs", fields: [exerciseTemplateId], references: [id])
+
+  @@index([userId, completedAt], map: "idx_course_completion_logs_user_date")
+  @@index([courseId], map: "idx_course_completion_logs_course_id")
+  @@index([exerciseTemplateId], map: "idx_course_completion_logs_exercise_id")
+  @@map("course_completion_logs")
+}
+
+// P3-M1-01: 운동 미디어 (이미지/Lottie/비디오)
+model ExerciseMedia {
+  id                 String   @id @default(uuid()) @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  mediaType          String   @map("media_type") @db.VarChar(20) // image | lottie | video
+  purpose            String   @db.VarChar(30) // thumbnail | start_pose | end_pose | motion
+  url                String
+  order              Int      @default(0)
+  metadata           Json?    // { width, height, duration, lottieVersion 등 }
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([exerciseTemplateId, purpose], map: "idx_exercise_media_template_purpose")
+  @@map("exercise_media")
+}
+
+// P3-M1-02: 자세 가이드 (단계별 지침)
+model PostureGuide {
+  id                 String   @id @default(uuid()) @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  stepNumber         Int      @map("step_number")
+  instruction        String
+  commonMistake      String?  @map("common_mistake")
+  correction         String?
+  imageUrl           String?  @map("image_url")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([exerciseTemplateId, stepNumber], map: "posture_guides_unique")
+  @@map("posture_guides")
+}
+
+// P3-G1-01: 다국어 운동 데이터
+model LocalizedExercise {
+  id                 String   @id @default(uuid()) @db.Uuid
+  exerciseTemplateId String   @map("exercise_template_id") @db.Uuid
+  locale             String   @db.VarChar(10) // en, ko, ja, zh
+  name               String
+  description        String?
+  instructions       String?
+  precautions        String?
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  exerciseTemplate ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([exerciseTemplateId, locale], map: "localized_exercises_unique")
+  @@index([locale], map: "idx_localized_exercises_locale")
+  @@map("localized_exercises")
 }
