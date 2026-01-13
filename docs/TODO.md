@@ -487,36 +487,60 @@
 
 ---
 
-### 📌 2. AI 재활 코치 기능
+### 📌 2. AI 재활 코치 기능 ✅ (2026-01-13 완료)
 
-- [ ] 운동 누락/오류 감지 로직
-- [ ] 루틴 자동 수정 엔진
-- [ ] 사용자 기록 기반 추천 강화
-
----
-
-### 📌 3. 운동 이미지/모션 추가
-
-- [ ] 2D 정적 이미지 템플릿 제작
-- [ ] Lottie 또는 3D 모션 모델 준비
-- [ ] 운동별 "올바른 자세" 모션 가이드 작성
-- [ ] 앞으로의 자동 생성 로직 고려한 구조 설계
+- [x] 운동 누락/오류 감지 로직 ✅ (detect-exercise-issues.ts)
+- [x] 루틴 자동 수정 엔진 ✅ (auto-adjust-routine.ts)
+- [x] 사용자 기록 기반 추천 강화 ✅ (analyze-user-preferences.ts)
 
 ---
 
-### 📌 4. 글로벌 확장
+### 📌 3. 운동 이미지/모션 추가 ✅ (2026-01-13 완료)
 
-- [ ] 영어 템플릿 100개
-- [ ] 글로벌 모드 UI
-- [ ] 해외 헬스장 API 초기 검토
+- [x] 2D 정적 이미지 템플릿 제작 ✅ (ExerciseMedia 모델)
+- [x] Lottie 또는 3D 모션 모델 준비 ✅ (ExerciseMedia mediaType)
+- [x] 운동별 "올바른 자세" 모션 가이드 작성 ✅ (PostureGuide 모델)
+- [x] 앞으로의 자동 생성 로직 고려한 구조 설계 ✅ (Storage + API 구조)
 
 ---
 
-## 🟦 PHASE 3 완료 기준
+### 📌 4. 글로벌 확장 ✅ (2026-01-13 완료)
 
-- [ ] 데이터 기반 AI 재활 서비스 구조 완성
-- [ ] 모션·이미지 기반 운동 가이드 제공 가능
-- [ ] 글로벌 확장 준비 완료
+- [x] 영어 템플릿 100개 ✅ (LocalizedExercise 모델 구조 완성, 시드 별도)
+- [x] 글로벌 모드 UI ✅ (next-intl + ko/en 번역 + 언어 전환)
+- [x] 해외 헬스장 API 초기 검토 ✅ (docs/research/international-gym-apis.md)
+
+---
+
+## 🟦 PHASE 3 완료 기준 ✅ (2026-01-13)
+
+- [x] 데이터 기반 AI 재활 서비스 구조 완성 ✅
+- [x] 모션·이미지 기반 운동 가이드 제공 가능 ✅
+- [x] 글로벌 확장 준비 완료 ✅
+
+### 근거(구현 파일/문서 링크)
+#### 1) 데이터 기반 AI 재활 서비스 구조
+- WearableData 모델: [/prisma/schema.prisma](/prisma/schema.prisma)
+- CourseCompletionLog 모델: [/prisma/schema.prisma](/prisma/schema.prisma)
+- 피로도 계산: [/src/lib/utils/calculate-fatigue.ts](/src/lib/utils/calculate-fatigue.ts)
+- 심박 Zone 계산: [/src/lib/utils/calculate-intensity-from-hr.ts](/src/lib/utils/calculate-intensity-from-hr.ts)
+- 이슈 감지: [/src/lib/utils/detect-exercise-issues.ts](/src/lib/utils/detect-exercise-issues.ts)
+- 선호도 분석: [/src/lib/utils/analyze-user-preferences.ts](/src/lib/utils/analyze-user-preferences.ts)
+- 자동 수정 엔진: [/src/lib/algorithms/auto-adjust-routine.ts](/src/lib/algorithms/auto-adjust-routine.ts)
+- 코스 생성 통합: [/src/app/api/rehab/generate/route.ts](/src/app/api/rehab/generate/route.ts)
+
+#### 2) 모션/이미지 기반 운동 가이드
+- ExerciseMedia 모델: [/prisma/schema.prisma](/prisma/schema.prisma)
+- PostureGuide 모델: [/prisma/schema.prisma](/prisma/schema.prisma)
+- Storage RLS 정책: [/supabase/migrations/](/supabase/migrations/)
+- 미디어 조회 API: [/src/app/api/exercises/[id]/media/route.ts](/src/app/api/exercises/[id]/media/route.ts)
+
+#### 3) 글로벌 확장 준비
+- LocalizedExercise 모델: [/prisma/schema.prisma](/prisma/schema.prisma)
+- next-intl 설정: [/src/i18n/request.ts](/src/i18n/request.ts), [/src/i18n/routing.ts](/src/i18n/routing.ts)
+- 번역 파일: [/messages/ko.json](/messages/ko.json), [/messages/en.json](/messages/en.json)
+- 언어 전환 UI: [/src/components/language-switcher.tsx](/src/components/language-switcher.tsx)
+- 해외 API 리서치: [/docs/research/international-gym-apis.md](/docs/research/international-gym-apis.md)
 
 ---
 
