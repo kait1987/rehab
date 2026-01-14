@@ -11,7 +11,9 @@
     "difficulty_score": 2,
     "instructions": "네 발 자세에서 숨을 내쉬며 등을 둥글게 말고, 들이쉬며 가슴을 열어줍니다.",
     "precautions": "급성 요통이 있는 경우 동작을 작게 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "버드독",
@@ -25,7 +27,9 @@
     "difficulty_score": 3,
     "instructions": "네 발 자세에서 오른팔과 왼다리를 동시에 뻗어 3초간 유지합니다.",
     "precautions": "허리가 과도하게 젖혀지지 않도록 복부에 힘을 줍니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "데드버그",
@@ -39,7 +43,9 @@
     "difficulty_score": 3,
     "instructions": "천장을 보고 누워 양팔과 다리를 90도로 올린 뒤 반대쪽 팔다리를 내립니다.",
     "precautions": "허리가 바닥에서 떨어지지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "힙 힌지 (굿모닝)",
@@ -53,7 +59,9 @@
     "difficulty_score": 4,
     "instructions": "무릎을 살짝 구부린 채 골반을 뒤로 빼며 상체를 숙입니다.",
     "precautions": "허리 디스크 환자는 반드시 전문가 상담 후 진행합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "플랭크",
@@ -67,7 +75,9 @@
     "difficulty_score": 4,
     "instructions": "팔꿈치와 발끝으로 몸을 지탱하며 30-60초간 유지합니다.",
     "precautions": "허리가 처지거나 들리지 않도록 일직선을 유지합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "사이드 플랭크",
@@ -81,7 +91,9 @@
     "difficulty_score": 4,
     "instructions": "옆으로 누워 팔꿈치로 상체를 들어올리고 30초간 유지합니다.",
     "precautions": "어깨에 무리가 가지 않도록 팔꿈치 위치를 조절합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "브릿지 (힙 레이즈)",
@@ -95,7 +107,9 @@
     "difficulty_score": 2,
     "instructions": "천장을 보고 누워 무릎을 세운 뒤 엉덩이를 들어올립니다.",
     "precautions": "허리가 과도하게 젖혀지지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "맥켄지 익스텐션",
@@ -109,7 +123,9 @@
     "difficulty_score": 3,
     "instructions": "엎드린 상태에서 팔로 상체를 천천히 들어올립니다.",
     "precautions": "협착증 환자는 피하고, 디스크 환자에게 권장됩니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "니 투 체스트 스트레칭",
@@ -123,10 +139,12 @@
     "difficulty_score": 1,
     "instructions": "천장을 보고 누워 무릎을 가슴 쪽으로 당겨 10-15초 유지합니다.",
     "precautions": "무릎 통증이 있으면 허벅지 뒤를 잡습니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
-    "name": "파르브리타 자누 시르사아사나",
+    "name": "앉아서 옆구리 늘리기 (Parivrtta Janu Sirsasana)",
     "bodyPartName": "허리",
     "description": "앉아서 한 다리를 펴고 옆으로 숙이는 측면 스트레칭",
     "intensity_level": 2,
@@ -137,7 +155,9 @@
     "difficulty_score": 3,
     "instructions": "한 다리를 펴고 옆으로 상체를 기울여 옆구리를 늘립니다.",
     "precautions": "무릎을 구부린 채로 실시해도 됩니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "숄더 프레스",
@@ -151,7 +171,10 @@
     "difficulty_score": 4,
     "instructions": "어깨 높이에서 시작해 팔을 머리 위로 완전히 펴줍니다.",
     "precautions": "견갑골을 안정시키고 허리가 과신전되지 않도록 합니다.",
-    "equipmentTypes": ["덤벨", "밴드"]
+    "equipmentTypes": [
+      "덤벨",
+      "밴드"
+    ]
   },
   {
     "name": "사이드 레터럴 레이즈",
@@ -165,7 +188,10 @@
     "difficulty_score": 3,
     "instructions": "팔을 양옆으로 어깨 높이까지 들어올립니다.",
     "precautions": "팔꿈치를 살짝 구부리고 승모근에 힘이 들어가지 않도록 합니다.",
-    "equipmentTypes": ["덤벨", "밴드"]
+    "equipmentTypes": [
+      "덤벨",
+      "밴드"
+    ]
   },
   {
     "name": "페이스 풀",
@@ -179,7 +205,9 @@
     "difficulty_score": 3,
     "instructions": "밴드를 얼굴 높이로 잡고 팔꿈치를 벌리며 당깁니다.",
     "precautions": "목에 힘이 들어가지 않도록 주의합니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "익스터널 로테이션",
@@ -193,7 +221,9 @@
     "difficulty_score": 2,
     "instructions": "팔꿈치를 옆구리에 붙이고 팔을 바깥으로 회전합니다.",
     "precautions": "통증이 느껴지면 가동범위를 줄입니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "인터널 로테이션",
@@ -207,7 +237,9 @@
     "difficulty_score": 2,
     "instructions": "팔꿈치를 옆구리에 붙이고 팔을 안쪽으로 회전합니다.",
     "precautions": "과도한 저항은 피합니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "YTWL 운동",
@@ -221,7 +253,9 @@
     "difficulty_score": 3,
     "instructions": "엎드린 상태에서 팔을 Y, T, W, L 모양으로 들어올립니다.",
     "precautions": "승모근에 과도한 힘이 들어가지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "월 슬라이드",
@@ -235,7 +269,9 @@
     "difficulty_score": 2,
     "instructions": "벽에 등과 팔을 붙이고 팔을 위아래로 슬라이드합니다.",
     "precautions": "팔이 벽에서 떨어지지 않도록 합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "숄더 서클",
@@ -249,7 +285,9 @@
     "difficulty_score": 1,
     "instructions": "어깨를 앞에서 뒤로, 뒤에서 앞으로 크게 돌립니다.",
     "precautions": "급하게 돌리지 않고 천천히 진행합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "펜듈럼 운동",
@@ -263,7 +301,9 @@
     "difficulty_score": 1,
     "instructions": "상체를 앞으로 숙이고 팔을 원을 그리며 흔듭니다.",
     "precautions": "급성기 어깨 손상에 권장되는 운동입니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "크로스바디 스트레칭",
@@ -277,7 +317,9 @@
     "difficulty_score": 1,
     "instructions": "한 팔을 가슴 앞으로 가져와 반대 손으로 당깁니다.",
     "precautions": "어깨를 으쓱하지 않도록 주의합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "레그 익스텐션",
@@ -291,7 +333,9 @@
     "difficulty_score": 3,
     "instructions": "의자에 앉아 발목에 무게를 걸고 무릎을 펴줍니다.",
     "precautions": "무릎 통증시 가동범위를 줄이거나 중단합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "레그 컬",
@@ -305,7 +349,9 @@
     "difficulty_score": 3,
     "instructions": "엎드린 상태에서 발뒤꿈치를 엉덩이 쪽으로 당깁니다.",
     "precautions": "무릎 뒤쪽 통증 시 중단합니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "스쿼트",
@@ -319,7 +365,9 @@
     "difficulty_score": 5,
     "instructions": "발을 어깨너비로 벌리고 엉덩이를 뒤로 빼며 앉습니다.",
     "precautions": "무릎이 발끝을 넘지 않도록 주의합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "월 싯",
@@ -333,7 +381,9 @@
     "difficulty_score": 3,
     "instructions": "벽에 등을 대고 무릎 90도로 앉아 30-60초간 유지합니다.",
     "precautions": "무릎 통증 시 각도를 조절합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "스텝업",
@@ -347,7 +397,9 @@
     "difficulty_score": 4,
     "instructions": "한 발씩 박스나 계단을 오르내립니다.",
     "precautions": "균형을 잡기 어려우면 벽이나 난간을 잡습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "클램쉘",
@@ -361,7 +413,10 @@
     "difficulty_score": 2,
     "instructions": "옆으로 누워 발을 붙인 채 무릎만 들어올립니다.",
     "precautions": "골반이 뒤로 넘어가지 않도록 합니다.",
-    "equipmentTypes": ["매트", "밴드"]
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
   },
   {
     "name": "햄스트링 스트레칭",
@@ -375,7 +430,9 @@
     "difficulty_score": 1,
     "instructions": "다리를 펴고 앉아 상체를 앞으로 숙입니다.",
     "precautions": "무릎을 완전히 펴기 어려우면 살짝 구부립니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "쿼드 스트레칭",
@@ -389,7 +446,9 @@
     "difficulty_score": 1,
     "instructions": "서서 발목을 잡고 뒤꿈치를 엉덩이 쪽으로 당깁니다.",
     "precautions": "균형이 어려우면 벽을 잡습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "슬라이딩 레그 컬",
@@ -403,10 +462,12 @@
     "difficulty_score": 3,
     "instructions": "천장을 보고 누워 발을 슬라이드하며 무릎을 구부렸다 폅니다.",
     "precautions": "허리가 과도하게 젖혀지지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
-    "name": "VMO 스트렝스닝",
+    "name": "내측광근 강화 운동 (VMO)",
     "bodyPartName": "무릎",
     "description": "무릎 안쪽 근육을 강화하는 운동",
     "intensity_level": 2,
@@ -417,7 +478,9 @@
     "difficulty_score": 2,
     "instructions": "다리를 펴고 발끝을 45도 바깥으로 돌린 채 다리를 들어올립니다.",
     "precautions": "무릎 안쪽에 집중하여 힘을 줍니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "넥 플렉션",
@@ -431,7 +494,9 @@
     "difficulty_score": 2,
     "instructions": "천장을 보고 누워 턱을 가슴 쪽으로 당기며 머리를 들어올립니다.",
     "precautions": "목에 무리가 가면 중단합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "넥 익스텐션",
@@ -445,10 +510,12 @@
     "difficulty_score": 2,
     "instructions": "엎드린 상태에서 머리를 천천히 들어올립니다.",
     "precautions": "과도하게 젖히지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
-    "name": "친 턱 (턱 당기기)",
+    "name": "턱 당기기 (Chin Tuck)",
     "bodyPartName": "목",
     "description": "턱을 뒤로 당기는 자세 교정 운동",
     "intensity_level": 1,
@@ -459,10 +526,12 @@
     "difficulty_score": 1,
     "instructions": "턱을 목 쪽으로 밀어 이중턱을 만듭니다.",
     "precautions": "머리를 아래로 숙이지 않도록 합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "어퍼 트랩 스트레칭",
+    "name": "상부 승모근 스트레칭 (Upper Trapezius)",
     "bodyPartName": "목",
     "description": "목 옆면의 승모근 상부를 늘리는 스트레칭",
     "intensity_level": 1,
@@ -473,10 +542,12 @@
     "difficulty_score": 1,
     "instructions": "한 손으로 머리를 반대쪽으로 부드럽게 당깁니다.",
     "precautions": "너무 세게 당기지 않도록 합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "레비테이터 스트레칭",
+    "name": "견갑거근 스트레칭 (Levator Scapulae)",
     "bodyPartName": "목",
     "description": "목과 어깨 사이 근육을 늘리는 스트레칭",
     "intensity_level": 1,
@@ -487,10 +558,12 @@
     "difficulty_score": 1,
     "instructions": "머리를 대각선 앞쪽으로 숙여 목 뒤쪽을 늘립니다.",
     "precautions": "통증이 느껴지면 강도를 줄입니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "SCM 스트레칭",
+    "name": "흉쇄유돌근 스트레칭 (SCM)",
     "bodyPartName": "목",
     "description": "흉쇄유돌근을 늘리는 목 옆면 스트레칭",
     "intensity_level": 1,
@@ -501,7 +574,9 @@
     "difficulty_score": 1,
     "instructions": "머리를 뒤로 젖히고 한쪽으로 돌려 목 앞 옆면을 늘립니다.",
     "precautions": "어지러우면 동작을 천천히 합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "이소메트릭 넥 프레스",
@@ -515,7 +590,9 @@
     "difficulty_score": 2,
     "instructions": "손바닥으로 이마/뒤통수/측면을 밀되 목은 움직이지 않습니다.",
     "precautions": "목에 무리가 가지 않도록 강도를 조절합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "숄더 쉬러그",
@@ -529,10 +606,12 @@
     "difficulty_score": 2,
     "instructions": "양 어깨를 귀 쪽으로 들어올렸다가 천천히 내립니다.",
     "precautions": "목에 힘이 들어가지 않도록 합니다.",
-    "equipmentTypes": ["덤벨"]
+    "equipmentTypes": [
+      "덤벨"
+    ]
   },
   {
-    "name": "손목 플렉션 스트레칭",
+    "name": "손목 굽힘 스트레칭 (Flexion)",
     "bodyPartName": "손목",
     "description": "손목을 아래로 꺾어 손목 위쪽을 늘리는 스트레칭",
     "intensity_level": 1,
@@ -543,10 +622,12 @@
     "difficulty_score": 1,
     "instructions": "팔을 앞으로 뻗고 손등을 반대 손으로 당깁니다.",
     "precautions": "너무 세게 당기지 않습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "손목 익스텐션 스트레칭",
+    "name": "손목 젖힘 스트레칭 (Extension)",
     "bodyPartName": "손목",
     "description": "손목을 위로 꺾어 손목 아래쪽을 늘리는 스트레칭",
     "intensity_level": 1,
@@ -557,7 +638,9 @@
     "difficulty_score": 1,
     "instructions": "팔을 앞으로 뻗고 손바닥을 반대 손으로 당깁니다.",
     "precautions": "손목 터널 증후군 환자는 주의합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "리스트 컬",
@@ -571,7 +654,9 @@
     "difficulty_score": 2,
     "instructions": "손바닥을 위로 하고 덤벨을 손목만 움직여 들어올립니다.",
     "precautions": "무거운 무게는 피합니다.",
-    "equipmentTypes": ["덤벨"]
+    "equipmentTypes": [
+      "덤벨"
+    ]
   },
   {
     "name": "리버스 리스트 컬",
@@ -585,7 +670,9 @@
     "difficulty_score": 2,
     "instructions": "손등을 위로 하고 덤벨을 손목만 움직여 들어올립니다.",
     "precautions": "테니스 엘보 예방에 효과적입니다.",
-    "equipmentTypes": ["덤벨"]
+    "equipmentTypes": [
+      "덤벨"
+    ]
   },
   {
     "name": "손가락 스프레드",
@@ -599,7 +686,9 @@
     "difficulty_score": 1,
     "instructions": "손가락을 최대한 벌렸다가 모읍니다.",
     "precautions": "관절염 환자는 강도를 조절합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "그립 스트렝스닝",
@@ -613,7 +702,9 @@
     "difficulty_score": 2,
     "instructions": "테니스공이나 그립기를 꽉 쥐었다가 천천히 폅니다.",
     "precautions": "손목 통증이 있으면 강도를 줄입니다.",
-    "equipmentTypes": ["짐볼"]
+    "equipmentTypes": [
+      "짐볼"
+    ]
   },
   {
     "name": "손목 서클",
@@ -627,10 +718,12 @@
     "difficulty_score": 1,
     "instructions": "손목을 시계방향, 반시계방향으로 각각 돌립니다.",
     "precautions": "급하게 돌리지 않습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "프로네이션/수피네이션",
+    "name": "손목 회전 운동 (Pronation/Supination)",
     "bodyPartName": "손목",
     "description": "손바닥을 위아래로 뒤집는 전완 회전 운동",
     "intensity_level": 2,
@@ -641,10 +734,12 @@
     "difficulty_score": 2,
     "instructions": "팔꿈치를 고정하고 손바닥을 위아래로 뒤집습니다.",
     "precautions": "팔꿈치가 움직이지 않도록 합니다.",
-    "equipmentTypes": ["덤벨"]
+    "equipmentTypes": [
+      "덤벨"
+    ]
   },
   {
-    "name": "발목 도르시플렉션",
+    "name": "발목 당기기 (Dorsiflexion)",
     "bodyPartName": "발목",
     "description": "발끝을 위로 당기는 전경골근 강화 운동",
     "intensity_level": 2,
@@ -655,10 +750,12 @@
     "difficulty_score": 2,
     "instructions": "앉거나 누워서 발끝을 위쪽으로 당깁니다.",
     "precautions": "밴드 저항을 사용하면 효과적입니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
-    "name": "발목 플렌터플렉션",
+    "name": "발목 밀기 (Plantarflexion)",
     "bodyPartName": "발목",
     "description": "발끝을 아래로 미는 종아리 강화 운동",
     "intensity_level": 2,
@@ -669,7 +766,9 @@
     "difficulty_score": 2,
     "instructions": "발끝을 아래로 밀어 종아리에 힘을 줍니다.",
     "precautions": "발목 염좌 후 재활에 효과적입니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "카프 레이즈",
@@ -683,7 +782,9 @@
     "difficulty_score": 3,
     "instructions": "발뒤꿈치를 최대한 들어올렸다가 천천히 내립니다.",
     "precautions": "균형이 어려우면 벽을 잡습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "발목 알파벳 운동",
@@ -697,7 +798,9 @@
     "difficulty_score": 1,
     "instructions": "앉아서 발끝으로 A부터 Z까지 알파벳을 그립니다.",
     "precautions": "발목 염좌 초기 재활에 좋습니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "발목 밸런스 보드",
@@ -711,7 +814,9 @@
     "difficulty_score": 4,
     "instructions": "밸런스 보드 위에서 30-60초간 균형을 유지합니다.",
     "precautions": "처음에는 벽을 잡고 시작합니다.",
-    "equipmentTypes": ["짐볼"]
+    "equipmentTypes": [
+      "짐볼"
+    ]
   },
   {
     "name": "싱글 레그 스탠드",
@@ -725,7 +830,9 @@
     "difficulty_score": 2,
     "instructions": "한 발로 서서 30초간 균형을 유지합니다.",
     "precautions": "눈을 감으면 난이도가 올라갑니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
     "name": "아킬레스건 스트레칭",
@@ -739,10 +846,12 @@
     "difficulty_score": 1,
     "instructions": "벽을 밀며 뒷다리의 발뒤꿈치를 바닥에 붙입니다.",
     "precautions": "급하게 밀지 않도록 합니다.",
-    "equipmentTypes": ["없음"]
+    "equipmentTypes": [
+      "없음"
+    ]
   },
   {
-    "name": "레지스트 밴드 인버전",
+    "name": "밴드 발목 안쪽 돌림 (Inversion)",
     "bodyPartName": "발목",
     "description": "밴드 저항을 이용한 발목 안쪽 돌림 운동",
     "intensity_level": 2,
@@ -753,10 +862,12 @@
     "difficulty_score": 2,
     "instructions": "밴드를 걸고 발끝을 안쪽으로 돌립니다.",
     "precautions": "발목 염좌 재활에 중요합니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
-    "name": "레지스트 밴드 에버전",
+    "name": "밴드 발목 바깥쪽 돌림 (Eversion)",
     "bodyPartName": "발목",
     "description": "밴드 저항을 이용한 발목 바깥쪽 돌림 운동",
     "intensity_level": 2,
@@ -767,7 +878,9 @@
     "difficulty_score": 2,
     "instructions": "밴드를 걸고 발끝을 바깥쪽으로 돌립니다.",
     "precautions": "비골근 강화에 효과적입니다.",
-    "equipmentTypes": ["밴드"]
+    "equipmentTypes": [
+      "밴드"
+    ]
   },
   {
     "name": "골반 틸트",
@@ -781,7 +894,9 @@
     "difficulty_score": 1,
     "instructions": "천장을 보고 누워 허리를 바닥에 붙였다 떼었다 합니다.",
     "precautions": "허리 통증 시 동작을 작게 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "힙 플렉서 스트레칭",
@@ -795,7 +910,9 @@
     "difficulty_score": 2,
     "instructions": "한쪽 무릎을 바닥에 대고 앞다리를 90도로 구부린 채 골반을 앞으로 밉니다.",
     "precautions": "허리가 과도하게 젖혀지지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "피리포미스 스트레칭",
@@ -809,7 +926,9 @@
     "difficulty_score": 2,
     "instructions": "누워서 한쪽 발목을 반대쪽 무릎 위에 올리고 허벅지를 당깁니다.",
     "precautions": "좌골신경통 증상이 있으면 주의합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "힙 써클",
@@ -823,7 +942,9 @@
     "difficulty_score": 1,
     "instructions": "네 발 자세에서 한쪽 다리를 뒤로 뻗고 원을 그립니다.",
     "precautions": "골반이 과도하게 흔들리지 않도록 합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "파이어 하이드런트",
@@ -837,7 +958,10 @@
     "difficulty_score": 2,
     "instructions": "네 발 자세에서 무릎을 구부린 채 다리를 옆으로 들어올립니다.",
     "precautions": "허리가 흔들리지 않도록 합니다.",
-    "equipmentTypes": ["매트", "밴드"]
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
   },
   {
     "name": "사이드 라잉 힙 어브덕션",
@@ -851,7 +975,10 @@
     "difficulty_score": 2,
     "instructions": "옆으로 누워 위쪽 다리를 천장 방향으로 들어올립니다.",
     "precautions": "다리가 앞으로 나가지 않도록 합니다.",
-    "equipmentTypes": ["매트", "밴드"]
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
   },
   {
     "name": "힙 어덕션",
@@ -865,7 +992,9 @@
     "difficulty_score": 2,
     "instructions": "옆으로 누워 아래쪽 다리를 위로 들어올립니다.",
     "precautions": "서혜부 통증이 있으면 중단합니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   },
   {
     "name": "싱글 레그 데드리프트",
@@ -879,7 +1008,9 @@
     "difficulty_score": 4,
     "instructions": "한 발로 서서 상체를 숙이며 반대 다리를 뒤로 뻗습니다.",
     "precautions": "균형이 어려우면 벽을 잡습니다.",
-    "equipmentTypes": ["덤벨"]
+    "equipmentTypes": [
+      "덤벨"
+    ]
   },
   {
     "name": "글루트 킥백",
@@ -893,7 +1024,10 @@
     "difficulty_score": 2,
     "instructions": "네 발 자세에서 한쪽 다리를 뒤로 차올립니다.",
     "precautions": "허리가 과도하게 젖혀지지 않도록 합니다.",
-    "equipmentTypes": ["매트", "밴드"]
+    "equipmentTypes": [
+      "매트",
+      "밴드"
+    ]
   },
   {
     "name": "힙 90/90 스트레칭",
@@ -907,6 +1041,8 @@
     "difficulty_score": 3,
     "instructions": "양쪽 무릎을 90도로 만들어 앉아 좌우로 이동합니다.",
     "precautions": "고관절 가동성이 부족하면 각도를 줄입니다.",
-    "equipmentTypes": ["매트"]
+    "equipmentTypes": [
+      "매트"
+    ]
   }
 ]

@@ -33,7 +33,7 @@ const TIME_DISTRIBUTION_BY_DURATION: Record<
     cooldownTime: 10,
   },
   90: {
-    warmupTime: 15,
+    warmupTime: 12,
     cooldownTime: 15,
   },
   120: {
@@ -46,8 +46,8 @@ const TIME_DISTRIBUTION_BY_DURATION: Record<
  * 기본 시간 배분 설정
  */
 const DEFAULT_TIME_CONFIG: TimeDistributionConfig = {
-  warmupTime: 15,
-  mainTime: 60, // 90분 코스 기준, 실제로는 계산됨
+  warmupTime: 12,
+  mainTime: 60,
   cooldownTime: 15,
   minExerciseTime: 5,
   maxMainExerciseTime: 20,
@@ -72,16 +72,11 @@ interface SetsAndRepsResult {
 }
 
 /**
- * 세트/횟수 자동 계산
+ * 세트/횟수 자동 계산 (Strict Logic)
  *
- * 운동 시간이 변경되면 sets와 reps를 비례적으로 조정합니다.
- *
- * @param originalDuration 원래 운동 시간 (분)
- * @param newDuration 새로운 운동 시간 (분)
- * @param originalSets 원래 세트 수 (없으면 기본값 사용)
- * @param originalReps 원래 반복 횟수 (없으면 기본값 사용)
- * @param section 섹션 (warmup, main, cooldown)
- * @returns 조정된 sets와 reps
+ * - sets 최대 5
+ * - reps 최대 20
+ * - Math.sqrt 스케일링 적용
  */
 function calculateSetsAndReps(
   originalDuration: number | undefined,
@@ -90,24 +85,18 @@ function calculateSetsAndReps(
   originalReps: number | undefined,
   section: "warmup" | "main" | "cooldown",
 ): SetsAndRepsResult {
-  // 기본값 가져오기
   const defaultValues = DEFAULT_SETS_REPS_BY_SECTION[section];
   const baseSets = originalSets ?? defaultValues.sets;
   const baseReps = originalReps ?? defaultValues.reps;
 
-  // 원래 시간이 없거나 0이면 기본값 반환
   if (!originalDuration || originalDuration === 0) {
-    return {
-      sets: baseSets,
-      reps: baseReps,
-    };
+    return { sets: baseSets, reps: baseReps };
   }
 
   // 시간 비율 계산
   const timeRatio = newDuration / originalDuration;
 
-  // 비례적으로 조정 (너무 급격한 증가 방지를 위해 제곱근 사용)
-  // 예: 시간이 4배 늘어나면 세트는 2배만 증가
+  // 제곱근 스케일링 적용 (완만한 증가)
   const scaleFactor = Math.sqrt(timeRatio);
 
   let adjustedSets = Math.round(baseSets * scaleFactor);
@@ -117,8 +106,7 @@ function calculateSetsAndReps(
   adjustedSets = Math.max(1, adjustedSets);
   adjustedReps = Math.max(5, adjustedReps);
 
-  // 최대값 제한 (안전상)
-  // 사용자 피드백 반영: 10세트는 너무 많음 -> 5세트로 제한
+  // 최대값 제한 (Strict Limit)
   adjustedSets = Math.min(5, adjustedSets);
   adjustedReps = Math.min(20, adjustedReps);
 
@@ -129,15 +117,11 @@ function calculateSetsAndReps(
 }
 
 /**
- * 시간 배분
+ * 시간 배분 (Strict Logic)
  *
- * totalDurationMinutes에 맞춰 각 운동의 duration, sets, reps를 조정합니다.
- * 우선순위가 높은 운동부터 시간을 배분합니다.
- *
- * @param exercises 섹션별로 분류된 운동 목록
- * @param totalDurationMinutes 총 운동 시간 (60, 90, 120분)
- * @param config 시간 배분 설정 (선택)
- * @returns 시간이 배분된 운동 목록
+ * 1. 웜업: 5/10/15분 고정, 최대 2개 운동
+ * 2. 쿨다운: 5분 선예약, 필수 1개 보장
+ * 3. 메인: 남은 시간 배분
  */
 export function distributeTime(
   exercises: {
@@ -148,53 +132,95 @@ export function distributeTime(
   totalDurationMinutes: 60 | 90 | 120,
   config: Partial<TimeDistributionConfig> = {},
 ): MergedExercise[] {
-  // 총 시간에 따른 기본 시간 배분 가져오기
+  // 1. 설정 로드
   const durationConfig = TIME_DISTRIBUTION_BY_DURATION[totalDurationMinutes];
-  const timeConfig = {
-    ...DEFAULT_TIME_CONFIG,
-    warmupTime: config.warmupTime ?? durationConfig.warmupTime,
-    cooldownTime: config.cooldownTime ?? durationConfig.cooldownTime,
-    ...config,
-  };
+  const rawWarmupTarget = config.warmupTime ?? durationConfig.warmupTime;
 
-  // Main 시간 계산 (총 시간 - warmup - cooldown)
-  const calculatedMainTime =
-    totalDurationMinutes - timeConfig.warmupTime - timeConfig.cooldownTime;
-  const actualMainTime = Math.max(calculatedMainTime, 30); // 최소 30분
+  // 2. 웜업 목표 시간 산정 (5분 단위 반올림 + Clamp 5~15)
+  // 예: 12분 -> 10분, 8분 -> 10분, 3분 -> 5분, 18분 -> 15분
+  const warmupTarget = Math.min(
+    15,
+    Math.max(5, Math.round(rawWarmupTarget / 5) * 5),
+  );
+
+  // 3. 쿨다운 선예약 (5분)
+  const cooldownReserve = 5;
+
+  // 4. 메인 목표 시간
+  const mainTarget = totalDurationMinutes - warmupTarget - cooldownReserve;
 
   const result: MergedExercise[] = [];
+  let orderCounter = 0;
 
-  // Helper function to repeat exercises to fill time
-  const repeatExercisesToFillTime = (
-    exerciseList: MergedExercise[],
-    targetTime: number,
-    maxTimePerExercise: number,
-    section: "warmup" | "main" | "cooldown",
-  ): MergedExercise[] => {
-    if (exerciseList.length === 0) return [];
+  // ==================================================================================
+  // [Warmup Generation] Strict Rules: Max 2 items, Fixed durations
+  // ==================================================================================
+  if (exercises.warmup.length > 0) {
+    // 1번째 웜업
+    const firstWarmupDuration = warmupTarget === 5 ? 5 : 10;
+    const firstExercise = exercises.warmup[0];
+    const { sets: sets1, reps: reps1 } = calculateSetsAndReps(
+      firstExercise.durationMinutes,
+      firstWarmupDuration,
+      firstExercise.sets,
+      firstExercise.reps,
+      "warmup",
+    );
+    result.push({
+      ...firstExercise,
+      section: "warmup",
+      orderInSection: orderCounter++,
+      durationMinutes: firstWarmupDuration,
+      sets: sets1,
+      reps: reps1,
+    });
 
-    const sectionResult: MergedExercise[] = [];
-    let accumulatedTime = 0;
-    let exerciseIndex = 0;
-    let orderCounter = 0;
+    // 2번째 웜업 (목표가 15분일 때만 5분 추가)
+    if (warmupTarget === 15 && exercises.warmup.length > 1) {
+      const secondExercise = exercises.warmup[1]; // 다른 운동 사용 권장
+      const { sets: sets2, reps: reps2 } = calculateSetsAndReps(
+        secondExercise.durationMinutes,
+        5,
+        secondExercise.sets,
+        secondExercise.reps,
+        "warmup",
+      );
+      result.push({
+        ...secondExercise,
+        section: "warmup",
+        orderInSection: orderCounter++,
+        durationMinutes: 5,
+        sets: sets2,
+        reps: reps2,
+      });
+    }
+  }
 
-    // Keep adding exercises until we reach target time
-    while (accumulatedTime < targetTime) {
-      const sourceExercise = exerciseList[exerciseIndex % exerciseList.length];
-      const remainingTime = targetTime - accumulatedTime;
+  // ==================================================================================
+  // [Main Generation] Fill remaining time
+  // ==================================================================================
+  let accumulatedMainTime = 0;
+  let mainIndex = 0;
 
-      // Calculate time for this exercise
-      const timeForThisExercise = Math.min(
-        maxTimePerExercise,
-        Math.max(timeConfig.minExerciseTime, remainingTime),
+  // 메인 운동이 없으면 경고(실제로는 merge 단계에서 처리됨)
+  if (exercises.main.length > 0) {
+    while (accumulatedMainTime < mainTarget) {
+      const sourceExercise = exercises.main[mainIndex % exercises.main.length];
+      const remainingTime = mainTarget - accumulatedMainTime;
+
+      // 이번 운동에 할당할 시간
+      let timeForThisExercise = Math.min(
+        20, // maxMainExerciseTime
+        Math.max(5, remainingTime), // minExerciseTime
       );
 
-      // Skip if remaining time is too small
-      if (
-        remainingTime < timeConfig.minExerciseTime &&
-        sectionResult.length > 0
-      ) {
-        break;
+      // 남은 시간이 5분 미만이면 루프 종료 (마지막 운동에 합치거나 버림)
+      // 여기서는 버림 정책 (쿨다운 확보가 더 중요)
+      if (remainingTime < 5) break;
+
+      // 만약 남은 시간이 5~9분 사이라면, 그냥 남은 시간 다 씀
+      if (remainingTime < 10) {
+        timeForThisExercise = remainingTime;
       }
 
       const { sets, reps } = calculateSetsAndReps(
@@ -202,92 +228,105 @@ export function distributeTime(
         timeForThisExercise,
         sourceExercise.sets,
         sourceExercise.reps,
-        section,
+        "main",
       );
 
-      sectionResult.push({
+      result.push({
         ...sourceExercise,
-        section, // 섹션 속성을 명시적으로 설정
-        orderInSection: orderCounter,
-        durationMinutes: Math.round(timeForThisExercise * 10) / 10,
+        section: "main",
+        orderInSection: orderCounter++,
+        durationMinutes: timeForThisExercise,
         sets,
         reps,
       });
 
-      accumulatedTime += timeForThisExercise;
-      exerciseIndex++;
-      orderCounter++;
+      accumulatedMainTime += timeForThisExercise;
+      mainIndex++;
 
-      // Safety limit: prevent infinite loops
-      if (orderCounter > 20) break;
+      if (mainIndex > 20) break; // Safety break
     }
-
-    return sectionResult;
-  };
-
-  // Warmup 시간 배분 (반복하여 시간 채우기)
-  const warmupExercises = repeatExercisesToFillTime(
-    exercises.warmup,
-    timeConfig.warmupTime,
-    timeConfig.maxWarmupCooldownTime,
-    "warmup",
-  );
-  result.push(...warmupExercises);
-
-  // Main 시간 배분 (반복하여 시간 채우기)
-  const mainExercises = repeatExercisesToFillTime(
-    exercises.main,
-    actualMainTime,
-    timeConfig.maxMainExerciseTime,
-    "main",
-  );
-  result.push(...mainExercises);
-
-  // Cooldown 시간 배분 (반복하여 시간 채우기)
-  // 🆕 Cooldown 강제 보장 로직
-  let cooldownSource = exercises.cooldown;
-
-  // 1. Cooldown 후보가 없으면 Warmup 중 강도 낮은 운동(intensityLevel <= 2) 재사용
-  if (cooldownSource.length === 0) {
-    cooldownSource = exercises.warmup.filter(
-      (ex) => (ex.intensityLevel || 0) <= 2,
-    );
   }
 
-  // 2. 그래도 없으면 Warmup 전체 재사용
-  if (cooldownSource.length === 0) {
-    cooldownSource = exercises.warmup;
+  // ==================================================================================
+  // [Cooldown Generation] Guarantee 1 item (5 min)
+  // ==================================================================================
+  let cooldownSource = exercises.cooldown[0];
+
+  // 쿨다운 후보가 없으면 웜업(저강도) 재사용
+  if (!cooldownSource && exercises.warmup.length > 0) {
+    cooldownSource =
+      exercises.warmup.find((ex) => (ex.intensityLevel || 0) <= 2) ||
+      exercises.warmup[0];
   }
 
-  // 3. 최후의 수단: 하드코딩된 전신 스트레칭 (데이터베이스 의존성 제거)
-  if (cooldownSource.length === 0) {
-    cooldownSource = [
-      {
-        exerciseTemplateId: "fallback-stretch",
-        exerciseTemplateName: "전신 스트레칭",
-        bodyPartIds: [],
-        priorityScore: 0,
-        section: "cooldown",
-        orderInSection: 0,
-        durationMinutes: 5,
-        sets: 1,
-        reps: 1,
-        intensityLevel: 1,
-        difficultyScore: 1,
-        description: "편안한 자세로 전신을 이완합니다.",
-        instructions: "호흡을 깊게 하며 몸의 긴장을 풉니다.",
-        precautions: "통증이 없는 범위 내에서 진행합니다.",
-      },
-    ];
+  // 그래도 없으면 하드코딩
+  if (!cooldownSource) {
+    cooldownSource = {
+      exerciseTemplateId: "fallback-stretch",
+      exerciseTemplateName: "전신 스트레칭",
+      bodyPartIds: [],
+      priorityScore: 0,
+      section: "cooldown",
+      orderInSection: 0,
+      durationMinutes: 5,
+      sets: 1,
+      reps: 1,
+      intensityLevel: 1,
+      difficultyScore: 1,
+      description: "편안한 자세로 전신을 이완합니다.",
+      instructions: "호흡을 깊게 하며 몸의 긴장을 풉니다.",
+      precautions: "통증이 없는 범위 내에서 진행합니다.",
+    };
   }
 
-  const cooldownExercises = repeatExercisesToFillTime(
-    cooldownSource,
-    timeConfig.cooldownTime,
-    timeConfig.maxWarmupCooldownTime,
+  // 쿨다운 1개 강제 추가 (5분)
+  // *참고: 쿨다운을 더 늘리고 싶으면 여기서 로직 추가 가능하지만,
+  // 요구사항은 "최소 1개, 5분 항상 보장"이므로 1개만 확실히 넣음.
+  const { sets: cdSets, reps: cdReps } = calculateSetsAndReps(
+    cooldownSource.durationMinutes,
+    cooldownReserve,
+    cooldownSource.sets,
+    cooldownSource.reps,
     "cooldown",
   );
-  result.push(...cooldownExercises);
+
+  result.push({
+    ...cooldownSource,
+    section: "cooldown",
+    orderInSection: orderCounter++,
+    durationMinutes: cooldownReserve,
+    sets: cdSets,
+    reps: cdReps,
+  });
+
+  // ==================================================================================
+  // [Safety Checks]
+  // ==================================================================================
+  const finalWarmupTime = result
+    .filter((e) => e.section === "warmup")
+    .reduce((s, e) => s + e.durationMinutes, 0);
+  const finalCooldownTime = result
+    .filter((e) => e.section === "cooldown")
+    .reduce((s, e) => s + e.durationMinutes, 0);
+  const finalTotalTime = result.reduce((s, e) => s + e.durationMinutes, 0);
+
+  if (finalWarmupTime > 15) {
+    console.error(
+      `[DistributeTime Error] Warmup exceeded 15m: ${finalWarmupTime}m`,
+    );
+    // 필요시 throw new Error("Warmup time limit exceeded");
+  }
+  if (finalWarmupTime === 20) {
+    throw new Error("CRITICAL: Warmup time is 20m (Strictly Forbidden)");
+  }
+  if (finalCooldownTime < 5) {
+    throw new Error("CRITICAL: Cooldown time missing or less than 5m");
+  }
+
+  // 총 시간이 목표보다 많이 초과되면 마지막 메인 운동을 줄임 (Optional)
+  if (finalTotalTime > totalDurationMinutes) {
+    // 간단한 보정 로직: 초과분만큼 메인에서 뺌 (구현 생략 가능, 현재 로직상 크게 초과 안함)
+  }
 
   return result;
 }
