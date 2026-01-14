@@ -9,7 +9,7 @@ const TEMPLATES_FILE = join(
   "exercise-templates-real.json",
 );
 
-const nameMapping = {
+const nameMapping: Record<string, string> = {
   "Levator Scapula Stretching": "견갑거근 스트레칭 (Levator Scapulae)",
   "SCM Stretching": "흉쇄유돌근 스트레칭 (SCM)",
   "VMO Strengthening": "내측광근 강화 운동 (VMO)",
@@ -31,7 +31,7 @@ async function main() {
   // 1. JSON 파일 업데이트
   try {
     const fileContent = readFileSync(TEMPLATES_FILE, "utf-8");
-    let templates = JSON.parse(fileContent);
+    let templates = JSON.parse(fileContent) as Array<{ name: string }>;
     let jsonUpdateCount = 0;
 
     templates = templates.map((template) => {
@@ -77,7 +77,9 @@ async function main() {
         dbUpdateCount += result.count;
       }
     } catch (error) {
-      console.error(`❌ DB 업데이트 실패 ("${oldName}"):`, error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(`❌ DB 업데이트 실패 ("${oldName}"):`, errorMessage);
     }
   }
 

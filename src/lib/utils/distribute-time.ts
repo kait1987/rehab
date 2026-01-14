@@ -304,11 +304,14 @@ export function distributeTime(
   // ==================================================================================
   const finalWarmupTime = result
     .filter((e) => e.section === "warmup")
-    .reduce((s, e) => s + e.durationMinutes, 0);
+    .reduce((s, e) => s + (e.durationMinutes || 0), 0);
   const finalCooldownTime = result
     .filter((e) => e.section === "cooldown")
-    .reduce((s, e) => s + e.durationMinutes, 0);
-  const finalTotalTime = result.reduce((s, e) => s + e.durationMinutes, 0);
+    .reduce((s, e) => s + (e.durationMinutes || 0), 0);
+  const finalTotalTime = result.reduce(
+    (s, e) => s + (e.durationMinutes || 0),
+    0,
+  );
 
   if (finalWarmupTime > 15) {
     console.error(
