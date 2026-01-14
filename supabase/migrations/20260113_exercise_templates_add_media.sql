@@ -18,3 +18,6 @@ COMMENT ON COLUMN public.exercise_templates.english_name IS '영문 운동명 (E
 CREATE INDEX IF NOT EXISTS idx_exercise_templates_english_name 
 ON public.exercise_templates(english_name) 
 WHERE english_name IS NOT NULL;
+
+-- YouTube 연동: video_url 컬럼에 YouTube video ID 저장
+-- 예: "U3Hh0Ue-Hxs" (전체 URL이 아닌 video ID만 저장)
