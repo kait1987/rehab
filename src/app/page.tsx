@@ -2,12 +2,26 @@
 
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { PainCheckModal } from "@/components/pain-check-modal";
+import { Suspense } from "react";
 
-export default function HomePage() {
+function HomePageContent() {
   const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // URL 파라미터에서 초기값 파싱
+  const restartMode = searchParams.get("restart") === "true";
+  const bodyPartsParam = searchParams.get("bodyParts");
+  const painLevelParam = searchParams.get("painLevel");
+
+  const initialValues = restartMode
+    ? {
+        bodyPartNames: bodyPartsParam ? bodyPartsParam.split(",") : undefined,
+        painLevel: painLevelParam ? parseInt(painLevelParam) : undefined,
+      }
+    : undefined;
 
   return (
     <main className="flex min-h-screen flex-col">
@@ -24,36 +38,43 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              {isLoaded && !isSignedIn && process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH !== 'true' && (
-                <>
-                  <Button 
-                    size="lg" 
-                    className="rounded-xl"
-                    onClick={() => router.push('/sign-up')}
+              {isLoaded &&
+                !isSignedIn &&
+                process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH !== "true" && (
+                  <>
+                    <Button
+                      size="lg"
+                      className="rounded-xl"
+                      onClick={() => router.push("/sign-up")}
+                    >
+                      시작하기
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="rounded-xl"
+                      onClick={() => router.push("/sign-in")}
+                    >
+                      로그인
+                    </Button>
+                  </>
+                )}
+              {isLoaded &&
+                (isSignedIn ||
+                  process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH === "true") && (
+                  <PainCheckModal
+                    initialValues={initialValues}
+                    defaultOpen={restartMode}
                   >
-                    시작하기
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="rounded-xl"
-                    onClick={() => router.push('/sign-in')}
-                  >
-                    로그인
-                  </Button>
-                </>
-              )}
-              {isLoaded && (isSignedIn || process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH === 'true') && (
-                <PainCheckModal>
-                  <Button 
-                    size="lg" 
-                    className="rounded-xl"
-                    data-testid="home-start-rehab"
-                  >
-                    내 몸 상태로 재활 코스 만들기
-                  </Button>
-                </PainCheckModal>
-              )}
+                    <Button
+                      size="lg"
+                      className="rounded-xl"
+                      data-testid="home-start-rehab"
+                    >
+                      내 몸 상태로 재활 코스 만들기
+                    </Button>
+                  </PainCheckModal>
+                )}
             </div>
           </div>
         </div>
@@ -130,5 +151,19 @@ export default function HomePage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen flex-col items-center justify-center">
+          Loading...
+        </main>
+      }
+    >
+      <HomePageContent />
+    </Suspense>
   );
 }

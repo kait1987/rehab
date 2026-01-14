@@ -21,10 +21,13 @@ export interface TimeDistributionConfig {
 /**
  * 총 시간별 시간 배분 설정
  */
-const TIME_DISTRIBUTION_BY_DURATION: Record<60 | 90 | 120, {
-  warmupTime: number;
-  cooldownTime: number;
-}> = {
+const TIME_DISTRIBUTION_BY_DURATION: Record<
+  60 | 90 | 120,
+  {
+    warmupTime: number;
+    cooldownTime: number;
+  }
+> = {
   60: {
     warmupTime: 10,
     cooldownTime: 10,
@@ -70,9 +73,9 @@ interface SetsAndRepsResult {
 
 /**
  * 세트/횟수 자동 계산
- * 
+ *
  * 운동 시간이 변경되면 sets와 reps를 비례적으로 조정합니다.
- * 
+ *
  * @param originalDuration 원래 운동 시간 (분)
  * @param newDuration 새로운 운동 시간 (분)
  * @param originalSets 원래 세트 수 (없으면 기본값 사용)
@@ -85,7 +88,7 @@ function calculateSetsAndReps(
   newDuration: number,
   originalSets: number | undefined,
   originalReps: number | undefined,
-  section: 'warmup' | 'main' | 'cooldown'
+  section: "warmup" | "main" | "cooldown",
 ): SetsAndRepsResult {
   // 기본값 가져오기
   const defaultValues = DEFAULT_SETS_REPS_BY_SECTION[section];
@@ -103,17 +106,21 @@ function calculateSetsAndReps(
   // 시간 비율 계산
   const timeRatio = newDuration / originalDuration;
 
-  // 비례적으로 조정
-  let adjustedSets = Math.round(baseSets * timeRatio);
-  let adjustedReps = Math.round(baseReps * timeRatio);
+  // 비례적으로 조정 (너무 급격한 증가 방지를 위해 제곱근 사용)
+  // 예: 시간이 4배 늘어나면 세트는 2배만 증가
+  const scaleFactor = Math.sqrt(timeRatio);
+
+  let adjustedSets = Math.round(baseSets * scaleFactor);
+  let adjustedReps = Math.round(baseReps * scaleFactor);
 
   // 최소값 보장
   adjustedSets = Math.max(1, adjustedSets);
   adjustedReps = Math.max(5, adjustedReps);
 
   // 최대값 제한 (안전상)
-  adjustedSets = Math.min(10, adjustedSets);
-  adjustedReps = Math.min(50, adjustedReps);
+  // 사용자 피드백 반영: 10세트는 너무 많음 -> 5세트로 제한
+  adjustedSets = Math.min(5, adjustedSets);
+  adjustedReps = Math.min(20, adjustedReps);
 
   return {
     sets: adjustedSets,
@@ -123,10 +130,10 @@ function calculateSetsAndReps(
 
 /**
  * 시간 배분
- * 
+ *
  * totalDurationMinutes에 맞춰 각 운동의 duration, sets, reps를 조정합니다.
  * 우선순위가 높은 운동부터 시간을 배분합니다.
- * 
+ *
  * @param exercises 섹션별로 분류된 운동 목록
  * @param totalDurationMinutes 총 운동 시간 (60, 90, 120분)
  * @param config 시간 배분 설정 (선택)
@@ -139,7 +146,7 @@ export function distributeTime(
     cooldown: MergedExercise[];
   },
   totalDurationMinutes: 60 | 90 | 120,
-  config: Partial<TimeDistributionConfig> = {}
+  config: Partial<TimeDistributionConfig> = {},
 ): MergedExercise[] {
   // 총 시간에 따른 기본 시간 배분 가져오기
   const durationConfig = TIME_DISTRIBUTION_BY_DURATION[totalDurationMinutes];
@@ -157,22 +164,12 @@ export function distributeTime(
 
   const result: MergedExercise[] = [];
 
-  // Helper function to calculate how many exercises needed for target time
-  const calculateExerciseCount = (
-    targetTime: number,
-    maxTimePerExercise: number,
-    minTimePerExercise: number
-  ): number => {
-    // At minimum, use minTimePerExercise per exercise to calculate max count
-    return Math.ceil(targetTime / Math.max(minTimePerExercise, 5));
-  };
-
   // Helper function to repeat exercises to fill time
   const repeatExercisesToFillTime = (
     exerciseList: MergedExercise[],
     targetTime: number,
     maxTimePerExercise: number,
-    section: 'warmup' | 'main' | 'cooldown'
+    section: "warmup" | "main" | "cooldown",
   ): MergedExercise[] => {
     if (exerciseList.length === 0) return [];
 
@@ -185,15 +182,18 @@ export function distributeTime(
     while (accumulatedTime < targetTime) {
       const sourceExercise = exerciseList[exerciseIndex % exerciseList.length];
       const remainingTime = targetTime - accumulatedTime;
-      
+
       // Calculate time for this exercise
       const timeForThisExercise = Math.min(
         maxTimePerExercise,
-        Math.max(timeConfig.minExerciseTime, remainingTime)
+        Math.max(timeConfig.minExerciseTime, remainingTime),
       );
 
       // Skip if remaining time is too small
-      if (remainingTime < timeConfig.minExerciseTime && sectionResult.length > 0) {
+      if (
+        remainingTime < timeConfig.minExerciseTime &&
+        sectionResult.length > 0
+      ) {
         break;
       }
 
@@ -202,7 +202,7 @@ export function distributeTime(
         timeForThisExercise,
         sourceExercise.sets,
         sourceExercise.reps,
-        section
+        section,
       );
 
       sectionResult.push({
@@ -230,7 +230,7 @@ export function distributeTime(
     exercises.warmup,
     timeConfig.warmupTime,
     timeConfig.maxWarmupCooldownTime,
-    'warmup'
+    "warmup",
   );
   result.push(...warmupExercises);
 
@@ -239,19 +239,55 @@ export function distributeTime(
     exercises.main,
     actualMainTime,
     timeConfig.maxMainExerciseTime,
-    'main'
+    "main",
   );
   result.push(...mainExercises);
 
   // Cooldown 시간 배분 (반복하여 시간 채우기)
+  // 🆕 Cooldown 강제 보장 로직
+  let cooldownSource = exercises.cooldown;
+
+  // 1. Cooldown 후보가 없으면 Warmup 중 강도 낮은 운동(intensityLevel <= 2) 재사용
+  if (cooldownSource.length === 0) {
+    cooldownSource = exercises.warmup.filter(
+      (ex) => (ex.intensityLevel || 0) <= 2,
+    );
+  }
+
+  // 2. 그래도 없으면 Warmup 전체 재사용
+  if (cooldownSource.length === 0) {
+    cooldownSource = exercises.warmup;
+  }
+
+  // 3. 최후의 수단: 하드코딩된 전신 스트레칭 (데이터베이스 의존성 제거)
+  if (cooldownSource.length === 0) {
+    cooldownSource = [
+      {
+        exerciseTemplateId: "fallback-stretch",
+        exerciseTemplateName: "전신 스트레칭",
+        bodyPartIds: [],
+        priorityScore: 0,
+        section: "cooldown",
+        orderInSection: 0,
+        durationMinutes: 5,
+        sets: 1,
+        reps: 1,
+        intensityLevel: 1,
+        difficultyScore: 1,
+        description: "편안한 자세로 전신을 이완합니다.",
+        instructions: "호흡을 깊게 하며 몸의 긴장을 풉니다.",
+        precautions: "통증이 없는 범위 내에서 진행합니다.",
+      },
+    ];
+  }
+
   const cooldownExercises = repeatExercisesToFillTime(
-    exercises.cooldown,
+    cooldownSource,
     timeConfig.cooldownTime,
     timeConfig.maxWarmupCooldownTime,
-    'cooldown'
+    "cooldown",
   );
   result.push(...cooldownExercises);
 
   return result;
 }
-

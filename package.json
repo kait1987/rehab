@@ -23,6 +23,8 @@
     "body-part-bank:generate": "tsx scripts/generate-body-part-bank.ts",
     "body-part-bank:validate": "tsx scripts/validate-body-part-bank.ts",
     "body-part-bank:upload": "tsx scripts/upload-body-part-bank.ts",
+    "map:exercise-images": "tsx scripts/map-exercise-images.ts",
+    "map:youtube-videos": "tsx scripts/map-youtube-videos.ts",
     "verify:database-url": "tsx scripts/verify-database-url.ts",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -89,6 +91,7 @@
     "next": "15.5.7",
     "next-intl": "^4.7.0",
     "next-themes": "^0.4.6",
+    "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "react": "19.2.3",
     "react-day-picker": "^9.12.0",
@@ -117,6 +120,7 @@
     "npm-run-all": "^4.1.5",
     "prisma": "6.0.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.16"
   }

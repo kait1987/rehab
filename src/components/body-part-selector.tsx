@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { BodyPartSelection } from "@/types/body-part-merge";
@@ -32,7 +31,7 @@ interface BodyPartSelectorProps {
 
 /**
  * 부위 선택 컴포넌트
- * 
+ *
  * 다중 부위 선택을 지원하며, 각 부위별로 통증 정도를 입력할 수 있습니다.
  * 최대 5개까지 선택 가능하며, 모바일 친화적인 UI를 제공합니다.
  */
@@ -48,13 +47,13 @@ export function BodyPartSelector({
     if (disabled) return;
 
     const isSelected = selectedBodyParts.some(
-      (bp) => bp.bodyPartId === bodyPart.id
+      (bp) => bp.bodyPartId === bodyPart.id,
     );
 
     if (isSelected) {
       // 해제: 해당 부위 제거
       const updated = selectedBodyParts.filter(
-        (bp) => bp.bodyPartId !== bodyPart.id
+        (bp) => bp.bodyPartId !== bodyPart.id,
       );
       onSelectionChange(updated);
     } else {
@@ -81,9 +80,7 @@ export function BodyPartSelector({
     if (disabled) return;
 
     const updated = selectedBodyParts.map((bp) =>
-      bp.bodyPartId === bodyPartId
-        ? { ...bp, painLevel }
-        : bp
+      bp.bodyPartId === bodyPartId ? { ...bp, painLevel } : bp,
     );
 
     onSelectionChange(updated);
@@ -96,7 +93,9 @@ export function BodyPartSelector({
 
   // 선택된 부위의 통증 정도 가져오기
   const getPainLevel = (bodyPartId: string): number => {
-    const selection = selectedBodyParts.find((bp) => bp.bodyPartId === bodyPartId);
+    const selection = selectedBodyParts.find(
+      (bp) => bp.bodyPartId === bodyPartId,
+    );
     return selection?.painLevel ?? 3;
   };
 
@@ -108,13 +107,11 @@ export function BodyPartSelector({
     <div className="space-y-4">
       {/* 선택 개수 표시 */}
       <div className="flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">
-          어느 부위가 불편한가요?
-        </span>
+        <span className="text-muted-foreground">어느 부위가 불편한가요?</span>
         <span
           className={cn(
             "font-medium",
-            isMaxReached ? "text-primary" : "text-muted-foreground"
+            isMaxReached ? "text-primary" : "text-muted-foreground",
           )}
         >
           {selectionCount}/{maxSelections} 선택됨
@@ -128,7 +125,13 @@ export function BodyPartSelector({
           const painLevel = getPainLevel(part.id);
 
           return (
-            <div key={part.id} className="space-y-2">
+            <div
+              key={part.id}
+              className={cn(
+                "space-y-2 transition-all duration-200",
+                selected && "col-span-2",
+              )}
+            >
               {/* 부위 선택 버튼 */}
               <button
                 type="button"
@@ -141,7 +144,7 @@ export function BodyPartSelector({
                   selected
                     ? "border-primary bg-primary/10 shadow-md"
                     : "border-border",
-                  !selected && isMaxReached && "opacity-60"
+                  !selected && isMaxReached && "opacity-60",
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -178,7 +181,7 @@ export function BodyPartSelector({
                           "disabled:opacity-50 disabled:cursor-not-allowed",
                           painLevel === level
                             ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                            : "border-border bg-background text-foreground"
+                            : "border-border bg-background text-foreground",
                         )}
                         aria-label={`통증 정도 ${level}`}
                       >
@@ -217,4 +220,3 @@ export function BodyPartSelector({
     </div>
   );
 }
-

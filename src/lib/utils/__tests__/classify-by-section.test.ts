@@ -399,4 +399,127 @@ describe('classifyBySection', () => {
       expect(result.cooldown.length).toBe(0);
     });
   });
+
+  // ============================================
+  // 메인 우선순위 중복 제거 테스트
+  // ============================================
+
+  describe('메인 우선순위 중복 제거', () => {
+    it('동일 운동이 여러 섹션에 있으면 main에만 남는다', () => {
+      // Arrange: 같은 운동(A)이 warmup, main, cooldown 모두에 들어갈 수 있는 상황
+      const duplicated = createMergedExercise({
+        exerciseTemplateId: 'dup-001',
+        exerciseTemplateName: '중복 운동 A',
+        intensityLevel: 1, // 낮은 강도 (warmup/cooldown 후보)
+        priorityScore: 10,
+      });
+
+      // 7개의 낮은 강도 운동을 만들어 중복이 발생할 수 있는 상황 구성
+      const exercises = [
+        duplicated,
+        createMergedExercise({
+          exerciseTemplateId: 'low-1',
+          exerciseTemplateName: '낮은 강도 1',
+          intensityLevel: 1,
+          priorityScore: 20,
+        }),
+        createMergedExercise({
+          exerciseTemplateId: 'low-2',
+          exerciseTemplateName: '낮은 강도 2',
+          intensityLevel: 1,
+          priorityScore: 30,
+        }),
+        createMergedExercise({
+          exerciseTemplateId: 'low-3',
+          exerciseTemplateName: '낮은 강도 3',
+          intensityLevel: 1,
+          priorityScore: 40,
+        }),
+        createMergedExercise({
+          exerciseTemplateId: 'low-4',
+          exerciseTemplateName: '낮은 강도 4',
+          intensityLevel: 1,
+          priorityScore: 50,
+        }),
+        createMergedExercise({
+          exerciseTemplateId: 'low-5',
+          exerciseTemplateName: '낮은 강도 5',
+          intensityLevel: 1,
+          priorityScore: 60,
+        }),
+        createMergedExercise({
+          exerciseTemplateId: 'low-6',
+          exerciseTemplateName: '낮은 강도 6',
+          intensityLevel: 1,
+          priorityScore: 70,
+        }),
+      ];
+
+      // Act
+      const result = classifyBySection(exercises);
+
+      // Assert: 전체 섹션에서 각 운동은 1번씩만 나와야 함
+      const allIds = [
+        ...result.warmup.map(e => e.exerciseTemplateId),
+        ...result.main.map(e => e.exerciseTemplateId),
+        ...result.cooldown.map(e => e.exerciseTemplateId),
+      ];
+
+      const uniqueIds = new Set(allIds);
+      expect(allIds.length).toBe(uniqueIds.size); // 중복 없음
+    });
+
+    it('warmup과 main 모두에 후보인 운동은 main에서만 나타난다', () => {
+      // Arrange
+      // main에도 후보가 되면서 warmup에도 들어갈 수 있는 운동
+      const lowIntensityExercises = Array.from({ length: 8 }, (_, i) =>
+        createMergedExercise({
+          exerciseTemplateId: `exercise-${i}`,
+          exerciseTemplateName: `운동 ${i}`,
+          intensityLevel: 1,
+          priorityScore: 10 + i * 10,
+        })
+      );
+
+      // Act
+      const result = classifyBySection(lowIntensityExercises);
+
+      // Assert: warmup에 있는 운동은 main에 없어야 함
+      const warmupIds = new Set(result.warmup.map(e => e.exerciseTemplateId));
+      const mainIds = result.main.map(e => e.exerciseTemplateId);
+      const cooldownIds = new Set(result.cooldown.map(e => e.exerciseTemplateId));
+
+      mainIds.forEach(id => {
+        expect(warmupIds.has(id)).toBe(false);
+        expect(cooldownIds.has(id)).toBe(false);
+      });
+    });
+
+    it('전체 섹션 합쳤을 때 동일 exerciseTemplateId는 딱 1번만 존재한다', () => {
+      // Arrange
+      const mixed = [
+        EXERCISES.childPose,
+        EXERCISES.catStretch,
+        EXERCISES.wallPushUp,
+        EXERCISES.pelvicTilt,
+        EXERCISES.shoulderStretch,
+        EXERCISES.latPulldown,
+        EXERCISES.pushUp,
+        EXERCISES.lunge,
+      ];
+
+      // Act
+      const result = classifyBySection(mixed);
+
+      // Assert
+      const allIds = [
+        ...result.warmup.map(e => e.exerciseTemplateId),
+        ...result.main.map(e => e.exerciseTemplateId),
+        ...result.cooldown.map(e => e.exerciseTemplateId),
+      ];
+
+      const uniqueIds = new Set(allIds);
+      expect(allIds.length).toBe(uniqueIds.size);
+    });
+  });
 });

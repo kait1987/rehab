@@ -71,6 +71,12 @@ export interface MergedExercise {
   instructions?: string;
   /** 주의사항 */
   precautions?: string;
+  /** 운동 이미지 URL */
+  imageUrl?: string;
+  /** 운동 동작 GIF URL */
+  gifUrl?: string;
+  /** YouTube 영상 ID (예: dQw4w9WgXcQ) */
+  videoUrl?: string;
 }
 
 /**

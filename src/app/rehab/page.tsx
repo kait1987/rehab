@@ -29,8 +29,9 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { CourseExerciseCard } from "@/components/course-exercise-card";
+import { ExerciseTimerModal } from "@/components/exercise-timer-modal";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { classifyBySection } from "@/lib/utils/classify-by-section";
@@ -81,6 +82,41 @@ function RehabPageContent() {
     main: MergedExercise[];
     cooldown: MergedExercise[];
   } | null>(null);
+
+  // 운동 타이머 모달 상태
+  const [activeExercise, setActiveExercise] = useState<MergedExercise | null>(
+    null,
+  );
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+
+  // 전체 운동 목록 (순서대로 평탄화)
+  const allExercises = sections
+    ? [...sections.warmup, ...sections.main, ...sections.cooldown]
+    : [];
+
+  const handleStartExercise = (exercise: MergedExercise) => {
+    setActiveExercise(exercise);
+    // 전체 목록에서 인덱스 찾기
+    const index = allExercises.findIndex(
+      (ex) =>
+        ex.exerciseTemplateId === exercise.exerciseTemplateId &&
+        ex.section === exercise.section,
+    );
+    setActiveIndex(index);
+  };
+
+  const handleNextExercise = () => {
+    if (activeIndex < allExercises.length - 1) {
+      const nextIndex = activeIndex + 1;
+      setActiveIndex(nextIndex);
+      setActiveExercise(allExercises[nextIndex]);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setActiveExercise(null);
+    setActiveIndex(-1);
+  };
 
   // 탭 상태 관리 및 스와이프 로직
   const [activeTab, setActiveTab] = useState<string>("warmup");
@@ -137,7 +173,9 @@ function RehabPageContent() {
     }
 
     setRequestData(mergeRequest);
+    setRequestData(mergeRequest);
     generateCourse(mergeRequest);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   /**
@@ -178,8 +216,9 @@ function RehabPageContent() {
         painLevel: request.painLevel,
         totalDuration: data.data.course.totalDuration,
         exerciseCount: data.data.course.exercises.length,
+        requestData: request, // 🆕 재실행을 위해 원본 요청 저장
       });
-      console.log('[RehabPage] Course saved to recent courses');
+      console.log("[RehabPage] Course saved to recent courses");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
@@ -247,7 +286,10 @@ function RehabPageContent() {
       <main className="min-h-[calc(100vh-80px)] container mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" strokeWidth={1.5} />
+            <Loader2
+              className="h-8 w-8 animate-spin text-primary mb-4"
+              strokeWidth={1.5}
+            />
             <p className="text-muted-foreground">코스를 생성하고 있습니다...</p>
           </div>
         </div>
@@ -293,8 +335,14 @@ function RehabPageContent() {
 
         {/* 경고 메시지 */}
         {courseData.warnings && courseData.warnings.length > 0 && (
-          <Alert variant="default" className="mb-6 border-yellow-500/30 bg-yellow-500/10">
-            <AlertCircle className="h-4 w-4 text-yellow-500" strokeWidth={1.5} />
+          <Alert
+            variant="default"
+            className="mb-6 border-yellow-500/30 bg-yellow-500/10"
+          >
+            <AlertCircle
+              className="h-4 w-4 text-yellow-500"
+              strokeWidth={1.5}
+            />
             <AlertDescription className="text-yellow-500/90">
               {courseData.warnings.map((warning, idx) => (
                 <p key={idx}>{warning}</p>
@@ -313,8 +361,14 @@ function RehabPageContent() {
 
         {/* 성공 메시지 */}
         {saveSuccess && (
-          <Alert variant="default" className="mb-6 border-green-500/30 bg-green-500/10">
-            <CheckCircle2 className="h-4 w-4 text-green-500" strokeWidth={1.5} />
+          <Alert
+            variant="default"
+            className="mb-6 border-green-500/30 bg-green-500/10"
+          >
+            <CheckCircle2
+              className="h-4 w-4 text-green-500"
+              strokeWidth={1.5}
+            />
             <AlertDescription className="text-green-500/90">
               코스가 성공적으로 저장되었습니다.
             </AlertDescription>
@@ -322,80 +376,108 @@ function RehabPageContent() {
         )}
 
         {/* 섹션별 운동 탭 */}
-        <div {...swipeHandlers.onTouchStart} {...swipeHandlers.onTouchMove} {...swipeHandlers.onTouchEnd}>
+        <div
+          {...swipeHandlers.onTouchStart}
+          {...swipeHandlers.onTouchMove}
+          {...swipeHandlers.onTouchEnd}
+        >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="warmup">
-              준비 운동 ({sections.warmup.length})
-            </TabsTrigger>
-            <TabsTrigger value="main">
-              메인 운동 ({sections.main.length})
-            </TabsTrigger>
-            <TabsTrigger value="cooldown">
-              마무리 운동 ({sections.cooldown.length})
-            </TabsTrigger>
-          </TabsList>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="warmup">
+                준비 운동 ({sections.warmup.length}) ·{" "}
+                {sections.warmup.reduce(
+                  (sum, ex) => sum + (ex.durationMinutes || 0),
+                  0,
+                )}
+                분
+              </TabsTrigger>
+              <TabsTrigger value="main">
+                메인 운동 ({sections.main.length}) ·{" "}
+                {sections.main.reduce(
+                  (sum, ex) => sum + (ex.durationMinutes || 0),
+                  0,
+                )}
+                분
+              </TabsTrigger>
+              <TabsTrigger value="cooldown">
+                마무리 운동 ({sections.cooldown.length}) ·{" "}
+                {sections.cooldown.reduce(
+                  (sum, ex) => sum + (ex.durationMinutes || 0),
+                  0,
+                )}
+                분
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="warmup" className="mt-6">
-            <div className="space-y-4">
-              {sections.warmup.length === 0 ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">준비 운동이 없습니다.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                sections.warmup.map((exercise, index) => (
-                  <CourseExerciseCard
-                    key={`warmup-${index}-${exercise.exerciseTemplateId}`}
-                    exercise={exercise}
-                    section="warmup"
-                  />
-                ))
-              )}
-            </div>
-          </TabsContent>
+            <TabsContent value="warmup" className="mt-6">
+              <div className="space-y-4">
+                {sections.warmup.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <p className="text-muted-foreground">
+                        준비 운동이 없습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  sections.warmup.map((exercise, index) => (
+                    <CourseExerciseCard
+                      key={`warmup-${index}-${exercise.exerciseTemplateId}`}
+                      exercise={exercise}
+                      section="warmup"
+                      onStart={handleStartExercise}
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
 
-          <TabsContent value="main" className="mt-6">
-            <div className="space-y-4">
-              {sections.main.length === 0 ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">메인 운동이 없습니다.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                sections.main.map((exercise, index) => (
-                  <CourseExerciseCard
-                    key={`main-${index}-${exercise.exerciseTemplateId}`}
-                    exercise={exercise}
-                    section="main"
-                  />
-                ))
-              )}
-            </div>
-          </TabsContent>
+            <TabsContent value="main" className="mt-6">
+              <div className="space-y-4">
+                {sections.main.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <p className="text-muted-foreground">
+                        메인 운동이 없습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  sections.main.map((exercise, index) => (
+                    <CourseExerciseCard
+                      key={`main-${index}-${exercise.exerciseTemplateId}`}
+                      exercise={exercise}
+                      section="main"
+                      onStart={handleStartExercise}
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
 
-          <TabsContent value="cooldown" className="mt-6">
-            <div className="space-y-4">
-              {sections.cooldown.length === 0 ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">마무리 운동이 없습니다.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                sections.cooldown.map((exercise, index) => (
-                  <CourseExerciseCard
-                    key={`cooldown-${index}-${exercise.exerciseTemplateId}`}
-                    exercise={exercise}
-                    section="cooldown"
-                  />
-                ))
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="cooldown" className="mt-6">
+              <div className="space-y-4">
+                {sections.cooldown.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <p className="text-muted-foreground">
+                        마무리 운동이 없습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  sections.cooldown.map((exercise, index) => (
+                    <CourseExerciseCard
+                      key={`cooldown-${index}-${exercise.exerciseTemplateId}`}
+                      exercise={exercise}
+                      section="cooldown"
+                      onStart={handleStartExercise}
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* 하단 액션 버튼 영역 */}
@@ -407,8 +489,8 @@ function RehabPageContent() {
                 variant="secondary"
                 className="flex-1 bg-secondary hover:bg-secondary-hover text-secondary-foreground"
               >
-                <MapPin className="h-4 w-4 mr-2" strokeWidth={1.5} />
-                이 코스 하기 좋은 근처 헬스장 보기
+                <MapPin className="h-4 w-4 mr-2" strokeWidth={1.5} />이 코스
+                하기 좋은 근처 헬스장 보기
               </Button>
               <Button
                 onClick={handleSaveCourse}
@@ -417,7 +499,10 @@ function RehabPageContent() {
               >
                 {saving ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" strokeWidth={1.5} />
+                    <Loader2
+                      className="h-4 w-4 mr-2 animate-spin"
+                      strokeWidth={1.5}
+                    />
                     저장 중...
                   </>
                 ) : (
@@ -431,15 +516,39 @@ function RehabPageContent() {
           </CardContent>
         </Card>
 
+        {/* 새 코스 만들기 버튼 */}
+        <div className="mb-8 flex justify-center">
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto min-w-[200px]"
+            onClick={() => router.push("/")}
+          >
+            새 코스 만들기
+          </Button>
+        </div>
+
         {/* 의료행위 아님 안내 문구 */}
         <Alert variant="default" className="border-muted bg-muted/30">
-          <AlertCircle className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
+          <AlertCircle
+            className="h-4 w-4 text-muted-foreground"
+            strokeWidth={1.5}
+          />
           <AlertDescription className="text-xs text-muted-foreground">
-            <strong className="text-foreground">의료행위 아님 안내:</strong> 본 서비스는
-            의료행위가 아닙니다. 통증이 심하거나 지속되면 전문의와 상담하세요.
+            <strong className="text-foreground">의료행위 아님 안내:</strong> 본
+            서비스는 의료행위가 아닙니다. 통증이 심하거나 지속되면 전문의와
+            상담하세요.
           </AlertDescription>
         </Alert>
       </div>
+
+      {/* 운동 타이머 모달 */}
+      <ExerciseTimerModal
+        isOpen={!!activeExercise}
+        exercise={activeExercise}
+        hasNext={activeIndex < allExercises.length - 1}
+        onClose={handleCloseModal}
+        onNext={handleNextExercise}
+      />
     </main>
   );
 }
@@ -455,7 +564,10 @@ export default function RehabPage() {
         <main className="min-h-[calc(100vh-80px)] container mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" strokeWidth={1.5} />
+              <Loader2
+                className="h-8 w-8 animate-spin text-primary mb-4"
+                strokeWidth={1.5}
+              />
               <p className="text-muted-foreground">로딩 중...</p>
             </div>
           </div>

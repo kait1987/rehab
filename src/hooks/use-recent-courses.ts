@@ -13,9 +13,11 @@
  * - react: useState, useEffect
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+
+import type { MergeRequest } from "@/types/body-part-merge";
 
 export interface LocalRecentCourse {
   id: string;
@@ -24,9 +26,10 @@ export interface LocalRecentCourse {
   totalDuration: number;
   exerciseCount: number;
   createdAt: string;
+  requestData?: MergeRequest; // 재실행을 위한 원본 요청 데이터
 }
 
-const STORAGE_KEY = 'rehab_recent_courses_v1';
+const STORAGE_KEY = "rehab_recent_courses_v1";
 const MAX_COURSES = 10;
 
 export function useRecentCourses() {
@@ -35,7 +38,7 @@ export function useRecentCourses() {
 
   // 초기화: localStorage에서 최근 코스 불러오기
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -43,7 +46,7 @@ export function useRecentCourses() {
         setRecentCourses(JSON.parse(data));
       }
     } catch {
-      console.warn('[useRecentCourses] localStorage not available');
+      console.warn("[useRecentCourses] localStorage not available");
       setIsAvailable(false);
     }
   }, []);
@@ -51,7 +54,7 @@ export function useRecentCourses() {
   /**
    * 코스 저장
    */
-  const addCourse = (course: Omit<LocalRecentCourse, 'createdAt' | 'id'>) => {
+  const addCourse = (course: Omit<LocalRecentCourse, "createdAt" | "id">) => {
     if (!isAvailable) return false;
 
     try {
@@ -65,13 +68,13 @@ export function useRecentCourses() {
       setRecentCourses(updated);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 
-      console.group('[useRecentCourses] addCourse');
-      console.log('Added:', courseData);
+      console.group("[useRecentCourses] addCourse");
+      console.log("Added:", courseData);
       console.groupEnd();
 
       return true;
     } catch (error) {
-      console.error('[useRecentCourses] addCourse error:', error);
+      console.error("[useRecentCourses] addCourse error:", error);
       return false;
     }
   };
@@ -88,7 +91,7 @@ export function useRecentCourses() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       return true;
     } catch (error) {
-      console.error('[useRecentCourses] removeCourse error:', error);
+      console.error("[useRecentCourses] removeCourse error:", error);
       return false;
     }
   };
@@ -104,7 +107,7 @@ export function useRecentCourses() {
       localStorage.removeItem(STORAGE_KEY);
       return true;
     } catch (error) {
-      console.error('[useRecentCourses] clearAll error:', error);
+      console.error("[useRecentCourses] clearAll error:", error);
       return false;
     }
   };
