@@ -6,7 +6,6 @@ import {
   Play,
   Pause,
   RotateCcw,
-  ChevronRight,
   CheckCircle2,
   HelpCircle,
   AlertTriangle,
@@ -144,6 +143,23 @@ export function ExerciseTimerModal({
         setMode("finished");
         stopTimer();
         releaseWakeLock();
+
+        // 타이머 완료 2초 후 자동으로 다음 운동 또는 종료
+        setTimeout(() => {
+          if (hasNext) {
+            onNext();
+          } else {
+            setMode("done");
+            if (onDone) onDone();
+            // 완료 메시지 표시 후 1.5초 뒤 자동 닫기
+            setTimeout(() => {
+              if (originalTitleRef.current) {
+                document.title = originalTitleRef.current;
+              }
+              onClose();
+            }, 1500);
+          }
+        }, 2000);
       } else {
         setTimeLeft(remaining);
       }
@@ -170,19 +186,6 @@ export function ExerciseTimerModal({
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-  };
-
-  const handleNext = () => {
-    stopTimer();
-    releaseWakeLock();
-    onNext();
-  };
-
-  const handleComplete = () => {
-    setMode("done");
-    stopTimer();
-    releaseWakeLock();
-    if (onDone) onDone();
   };
 
   const handleClose = () => {
@@ -327,23 +330,15 @@ export function ExerciseTimerModal({
               {/* 컨트롤 버튼 */}
               <div className="flex items-center gap-4 w-full max-w-xs mb-6">
                 {mode === "finished" ? (
-                  hasNext ? (
-                    <Button
-                      onClick={handleNext}
-                      size="lg"
-                      className="w-full text-lg h-14"
-                    >
-                      다음 운동 <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleComplete}
-                      size="lg"
-                      className="w-full text-lg h-14 bg-green-600 hover:bg-green-700"
-                    >
-                      운동 완료 <CheckCircle2 className="ml-2 h-5 w-5" />
-                    </Button>
-                  )
+                  <div className="w-full text-center py-4">
+                    <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3 animate-bounce" />
+                    <p className="text-lg font-medium text-green-500">
+                      {hasNext ? "잠시 후 다음 운동으로..." : "운동 완료!"}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {hasNext ? "2초 후 자동 전환됩니다" : "수고하셨습니다"}
+                    </p>
+                  </div>
                 ) : (
                   <>
                     <Button

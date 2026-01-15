@@ -89,6 +89,16 @@ function calculateSetsAndReps(
   const baseSets = originalSets ?? defaultValues.sets;
   const baseReps = originalReps ?? defaultValues.reps;
 
+  // 🔥 웜업/쿨다운은 예열/마무리 목적이므로 세트/횟수 제한
+  // 메인 운동 수준의 세트×횟수는 부적절함
+  if (section === "warmup" || section === "cooldown") {
+    return {
+      sets: Math.min(2, Math.max(1, baseSets)), // 웜업은 최대 2세트
+      reps: Math.min(12, Math.max(5, baseReps)), // 웜업은 최대 12회
+    };
+  }
+
+  // 메인 운동만 시간 기반 스케일링 적용
   if (!originalDuration || originalDuration === 0) {
     return { sets: baseSets, reps: baseReps };
   }
@@ -243,7 +253,10 @@ export function distributeTime(
       accumulatedMainTime += timeForThisExercise;
       mainIndex++;
 
-      if (mainIndex > 20) break; // Safety break
+      // Safety break: 최대 15개 운동 (같은 운동 반복 포함)
+      // 하지만 시간이 80% 이상 채워졌으면 더 이상 추가 안 함
+      if (mainIndex >= 15) break;
+      if (mainIndex >= 8 && accumulatedMainTime >= mainTarget * 0.8) break;
     }
   }
 

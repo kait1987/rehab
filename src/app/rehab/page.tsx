@@ -34,7 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { classifyBySection } from "@/lib/utils/classify-by-section";
+// classifyBySection import 제거됨 - 서버에서 이미 분류된 결과를 직접 사용
 import { useRecentCourses } from "@/hooks/use-recent-courses";
 import { useSwipe } from "@/hooks/use-swipe";
 import type { MergedExercise, MergeRequest } from "@/types/body-part-merge";
@@ -173,7 +173,6 @@ function RehabPageContent() {
     }
 
     setRequestData(mergeRequest);
-    setRequestData(mergeRequest);
     generateCourse(mergeRequest);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -206,9 +205,15 @@ function RehabPageContent() {
 
       setCourseData(data.data.course);
 
-      // 섹션별로 분류
-      const classified = classifyBySection(data.data.course.exercises);
-      setSections(classified);
+      // 섹션별로 그룹화 (서버에서 이미 분류+배분된 결과 사용)
+      // ⚠️ 중요: classifyBySection()을 다시 호출하면 서버의 시간 배분이 무시됨
+      const exercises = data.data.course.exercises;
+      const grouped = {
+        warmup: exercises.filter((ex) => ex.section === "warmup"),
+        main: exercises.filter((ex) => ex.section === "main"),
+        cooldown: exercises.filter((ex) => ex.section === "cooldown"),
+      };
+      setSections(grouped);
 
       // 🆕 최근 코스에 자동 저장
       addCourse({
