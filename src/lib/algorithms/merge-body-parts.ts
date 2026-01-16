@@ -17,22 +17,22 @@ import type {
 
 /**
  * pain_level_range와 사용자 painLevel 매칭
- * 
+ *
  * @param painLevelRange 통증 정도 범위 ('1-2', '3-4', '5', 'all')
  * @param userPainLevel 사용자 통증 정도 (1-5)
  * @returns 매칭 여부
  */
 function matchesPainLevelRange(
   painLevelRange: string | null | undefined,
-  userPainLevel: number
+  userPainLevel: number,
 ): boolean {
-  if (!painLevelRange || painLevelRange === 'all') {
+  if (!painLevelRange || painLevelRange === "all") {
     return true;
   }
 
-  if (painLevelRange.includes('-')) {
+  if (painLevelRange.includes("-")) {
     // 범위 형식: '1-2', '3-4'
-    const [min, max] = painLevelRange.split('-').map(Number);
+    const [min, max] = painLevelRange.split("-").map(Number);
     return userPainLevel >= min && userPainLevel <= max;
   }
 
@@ -43,16 +43,16 @@ function matchesPainLevelRange(
 
 /**
  * 다중 부위 병합 메인 함수
- * 
+ *
  * 여러 부위의 추천 운동을 병합하여 최종 코스를 생성합니다.
- * 
+ *
  * @param request 병합 요청
  * @param intensityAdjustment 강도 조정 (-1: 하향, 0: 유지, +1: 상향) - P2-F1-01
  * @returns 병합 결과
  */
 export async function mergeBodyParts(
   request: MergeRequest,
-  intensityAdjustment: number = 0
+  intensityAdjustment: number = 0,
 ): Promise<MergeResult> {
   const warnings: string[] = [];
   const bodyPartIds = request.bodyParts.map((bp) => bp.bodyPartId);
@@ -73,14 +73,11 @@ export async function mergeBodyParts(
       },
       bodyPart: true,
     },
-    orderBy: [
-      { bodyPartId: 'asc' },
-      { priority: 'asc' },
-    ],
+    orderBy: [{ bodyPartId: "asc" }, { priority: "asc" }],
   });
 
   if (mappings.length === 0) {
-    warnings.push('추천 운동을 찾을 수 없습니다. 기본 운동을 사용합니다.');
+    warnings.push("추천 운동을 찾을 수 없습니다. 기본 운동을 사용합니다.");
     return {
       exercises: [],
       totalDuration: request.totalDurationMinutes ?? 90,
@@ -93,7 +90,7 @@ export async function mergeBodyParts(
 
   for (const mapping of mappings) {
     const bodyPart = request.bodyParts.find(
-      (bp) => bp.bodyPartId === mapping.bodyPartId
+      (bp) => bp.bodyPartId === mapping.bodyPartId,
     );
 
     if (!bodyPart) continue;
@@ -104,37 +101,37 @@ export async function mergeBodyParts(
     }
 
     // pain_level_range 매칭 확인
-    if (
-      !matchesPainLevelRange(
-        mapping.painLevelRange,
-        bodyPart.painLevel
-      )
-    ) {
+    if (!matchesPainLevelRange(mapping.painLevelRange, bodyPart.painLevel)) {
       continue;
     }
 
     // 기구 필터링: 정확한 기구 매칭
-    const exerciseEquipment = mapping.exerciseTemplate.exerciseEquipmentMappings
-      .map((eem) => eem.equipmentType.name);
+    const exerciseEquipment =
+      mapping.exerciseTemplate.exerciseEquipmentMappings.map(
+        (eem) => eem.equipmentType.name,
+      );
 
     // 사용자가 선택한 기구 Set
     const userEquipmentSet = new Set(request.equipmentAvailable || []);
 
+    // "없음"이 선택된 경우, "맨몸" 운동도 수행 가능하다고 가정
+    if (userEquipmentSet.has("없음")) {
+      userEquipmentSet.add("맨몸");
+    }
+
     // 운동 가능 조건 체크
     // 1. "없음"만 필요한 운동 → 항상 가능 (맨손 운동)
-    const isNoEquipmentExercise = 
-      exerciseEquipment.length === 1 && exerciseEquipment[0] === '없음';
+    const isNoEquipmentExercise =
+      exerciseEquipment.length === 1 && exerciseEquipment[0] === "없음";
 
     // 2. 특정 기구 필요 → 사용자가 해당 기구를 모두 가지고 있어야 함
     //    (또는 "없음"으로 대체 가능한 경우)
-    const hasAllRequiredEquipment = exerciseEquipment.every(eq => 
-      eq === '없음' || userEquipmentSet.has(eq)
+    const hasAllRequiredEquipment = exerciseEquipment.every(
+      (eq) => eq === "없음" || userEquipmentSet.has(eq),
     );
 
     // 필터링: 맨손 운동이 아니고, 필요한 기구도 없으면 제외
     if (!isNoEquipmentExercise && !hasAllRequiredEquipment) {
-      // Debug log (운영 시 제거 가능)
-      // console.log(`⏭️ [${mapping.exerciseTemplate.name}] 기구 부족: 필요=${exerciseEquipment.join(',')}, 보유=${Array.from(userEquipmentSet).join(',')}`);
       continue;
     }
 
@@ -142,7 +139,7 @@ export async function mergeBodyParts(
     const priorityScore = calculatePriorityScore(
       bodyPart,
       mapping.priority,
-      mapping.intensityLevel || 2
+      mapping.intensityLevel || 2,
     );
 
     exercisesWithScores.push({
@@ -150,13 +147,16 @@ export async function mergeBodyParts(
       exerciseTemplateName: mapping.exerciseTemplate.name,
       bodyPartIds: [mapping.bodyPartId],
       priorityScore,
-      section: 'main', // 임시, 나중에 분류됨
+      section: "main", // 임시, 나중에 분류됨
       orderInSection: 0, // 임시, 나중에 설정됨
       durationMinutes: mapping.exerciseTemplate.durationMinutes || undefined,
       reps: mapping.exerciseTemplate.reps || undefined,
       sets: mapping.exerciseTemplate.sets || undefined,
       restSeconds: mapping.exerciseTemplate.restSeconds || undefined,
-      intensityLevel: mapping.intensityLevel || mapping.exerciseTemplate.intensityLevel || undefined,
+      intensityLevel:
+        mapping.intensityLevel ||
+        mapping.exerciseTemplate.intensityLevel ||
+        undefined,
       difficultyScore: mapping.exerciseTemplate.difficultyScore || undefined,
       painLevelRange: mapping.painLevelRange || undefined,
       description: mapping.exerciseTemplate.description || undefined,
@@ -167,9 +167,11 @@ export async function mergeBodyParts(
 
   // 3. 난이도 자동 조절 및 필터링
   let filteredByDifficulty = exercisesWithScores;
-  
+
   if (request.experienceLevel) {
-    const experienceLevel: ExperienceLevel = mapExperienceLevel(request.experienceLevel);
+    const experienceLevel: ExperienceLevel = mapExperienceLevel(
+      request.experienceLevel,
+    );
     const difficultyAdjustment = adjustDifficultyForUser({
       experienceLevel,
       painLevel: request.painLevel,
@@ -178,7 +180,7 @@ export async function mergeBodyParts(
     // 난이도 범위로 필터링
     filteredByDifficulty = filterByDifficultyRange(
       exercisesWithScores,
-      difficultyAdjustment.allowedRange
+      difficultyAdjustment.allowedRange,
     );
 
     // 난이도 조정 사유가 있으면 경고 추가
@@ -208,17 +210,15 @@ export async function mergeBodyParts(
     exerciseTemplateId: c.exerciseTemplateId,
     exerciseTemplateName: c.exerciseTemplate.name,
     painLevelMin: c.painLevelMin,
-    severity: c.severity as 'warning' | 'strict',
+    severity: c.severity as "warning" | "strict",
     reason: c.reason,
   }));
 
   const filterResult = filterContraindications(
     deduplicated,
     contraindicationData,
-    request.painLevel
+    request.painLevel,
   );
-
-  warnings.push(...filterResult.warnings);
 
   // 7. 섹션별 분류
   const classified = classifyBySection(filterResult.exercises);
@@ -226,7 +226,7 @@ export async function mergeBodyParts(
   // 8. 시간 배분
   const finalExercises = distributeTime(
     classified,
-    request.totalDurationMinutes ?? 90
+    request.totalDurationMinutes ?? 90,
   );
 
   // 9. 통계 계산
@@ -240,14 +240,14 @@ export async function mergeBodyParts(
   // 부위별 운동 개수 계산
   request.bodyParts.forEach((bp) => {
     stats.byBodyPart[bp.bodyPartName] = finalExercises.filter((ex) =>
-      ex.bodyPartIds.includes(bp.bodyPartId)
+      ex.bodyPartIds.includes(bp.bodyPartId),
     ).length;
   });
 
   // 총 시간 계산
   const totalDuration = finalExercises.reduce(
     (sum, ex) => sum + (ex.durationMinutes || 0),
-    0
+    0,
   );
 
   return {
@@ -257,4 +257,3 @@ export async function mergeBodyParts(
     stats,
   };
 }
-

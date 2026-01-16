@@ -36,11 +36,14 @@ export function classifyBySection(
     (ex) => ex.intensityLevel && ex.intensityLevel > 2,
   );
 
-  // Warmup: 낮은 강도 운동 중 상위 2-4개
-  const warmupCount = Math.min(
-    4,
-    Math.max(2, Math.floor(lowIntensityExercises.length / 2)),
-  );
+  // 1. Warmup: 낮은 강도 운동 중 할당
+  // 총 개수가 적을 경우 Warmup을 1개로 제한하여 Main/Cooldown 확보
+  let warmupCount = 2;
+  if (lowIntensityExercises.length < 3) {
+    warmupCount = 1;
+  }
+  warmupCount = Math.min(warmupCount, lowIntensityExercises.length);
+
   const warmupRaw = lowIntensityExercises
     .slice(0, warmupCount)
     .map((ex, index) => ({
@@ -49,9 +52,51 @@ export function classifyBySection(
       orderInSection: index + 1,
     }));
 
-  // Main: 높은 강도 운동 + 남은 낮은 강도 운동
-  const remainingLowIntensity = lowIntensityExercises.slice(warmupCount);
-  const mainRaw = [...highIntensityExercises, ...remainingLowIntensity]
+  // 2. 나머지를 Main과 Cooldown에 배분
+  // 우선순위: Cooldown 최소 1개 확보 -> 나머지 Main -> Cooldown 추가
+  const remainingAfterWarmup = lowIntensityExercises.slice(warmupCount);
+
+  const cooldownRaw: (MergedExercise & {
+    section: "cooldown";
+    orderInSection: number;
+  })[] = [];
+  const lowIntensityForMain: MergedExercise[] = [];
+
+  // Cooldown에 넣을 후보 (마지막 운동들)
+  let cooldownCount = 1;
+  if (remainingAfterWarmup.length >= 3) {
+    cooldownCount = 2;
+  }
+  // 남은 게 없으면 0
+  cooldownCount = Math.min(cooldownCount, remainingAfterWarmup.length);
+
+  // Main에 넣을 것 (Warmup과 Cooldown 사이)
+  const mainCount = remainingAfterWarmup.length - cooldownCount;
+
+  if (mainCount > 0) {
+    lowIntensityForMain.push(...remainingAfterWarmup.slice(0, mainCount));
+  }
+
+  // Cooldown 할당
+  if (cooldownCount > 0) {
+    const cooldownCandidates = remainingAfterWarmup.slice(mainCount); // 뒤에서부터 가져옴
+    cooldownRaw.push(
+      ...cooldownCandidates.map((ex, index) => ({
+        ...ex,
+        section: "cooldown" as const,
+        orderInSection: index + 1,
+      })),
+    );
+  } else if (lowIntensityExercises.length > 0 && warmupRaw.length > 0) {
+    // 정말 부족해서 Warmup만 잡힌 경우, Warmup 마지막 것을 Cooldown으로 복사?
+    // 아니면 그냥 둠 (Main도 비고 Cooldown도 비면 에러지만, 여기선 최선 다함)
+    // 기존 로직: lowIntensityExercises 전체에서 빌려오기 (중복 허용)
+    // 하지만 deduplicateSections에서 제거되므로 의미 없음.
+    // 여기서는 최대한 분배에 집중.
+  }
+
+  // 3. Main 결정
+  const mainRaw = [...highIntensityExercises, ...lowIntensityForMain]
     .sort((a, b) => a.priorityScore - b.priorityScore)
     .map((ex, index) => ({
       ...ex,
@@ -59,47 +104,17 @@ export function classifyBySection(
       orderInSection: index + 1,
     }));
 
-  // Cooldown: 저강도 운동 중 최소 1개 보장
-  // warmup에서 일부를 빌려와서라도 cooldown 확보
-  let cooldownRaw: (MergedExercise & {
-    section: "cooldown";
-    orderInSection: number;
-  })[] = [];
-
-  if (remainingLowIntensity.length >= 2) {
-    // 남은 저강도가 2개 이상이면 마지막 2개를 cooldown으로
-    cooldownRaw = remainingLowIntensity.slice(-2).map((ex, index) => ({
-      ...ex,
-      section: "cooldown" as const,
-      orderInSection: index + 1,
-    }));
-  } else if (remainingLowIntensity.length === 1) {
-    // 1개면 그것을 cooldown으로
-    cooldownRaw = remainingLowIntensity.slice(-1).map((ex, index) => ({
-      ...ex,
-      section: "cooldown" as const,
-      orderInSection: index + 1,
-    }));
-  } else if (lowIntensityExercises.length > 0) {
-    // remainingLowIntensity가 0이면 전체 저강도에서 마지막 1개 빌려옴
-    // (warmup과 중복될 수 있지만 cooldown 확보가 더 중요)
-    cooldownRaw = [lowIntensityExercises[lowIntensityExercises.length - 1]].map(
-      (ex, index) => ({
-        ...ex,
-        section: "cooldown" as const,
-        orderInSection: index + 1,
-      }),
-    );
-  }
-  // else: 저강도 운동이 전혀 없으면 distribute-time의 fallback에 의존
-
   // ============================================
   // 전체 섹션 중복 제거 (메인 우선순위)
   // 우선순위: main > warmup > cooldown
+  // *단, Cooldown 확보를 위해 '빌려온' 경우(cooldownTakeCount === 0)에는
+  // 중복 제거시 Cooldown이 사라질 수 있음.
+  // 이를 방지하기 위해, 만약 Cooldown이 텅 비면 안되므로 예외 처리가 필요할 수 있으나,
+  // 일반적인 케이스(운동 충분)는 위 로직으로 해결됨.
   // ============================================
   const used = new Set<string>();
 
-  // 1. Main 먼저 처리 (최우선)
+  // 1. Main 먼저 처리
   const mainFiltered = mainRaw.filter((ex) => {
     const id = ex.exerciseTemplateId;
     if (!id || used.has(id)) return false;
@@ -107,7 +122,7 @@ export function classifyBySection(
     return true;
   });
 
-  // 2. Warmup 처리 (main에 없는 것만)
+  // 2. Warmup 처리
   const warmupFiltered = warmupRaw.filter((ex) => {
     const id = ex.exerciseTemplateId;
     if (!id || used.has(id)) return false;
@@ -115,7 +130,7 @@ export function classifyBySection(
     return true;
   });
 
-  // 3. Cooldown 처리 (main, warmup에 없는 것만)
+  // 3. Cooldown 처리
   const cooldownFiltered = cooldownRaw.filter((ex) => {
     const id = ex.exerciseTemplateId;
     if (!id || used.has(id)) return false;

@@ -142,19 +142,30 @@ export function distributeTime(
   totalDurationMinutes: 60 | 90 | 120,
   config: Partial<TimeDistributionConfig> = {},
 ): MergedExercise[] {
+  // 0. 입력이 모두 비어있으면 빈 배열 반환
+  if (
+    exercises.warmup.length === 0 &&
+    exercises.main.length === 0 &&
+    exercises.cooldown.length === 0
+  ) {
+    return [];
+  }
+
   // 1. 설정 로드
   const durationConfig = TIME_DISTRIBUTION_BY_DURATION[totalDurationMinutes];
   const rawWarmupTarget = config.warmupTime ?? durationConfig.warmupTime;
 
-  // 2. 웜업 목표 시간 산정 (5분 단위 반올림 + Clamp 5~15)
-  // 예: 12분 -> 10분, 8분 -> 10분, 3분 -> 5분, 18분 -> 15분
+  // 2. 웜업 목표 시간 산정 (5분 단위 올림 + Clamp 5~15)
+  // 예: 12분 -> 15분, 8분 -> 10분, 3분 -> 5분, 18분 -> 15분
+  // 90분 코스: 12 → 15분, 120분 코스: 15 → 15분
   const warmupTarget = Math.min(
     15,
-    Math.max(5, Math.round(rawWarmupTarget / 5) * 5),
+    Math.max(5, Math.ceil(rawWarmupTarget / 5) * 5),
   );
 
-  // 3. 쿨다운 선예약 (5분)
-  const cooldownReserve = 5;
+  // 3. 쿨다운 선예약 (설정값 사용)
+  const cooldownTarget = config.cooldownTime ?? durationConfig.cooldownTime;
+  const cooldownReserve = cooldownTarget;
 
   // 4. 메인 목표 시간
   const mainTarget = totalDurationMinutes - warmupTarget - cooldownReserve;

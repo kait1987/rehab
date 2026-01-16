@@ -1,0 +1,275 @@
+[
+  {
+    "iteration": 4,
+    "params": {
+      "duration": 60,
+      "bodyParts": [
+        "골반"
+      ],
+      "equipment": [
+        "폼롤러",
+        "짐볼",
+        "없음",
+        "수건"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 60분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 60분 vs 실제 0분"
+  },
+  {
+    "iteration": 5,
+    "params": {
+      "duration": 120,
+      "bodyParts": [
+        "목",
+        "골반"
+      ],
+      "equipment": [
+        "밴드",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 120분 vs 실제 0분"
+  },
+  {
+    "iteration": 13,
+    "params": {
+      "duration": 120,
+      "bodyParts": [
+        "발목",
+        "어깨"
+      ],
+      "equipment": [
+        "물병",
+        "수건",
+        "덤벨",
+        "폼롤러",
+        "의자",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 120분 vs 실제 0분"
+  },
+  {
+    "iteration": 14,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "팔꿈치"
+      ],
+      "equipment": [
+        "의자",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 16,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "손목"
+      ],
+      "equipment": [
+        "물병",
+        "수건",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 25,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "팔",
+        "목",
+        "어깨"
+      ],
+      "equipment": [
+        "아령",
+        "매트",
+        "없음",
+        "수건",
+        "짐볼"
+      ]
+    },
+    "reason": "Main 섹션이 빔, 총 시간 오차 큼: 목표 90분 vs 실제 25분"
+  },
+  {
+    "iteration": 26,
+    "params": {
+      "duration": 120,
+      "bodyParts": [
+        "발목"
+      ],
+      "equipment": [
+        "매트",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 120분 vs 실제 0분"
+  },
+  {
+    "iteration": 27,
+    "params": {
+      "duration": 60,
+      "bodyParts": [
+        "팔"
+      ],
+      "equipment": [
+        "폼롤러",
+        "밴드",
+        "물병",
+        "의자",
+        "없음"
+      ]
+    },
+    "reason": "Main 섹션이 빔, 총 시간 오차 큼: 목표 60분 vs 실제 20분"
+  },
+  {
+    "iteration": 31,
+    "params": {
+      "duration": 120,
+      "bodyParts": [
+        "목",
+        "등",
+        "손목"
+      ],
+      "equipment": [
+        "짐볼",
+        "없음"
+      ]
+    },
+    "reason": "Main 섹션이 빔, 총 시간 오차 큼: 목표 120분 vs 실제 25분"
+  },
+  {
+    "iteration": 32,
+    "params": {
+      "duration": 120,
+      "bodyParts": [
+        "팔꿈치"
+      ],
+      "equipment": [
+        "의자",
+        "폼롤러",
+        "매트",
+        "마사지볼",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 120분 vs 실제 0분"
+  },
+  {
+    "iteration": 34,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "등",
+        "어깨",
+        "허리"
+      ],
+      "equipment": [
+        "덤벨",
+        "의자",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 35,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "골반",
+        "팔"
+      ],
+      "equipment": [
+        "의자",
+        "물병",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 37,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "팔꿈치"
+      ],
+      "equipment": [
+        "아령",
+        "물병",
+        "수건",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 39,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "팔",
+        "목"
+      ],
+      "equipment": [
+        "짐볼",
+        "없음",
+        "의자",
+        "마사지볼",
+        "아령"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 42,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "손목"
+      ],
+      "equipment": [
+        "아령",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  },
+  {
+    "iteration": 45,
+    "params": {
+      "duration": 60,
+      "bodyParts": [
+        "가슴",
+        "다리",
+        "손목"
+      ],
+      "equipment": [
+        "폼롤러",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 60분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 60분 vs 실제 0분"
+  },
+  {
+    "iteration": 47,
+    "params": {
+      "duration": 90,
+      "bodyParts": [
+        "발목"
+      ],
+      "equipment": [
+        "의자",
+        "없음"
+      ]
+    },
+    "reason": "Warmup 섹션이 빔, Main 섹션이 빔, Cooldown 섹션이 빔, 90/120분 코스인데 쿨다운 시간이 부족함 (0분), 총 시간 오차 큼: 목표 90분 vs 실제 0분"
+  }
+]

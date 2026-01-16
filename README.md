@@ -41,6 +41,7 @@ NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 **환경 변수 값 확인 방법:**
 
 **Supabase:**
+
 1. [Supabase 대시보드](https://supabase.com/dashboard)에 로그인
 2. 프로젝트 선택
 3. Settings > API 메뉴로 이동
@@ -48,6 +49,7 @@ NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 5. `service_role` 키는 **절대 공개하지 마세요** (서버 사이드 전용)
 
 **Prisma DATABASE_URL:**
+
 1. [Supabase 대시보드](https://supabase.com/dashboard)에 로그인
 2. 프로젝트 선택
 3. Settings > Database 메뉴로 이동
@@ -56,6 +58,7 @@ NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 6. `.env` 파일의 `DATABASE_URL`에 입력
 
 **⚠️ 중요: 연결 문자열 형식 확인**
+
 - 연결 문자열은 반드시 `postgresql://` 또는 `postgres://`로 시작해야 합니다
 - 호스트(host) 정보가 반드시 포함되어 있어야 합니다
 - 비밀번호에 특수 문자가 포함된 경우 URL 인코딩이 필요할 수 있습니다
@@ -67,6 +70,7 @@ NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 - 직접 연결 시: 포트 5432 사용
 
 **에러 발생 시:**
+
 - "empty host in database URL" 에러: 연결 문자열에 호스트 정보가 없습니다. Supabase 대시보드에서 URI 형식을 다시 복사하세요
 - "invalid connection string" 에러: 연결 문자열 형식이 잘못되었습니다. 위의 예시 형식을 참고하세요
 - "Can't reach database server" 에러: 연결 풀러(포트 6543)를 사용하는지 확인하세요. 직접 연결(포트 5432)은 실패할 수 있습니다
@@ -75,6 +79,7 @@ NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 - 문제가 계속되면: `docs/DATABASE_URL_TROUBLESHOOTING.md` 참고
 
 **네이버맵 API:**
+
 1. [네이버 클라우드 플랫폼 콘솔](https://console.ncloud.com/)에 로그인
 2. **Services** > **Application Services** > **Maps** > **Application** 메뉴로 이동
 3. 애플리케이션 등록 또는 기존 애플리케이션 선택
@@ -98,6 +103,7 @@ pnpm prisma:studio
 ```
 
 **중요 사항:**
+
 - 이 프로젝트는 **Supabase PostgreSQL만 사용**합니다
 - `schema.prisma`의 `datasource`에서 `url = env("DATABASE_URL")`을 사용합니다
 - `DATABASE_URL`은 Supabase 연결 문자열을 사용합니다

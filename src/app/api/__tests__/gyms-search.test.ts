@@ -1,10 +1,10 @@
 /**
  * @file gyms-search.test.ts
  * @description 헬스장 검색 API 단위 테스트
- * 
+ *
  * GET /api/gyms/search
  * 총 24개 테스트 케이스
- * 
+ *
  * 테스트 카테고리:
  * - 기본 동작 (5개)
  * - 필터링 기능 (7개)
@@ -13,7 +13,7 @@
  * - 에러 케이스 (4개)
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   mockPrisma,
   mockGymSearchService,
@@ -24,17 +24,17 @@ import {
   expectSuccessResponse,
   expectErrorResponse,
   type MockGym,
-} from './test-helpers';
+} from "./test-helpers";
 
 // ============================================
 // Mock 설정
 // ============================================
 
-vi.mock('@/lib/prisma/client', () => ({
+vi.mock("@/lib/prisma/client", () => ({
   prisma: mockPrisma,
 }));
 
-vi.mock('@/lib/services/gym-search.service', () => ({
+vi.mock("@/lib/services/gym-search.service", () => ({
   getGymSearchService: () => mockGymSearchService,
 }));
 
@@ -42,7 +42,7 @@ vi.mock('@/lib/services/gym-search.service', () => ({
 // 테스트 스위트
 // ============================================
 
-describe('GET /api/gyms/search', () => {
+describe("GET /api/gyms/search", () => {
   beforeEach(() => {
     resetAllMocks();
   });
@@ -51,8 +51,8 @@ describe('GET /api/gyms/search', () => {
   // 1. 기본 동작 테스트 (5개)
   // ============================================
 
-  describe('기본 동작', () => {
-    it('필수 파라미터(lat, lng)로 검색 성공', async () => {
+  describe("기본 동작", () => {
+    it("필수 파라미터(lat, lng)로 검색 성공", async () => {
       // Arrange
       const gyms = createMockGymSearchResults(3);
       mockGymSearchService.searchGymsNearby.mockResolvedValue(gyms);
@@ -74,7 +74,7 @@ describe('GET /api/gyms/search', () => {
       });
     });
 
-    it('기본 반경(1000m)이 적용된다', async () => {
+    it("기본 반경(1000m)이 적용된다", async () => {
       // Arrange
       const gyms = createMockGymSearchResults(2);
       mockGymSearchService.searchGymsNearby.mockResolvedValue(gyms);
@@ -88,11 +88,11 @@ describe('GET /api/gyms/search', () => {
 
       // Assert
       expect(mockGymSearchService.searchGymsNearby).toHaveBeenCalledWith(
-        expect.objectContaining({ radius: 1000 })
+        expect.objectContaining({ radius: 1000 }),
       );
     });
 
-    it('빈 결과 반환 처리', async () => {
+    it("빈 결과 반환 처리", async () => {
       // Arrange
       mockGymSearchService.searchGymsNearby.mockResolvedValue([]);
 
@@ -107,7 +107,7 @@ describe('GET /api/gyms/search', () => {
       expect(result).toHaveLength(0);
     });
 
-    it('결과에 distanceMeters가 포함된다', async () => {
+    it("결과에 distanceMeters가 포함된다", async () => {
       // Arrange
       const gyms = [
         createMockGymWithFacility({ distanceMeters: 500 }),
@@ -127,7 +127,7 @@ describe('GET /api/gyms/search', () => {
       expect(result[1].distanceMeters).toBe(800);
     });
 
-    it('isActive=true인 헬스장만 반환된다', async () => {
+    it("isActive=true인 헬스장만 반환된다", async () => {
       // Arrange
       const activeGyms = [
         createMockGymWithFacility({ isActive: true }),
@@ -153,8 +153,8 @@ describe('GET /api/gyms/search', () => {
   // 2. 필터링 기능 테스트 (7개)
   // ============================================
 
-  describe('필터링 기능', () => {
-    it('hasRehabEquipment=true 필터 적용', async () => {
+  describe("필터링 기능", () => {
+    it("hasRehabEquipment=true 필터 적용", async () => {
       // Arrange
       const filteredGyms = [
         createMockGymWithFacility({}, { hasRehabEquipment: true }),
@@ -174,7 +174,7 @@ describe('GET /api/gyms/search', () => {
       expect(result[0].facilities?.hasRehabEquipment).toBe(true);
     });
 
-    it('hasPtCoach=true 필터 적용', async () => {
+    it("hasPtCoach=true 필터 적용", async () => {
       // Arrange
       const filteredGyms = [
         createMockGymWithFacility({}, { hasPtCoach: true }),
@@ -193,11 +193,9 @@ describe('GET /api/gyms/search', () => {
       expect(result[0].facilities?.hasPtCoach).toBe(true);
     });
 
-    it('hasShower=true 필터 적용', async () => {
+    it("hasShower=true 필터 적용", async () => {
       // Arrange
-      const filteredGyms = [
-        createMockGymWithFacility({}, { hasShower: true }),
-      ];
+      const filteredGyms = [createMockGymWithFacility({}, { hasShower: true })];
       mockGymSearchService.searchGymsNearby.mockResolvedValue(filteredGyms);
 
       // Act
@@ -212,7 +210,7 @@ describe('GET /api/gyms/search', () => {
       expect(result[0].facilities?.hasShower).toBe(true);
     });
 
-    it('hasParking=true 필터 적용', async () => {
+    it("hasParking=true 필터 적용", async () => {
       // Arrange
       const filteredGyms = [
         createMockGymWithFacility({}, { hasParking: true }),
@@ -231,11 +229,9 @@ describe('GET /api/gyms/search', () => {
       expect(result[0].facilities?.hasParking).toBe(true);
     });
 
-    it('hasLocker=true 필터 적용', async () => {
+    it("hasLocker=true 필터 적용", async () => {
       // Arrange
-      const filteredGyms = [
-        createMockGymWithFacility({}, { hasLocker: true }),
-      ];
+      const filteredGyms = [createMockGymWithFacility({}, { hasLocker: true })];
       mockGymSearchService.searchGymsNearby.mockResolvedValue(filteredGyms);
 
       // Act
@@ -250,10 +246,10 @@ describe('GET /api/gyms/search', () => {
       expect(result[0].facilities?.hasLocker).toBe(true);
     });
 
-    it('priceRange 필터 적용 (medium)', async () => {
+    it("priceRange 필터 적용 (medium)", async () => {
       // Arrange
       const filteredGyms = [
-        createMockGymWithFacility({ priceRange: 'medium' }),
+        createMockGymWithFacility({ priceRange: "medium" }),
       ];
       mockGymSearchService.searchGymsNearby.mockResolvedValue(filteredGyms);
 
@@ -262,19 +258,19 @@ describe('GET /api/gyms/search', () => {
         lat: 37.5,
         lng: 127.0,
         radius: 1000,
-        filters: { priceRange: 'medium' },
+        filters: { priceRange: "medium" },
       });
 
       // Assert
-      expect(result[0].priceRange).toBe('medium');
+      expect(result[0].priceRange).toBe("medium");
     });
 
-    it('복합 필터 적용 (AND 조건)', async () => {
+    it("복합 필터 적용 (AND 조건)", async () => {
       // Arrange
       const filteredGyms = [
         createMockGymWithFacility(
-          { priceRange: 'low' },
-          { hasRehabEquipment: true, hasParking: true, hasShower: true }
+          { priceRange: "low" },
+          { hasRehabEquipment: true, hasParking: true, hasShower: true },
         ),
       ];
       mockGymSearchService.searchGymsNearby.mockResolvedValue(filteredGyms);
@@ -288,7 +284,7 @@ describe('GET /api/gyms/search', () => {
           hasRehabEquipment: true,
           hasParking: true,
           hasShower: true,
-          priceRange: 'low',
+          priceRange: "low",
         },
       });
 
@@ -298,7 +294,7 @@ describe('GET /api/gyms/search', () => {
       expect(gym.facilities?.hasRehabEquipment).toBe(true);
       expect(gym.facilities?.hasParking).toBe(true);
       expect(gym.facilities?.hasShower).toBe(true);
-      expect(gym.priceRange).toBe('low');
+      expect(gym.priceRange).toBe("low");
     });
   });
 
@@ -306,33 +302,33 @@ describe('GET /api/gyms/search', () => {
   // 3. 파라미터 검증 테스트 (4개)
   // ============================================
 
-  describe('파라미터 검증', () => {
-    it('lat 누락 시 에러', () => {
+  describe("파라미터 검증", () => {
+    it("lat 누락 시 에러", () => {
       // Assert
-      const params = { lng: '127.0' };
+      const params: any = { lng: "127.0" };
       expect(params.lat).toBeUndefined();
     });
 
-    it('lng 누락 시 에러', () => {
+    it("lng 누락 시 에러", () => {
       // Assert
-      const params = { lat: '37.5' };
+      const params: any = { lat: "37.5" };
       expect(params.lng).toBeUndefined();
     });
 
-    it('유효하지 않은 좌표 범위 검증', () => {
+    it("유효하지 않은 좌표 범위 검증", () => {
       // Arrange & Assert
       const invalidLat = 91; // 위도는 -90 ~ 90
       const invalidLng = 181; // 경도는 -180 ~ 180
-      
+
       expect(invalidLat > 90 || invalidLat < -90).toBe(true);
       expect(invalidLng > 180 || invalidLng < -180).toBe(true);
     });
 
-    it('radius가 0 이하일 때 기본값 적용', () => {
+    it("radius가 0 이하일 때 기본값 적용", () => {
       // Arrange
-      const params = searchParams.gymSearch({ radius: '-100' });
+      const params = searchParams.gymSearch({ radius: "-100" });
       const parsedRadius = parseFloat(params.radius);
-      
+
       // Assert
       expect(parsedRadius).toBeLessThan(0);
       // 실제 API에서는 기본값 1000으로 대체됨
@@ -343,17 +339,17 @@ describe('GET /api/gyms/search', () => {
   // 4. 정렬 및 응답 형식 테스트 (4개)
   // ============================================
 
-  describe('정렬 및 응답 형식', () => {
-    it('거리순 정렬 확인', async () => {
+  describe("정렬 및 응답 형식", () => {
+    it("거리순 정렬 확인", async () => {
       // Arrange
       const gyms = [
-        createMockGymWithFacility({ distanceMeters: 800, name: '멀리' }),
-        createMockGymWithFacility({ distanceMeters: 200, name: '가까이' }),
-        createMockGymWithFacility({ distanceMeters: 500, name: '중간' }),
+        createMockGymWithFacility({ distanceMeters: 800, name: "멀리" }),
+        createMockGymWithFacility({ distanceMeters: 200, name: "가까이" }),
+        createMockGymWithFacility({ distanceMeters: 500, name: "중간" }),
       ];
       // 거리순 정렬된 결과 반환
-      const sortedGyms = [...gyms].sort((a, b) => 
-        (a.distanceMeters || 0) - (b.distanceMeters || 0)
+      const sortedGyms = [...gyms].sort(
+        (a, b) => (a.distanceMeters || 0) - (b.distanceMeters || 0),
       );
       mockGymSearchService.searchGymsNearby.mockResolvedValue(sortedGyms);
 
@@ -370,7 +366,7 @@ describe('GET /api/gyms/search', () => {
       expect(result[2].distanceMeters).toBe(800);
     });
 
-    it('응답에 meta 정보 포함 구조', () => {
+    it("응답에 meta 정보 포함 구조", () => {
       // Arrange
       const response = {
         success: true,
@@ -388,7 +384,7 @@ describe('GET /api/gyms/search', () => {
       expect(response.meta.radius).toBe(1000);
     });
 
-    it('각 헬스장에 facilities 정보 포함', async () => {
+    it("각 헬스장에 facilities 정보 포함", async () => {
       // Arrange
       const gyms = createMockGymSearchResults(2);
       mockGymSearchService.searchGymsNearby.mockResolvedValue(gyms);
@@ -406,7 +402,7 @@ describe('GET /api/gyms/search', () => {
       });
     });
 
-    it('반경 내 결과만 반환', async () => {
+    it("반경 내 결과만 반환", async () => {
       // Arrange
       const nearbyGyms = [
         createMockGymWithFacility({ distanceMeters: 500 }),
@@ -432,11 +428,11 @@ describe('GET /api/gyms/search', () => {
   // 5. 에러 케이스 테스트 (4개)
   // ============================================
 
-  describe('에러 케이스', () => {
-    it('데이터베이스 연결 실패 시 에러', async () => {
+  describe("에러 케이스", () => {
+    it("데이터베이스 연결 실패 시 에러", async () => {
       // Arrange
       mockGymSearchService.searchGymsNearby.mockRejectedValue(
-        new Error('Database connection failed')
+        new Error("Database connection failed"),
       );
 
       // Act & Assert
@@ -445,14 +441,14 @@ describe('GET /api/gyms/search', () => {
           lat: 37.5,
           lng: 127.0,
           radius: 1000,
-        })
-      ).rejects.toThrow('Database connection failed');
+        }),
+      ).rejects.toThrow("Database connection failed");
     });
 
-    it('서비스 타임아웃 시 에러', async () => {
+    it("서비스 타임아웃 시 에러", async () => {
       // Arrange
       mockGymSearchService.searchGymsNearby.mockRejectedValue(
-        new Error('Request timeout')
+        new Error("Request timeout"),
       );
 
       // Act & Assert
@@ -461,28 +457,28 @@ describe('GET /api/gyms/search', () => {
           lat: 37.5,
           lng: 127.0,
           radius: 1000,
-        })
-      ).rejects.toThrow('Request timeout');
+        }),
+      ).rejects.toThrow("Request timeout");
     });
 
-    it('잘못된 필터 값 처리', () => {
+    it("잘못된 필터 값 처리", () => {
       // Arrange
-      const invalidPriceRange = 'invalid_range';
-      const validRanges = ['low', 'medium', 'high', 'premium'];
+      const invalidPriceRange = "invalid_range";
+      const validRanges = ["low", "medium", "high", "premium"];
 
       // Assert
       expect(validRanges.includes(invalidPriceRange)).toBe(false);
     });
 
-    it('에러 응답 형식 확인', () => {
+    it("에러 응답 형식 확인", () => {
       // Arrange
       const errorResponse = {
         success: false,
-        error: '서버 에러: Database connection failed',
+        error: "서버 에러: Database connection failed",
       };
 
       // Assert
-      expectErrorResponse(errorResponse, 'Database connection failed');
+      expectErrorResponse(errorResponse, "Database connection failed");
     });
   });
 });

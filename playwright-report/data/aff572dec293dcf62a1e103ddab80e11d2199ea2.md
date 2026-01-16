@@ -1,0 +1,51 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "홈페이지로 이동" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: REHAB
+        - generic [ref=e8]:
+          - button "로그인" [ref=e9]
+          - button "회원가입" [ref=e10]
+    - main [ref=e11]:
+      - main [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - heading "내 주변 헬스장 찾기" [level=1] [ref=e15]
+            - paragraph [ref=e16]: 위치 기반으로 주변 재활 헬스장을 검색해보세요
+          - generic [ref=e18]:
+            - button "내 위치 사용" [ref=e19]:
+              - img
+              - text: 내 위치 사용
+            - generic [ref=e20]:
+              - generic [ref=e21]:
+                - img [ref=e22]
+                - textbox "헬스장 이름으로 검색..." [ref=e25]
+              - button "검색" [disabled]:
+                - img
+                - text: 검색
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - paragraph [ref=e30]: 위치를 설정해주세요
+            - paragraph [ref=e31]: "'내 위치 사용' 버튼을 클릭하여 주변 헬스장을 검색하세요."
+            - button "내 위치 사용" [ref=e32]:
+              - img
+              - text: 내 위치 사용
+    - contentinfo [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]: © 2026 REHAB. All rights reserved.
+          - navigation [ref=e37]:
+            - link "이용약관" [ref=e38] [cursor=pointer]:
+              - /url: /terms
+            - link "개인정보처리방침" [ref=e39] [cursor=pointer]:
+              - /url: /privacy
+        - paragraph [ref=e41]: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - button "Open Next.js Dev Tools" [ref=e47] [cursor=pointer]:
+    - img [ref=e48]
+  - alert [ref=e51]
+```

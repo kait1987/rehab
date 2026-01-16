@@ -193,7 +193,19 @@ function RehabPageContent() {
         body: JSON.stringify(request),
       });
 
-      const data: CourseGenerationResponse = await response.json();
+      let data: CourseGenerationResponse;
+      try {
+        const text = await response.text();
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(`Invalid JSON response: ${text.slice(0, 100)}...`);
+        }
+      } catch (e) {
+        throw new Error(
+          `Server connection failed: ${response.status} ${response.statusText}`,
+        );
+      }
 
       if (!response.ok || !data.success) {
         throw new Error(data.error || "코스 생성에 실패했습니다.");
