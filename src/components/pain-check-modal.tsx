@@ -174,17 +174,19 @@ export function PainCheckModal({
     }
   };
 
-  // "없음" 기구 ID 찾기
-  const noneEquipmentId = equipmentTypes.find((eq) => eq.name === "없음")?.id;
+  // "맨몸" 또는 "없음" 기구 ID 찾기
+  const noneEquipmentId = equipmentTypes.find(
+    (eq) => eq.name === "맨몸" || eq.name === "없음",
+  )?.id;
 
-  // 기구 선택 토글 (개선: "없음" 처리 로직 추가)
+  // 기구 선택 토글 (개선: "맨몸" 처리 로직 추가)
   const toggleEquipment = (equipmentId: string) => {
     setEquipmentAvailable((prev) => {
       const isNone = equipmentId === noneEquipmentId;
       const isCurrentlySelected = prev.includes(equipmentId);
 
       if (isNone) {
-        // "없음" 선택 시: 다른 모든 기구 해제하고 "없음"만 선택
+        // "맨몸" 선택 시: 다른 모든 기구 해제하고 "맨몸"만 선택
         return isCurrentlySelected ? [] : [equipmentId];
       } else {
         // 다른 기구 선택 시: "없음"이 있으면 제거하고 선택한 기구 추가/제거

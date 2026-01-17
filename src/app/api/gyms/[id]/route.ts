@@ -1,38 +1,55 @@
 /**
  * @file route.ts
  * @description 헬스장 상세 정보 조회 API 엔드포인트
- * 
+ *
  * GET /api/gyms/[id]
- * 
+ *
  * 헬스장 ID로 상세 정보를 조회합니다.
- * 
+ *
  * @dependencies
  * - lib/prisma/client: Prisma 클라이언트
  * - types/gym-detail: 타입 정의
  * - @clerk/nextjs/server: Clerk 인증
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/prisma/client';
-import { calculateTrustScore } from '@/lib/utils/calculate-trust-score';
-import type { GymDetailResponse, GymDetail, ReviewWithTags, ReviewTagStats } from '@/types/gym-detail';
-import type { OperatingHours } from '@/types/operating-hours';
-import type { GymFacilities } from '@/types/gym-search';
+import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma/client";
+import { calculateTrustScore } from "@/lib/utils/calculate-trust-score";
+import type {
+  GymDetailResponse,
+  GymDetail,
+  ReviewWithTags,
+  ReviewTagStats,
+} from "@/types/gym-detail";
+import type { OperatingHours } from "@/types/operating-hours";
+import type { GymFacilities } from "@/types/gym-search";
 
 /**
  * GET 요청 처리
- * 
+ *
  * 헬스장 상세 정보를 조회하고 반환합니다.
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
 
-    // 1. 헬스장 기본 정보 조회
+    // UUID 유효성 검사
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "유효하지 않은 헬스장 ID입니다.",
+        } as GymDetailResponse,
+        { status: 404 },
+      );
+    }
+
     const gym = await prisma.gym.findUnique({
       where: { id },
       include: {
@@ -47,7 +64,7 @@ export async function GET(
           },
         },
         operatingHours: {
-          orderBy: { dayOfWeek: 'asc' },
+          orderBy: { dayOfWeek: "asc" },
         },
         reviews: {
           where: { isDeleted: false },
@@ -61,7 +78,7 @@ export async function GET(
               select: { votes: true },
             },
           },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
         },
       },
     });
@@ -70,9 +87,9 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          error: '헬스장을 찾을 수 없습니다.',
+          error: "헬스장을 찾을 수 없습니다.",
         } as GymDetailResponse,
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -99,11 +116,11 @@ export async function GET(
         const userVotes = await prisma.reviewVote.findMany({
           where: {
             userId: dbUser.id,
-            reviewId: { in: gym.reviews.map(r => r.id) },
+            reviewId: { in: gym.reviews.map((r) => r.id) },
           },
           select: { reviewId: true },
         });
-        votedReviewIds = new Set(userVotes.map(v => v.reviewId));
+        votedReviewIds = new Set(userVotes.map((v) => v.reviewId));
       }
     }
 
@@ -128,7 +145,7 @@ export async function GET(
 
     // 4. 운영시간 변환 (요일별 7개 고정)
     const operatingHoursMap = new Map<number, OperatingHours>();
-    
+
     // DB에서 가져온 운영시간을 Map에 저장
     gym.operatingHours.forEach((hour) => {
       operatingHoursMap.set(hour.dayOfWeek, {
@@ -157,7 +174,12 @@ export async function GET(
     }
 
     // P2-F2-01/02: 리뷰에 trustScore 추가 및 정렬
-    const reviews: (ReviewWithTags & { voteCount: number; hasVoted: boolean; trustScore: number; tier: string })[] = gym.reviews
+    const reviews: (ReviewWithTags & {
+      voteCount: number;
+      hasVoted: boolean;
+      trustScore: number;
+      tier: string;
+    })[] = gym.reviews
       .map((review) => {
         const voteCount = review._count.votes;
         const trustResult = calculateTrustScore({
@@ -185,13 +207,16 @@ export async function GET(
       .sort((a, b) => b.trustScore - a.trustScore); // 신뢰도순 정렬
 
     // 6. 리뷰 태그 통계 계산
-    const tagStatsMap = new Map<string, { name: string; category: string | null; count: number }>();
-    
+    const tagStatsMap = new Map<
+      string,
+      { name: string; category: string | null; count: number }
+    >();
+
     gym.reviews.forEach((review) => {
       review.reviewTagMappings.forEach((mapping) => {
         const tagId = mapping.reviewTag.id;
         const existing = tagStatsMap.get(tagId);
-        
+
         if (existing) {
           existing.count += 1;
         } else {
@@ -204,7 +229,9 @@ export async function GET(
       });
     });
 
-    const reviewTagStats: ReviewTagStats[] = Array.from(tagStatsMap.entries()).map(([tagId, data]) => ({
+    const reviewTagStats: ReviewTagStats[] = Array.from(
+      tagStatsMap.entries(),
+    ).map(([tagId, data]) => ({
       tagId,
       tagName: data.name,
       tagCategory: data.category,
@@ -238,10 +265,10 @@ export async function GET(
         success: true,
         data: gymDetail,
       } as GymDetailResponse,
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
-    console.error('[GymDetailAPI] 에러 발생:', error);
+    console.error("[GymDetailAPI] 에러 발생:", error);
 
     // 에러 타입에 따라 다른 응답
     if (error instanceof Error) {
@@ -250,17 +277,16 @@ export async function GET(
           success: false,
           error: `서버 에러: ${error.message}`,
         } as GymDetailResponse,
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
       {
         success: false,
-        error: '알 수 없는 서버 에러가 발생했습니다.',
+        error: "알 수 없는 서버 에러가 발생했습니다.",
       } as GymDetailResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

@@ -1,0 +1,79 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "홈페이지로 이동" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: REHAB
+        - button "메뉴 열기/닫기" [ref=e8]:
+          - img [ref=e9]
+    - main [ref=e10]:
+      - main [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - heading "내 몸에 맞는 재활 코스" [level=1] [ref=e14]
+            - generic [ref=e15]:
+              - img [ref=e16]
+              - generic [ref=e19]: 총 60분
+          - generic [ref=e21]:
+            - tablist [ref=e22]:
+              - tab "준비 운동 (1) · 10분" [selected] [ref=e23]
+              - tab "메인 운동 (2) · 40분" [ref=e24]
+              - tab "마무리 운동 (1) · 10분" [ref=e25]
+            - tabpanel "준비 운동 (1) · 10분" [ref=e26]:
+              - generic [ref=e29] [cursor=pointer]:
+                - generic [ref=e31]:
+                  - generic [ref=e32]: 준비 운동
+                  - heading "버드독" [level=3] [ref=e33]
+                - generic [ref=e36]:
+                  - img [ref=e37]
+                  - paragraph [ref=e44]: 동작 영상 준비 중
+                - paragraph [ref=e45]: 네 발 자세에서 반대쪽 팔다리를 교대로 뻗는 코어 강화 운동
+                - generic [ref=e46]:
+                  - generic [ref=e47]:
+                    - img [ref=e48]
+                    - generic [ref=e51]: 10분
+                  - generic [ref=e52]:
+                    - img [ref=e53]
+                    - generic [ref=e59]: 2세트 × 12회
+                  - generic [ref=e60]:
+                    - img [ref=e61]
+                    - generic [ref=e64]: 휴식 45초
+                - generic [ref=e65]:
+                  - paragraph [ref=e66]: 운동 방법
+                  - paragraph [ref=e67]: 네 발 자세에서 오른팔과 왼다리를 동시에 뻗어 3초간 유지합니다.
+                - generic [ref=e69]:
+                  - img [ref=e70]
+                  - generic [ref=e72]:
+                    - paragraph [ref=e73]: 주의사항
+                    - paragraph [ref=e74]: 허리가 과도하게 젖혀지지 않도록 복부에 힘을 줍니다.
+          - generic [ref=e77]:
+            - button "이 코스 하기 좋은 근처 헬스장 보기" [ref=e78]:
+              - img
+              - text: 이 코스 하기 좋은 근처 헬스장 보기
+            - button "코스 저장하기" [ref=e79]:
+              - img
+              - text: 코스 저장하기
+          - button "새 코스 만들기" [ref=e81]
+          - alert [ref=e82]:
+            - img [ref=e83]
+            - generic [ref=e85]:
+              - strong [ref=e86]: "의료행위 아님 안내:"
+              - text: 본 서비스는 의료행위가 아닙니다. 통증이 심하거나 지속되면 전문의와 상담하세요.
+    - contentinfo [ref=e87]:
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]: © 2026 REHAB. All rights reserved.
+          - navigation [ref=e91]:
+            - link "이용약관" [ref=e92] [cursor=pointer]:
+              - /url: /terms
+            - link "개인정보처리방침" [ref=e93] [cursor=pointer]:
+              - /url: /privacy
+        - paragraph [ref=e95]: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - button "Open Next.js Dev Tools" [ref=e101] [cursor=pointer]:
+    - img [ref=e102]
+  - alert [ref=e105]: 내 몸에 맞는 재활 코스
+```

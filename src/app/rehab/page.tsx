@@ -237,8 +237,17 @@ function RehabPageContent() {
       });
       console.log("[RehabPage] Course saved to recent courses");
     } catch (err) {
-      const errorMessage =
+      let errorMessage =
         err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
+
+      // 네트워크 에러 메시지 번역
+      if (
+        errorMessage === "Failed to fetch" ||
+        errorMessage === "Load failed"
+      ) {
+        errorMessage = "네트워크 연결 상태를 확인해주세요. (서버 연결 실패)";
+      }
+
       setError(errorMessage);
     } finally {
       setLoading(false);

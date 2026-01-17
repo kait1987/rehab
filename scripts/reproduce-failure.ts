@@ -1,4 +1,4 @@
-import { mergeBodyParts } from "@/lib/algorithms/merge-body-parts-fixed";
+import { mergeBodyParts } from "../lib/algorithms/merge-body-parts";
 
 console.log("Check Source:", mergeBodyParts.toString().substring(0, 200));
 import { PrismaClient } from "@prisma/client";

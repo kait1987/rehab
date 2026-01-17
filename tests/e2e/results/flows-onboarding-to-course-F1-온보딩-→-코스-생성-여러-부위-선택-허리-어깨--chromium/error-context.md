@@ -1,0 +1,91 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic:
+    - banner:
+      - generic:
+        - generic:
+          - link:
+            - /url: /
+            - generic: REHAB
+        - generic:
+          - button: 로그인
+          - button: 회원가입
+    - main:
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: REHAB
+                - paragraph: 개인 맞춤형 재활 운동 추천 시스템
+              - generic:
+                - button [expanded]: 내 몸 상태로 재활 코스 만들기
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - heading [level=3]: 개인 맞춤 추천
+                - paragraph: 당신의 상태에 맞는 재활 운동을 추천합니다
+              - generic:
+                - generic:
+                  - img
+                - heading [level=3]: 쉽고 빠른 시작
+                - paragraph: 간단한 설정으로 바로 시작할 수 있습니다
+              - generic:
+                - generic:
+                  - img
+                - heading [level=3]: 진행도 추적
+                - paragraph: 운동 기록을 통해 회복 과정을 확인하세요
+    - contentinfo:
+      - generic:
+        - generic:
+          - generic: © 2026 REHAB. All rights reserved.
+          - navigation:
+            - link:
+              - /url: /terms
+              - text: 이용약관
+            - link:
+              - /url: /privacy
+              - text: 개인정보처리방침
+        - generic:
+          - paragraph: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - button "Open Next.js Dev Tools" [ref=e6] [cursor=pointer]:
+    - img [ref=e7]
+  - alert
+  - dialog "오늘의 통증 체크" [ref=e11]:
+    - heading "오늘의 통증 체크" [level=2] [ref=e13]
+    - generic [ref=e14]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: 2 / 4
+        - generic [ref=e18]: 사용 가능한 기구
+      - generic [ref=e21]:
+        - paragraph [ref=e22]: 현재 사용 가능한 기구를 선택해주세요 (복수 선택 가능)
+        - paragraph [ref=e23]: 💡 사용할 수 있는 기구가 없다면 '없음'을 선택해주세요
+        - generic [ref=e24]:
+          - button "없음" [ref=e25]
+          - button "맨몸" [ref=e26]
+          - button "매트" [ref=e27]
+          - button "덤벨" [ref=e28]
+          - button "밴드" [ref=e29]
+          - button "마사지볼" [ref=e30]
+          - button "짐볼" [ref=e31]
+          - button "의자" [ref=e32]
+          - button "폼롤러" [ref=e33]
+          - button "아령" [ref=e34]
+          - button "수건" [ref=e35]
+          - button "물병" [ref=e36]
+      - generic [ref=e37]:
+        - button "이전" [ref=e38]:
+          - img
+          - text: 이전
+        - button "다음" [active] [ref=e39]:
+          - text: 다음
+          - img
+    - button "Close" [ref=e40]:
+      - img [ref=e41]
+      - generic [ref=e44]: Close
+```

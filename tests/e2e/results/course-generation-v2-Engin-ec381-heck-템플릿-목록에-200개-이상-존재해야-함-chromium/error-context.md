@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "홈페이지로 이동" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: REHAB
+    - main [ref=e8]:
+      - generic [ref=e9]:
+        - complementary [ref=e10]:
+          - heading "REHAB Admin" [level=1] [ref=e12]
+          - navigation [ref=e13]:
+            - link "Dashboard" [ref=e14] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e15]
+              - text: Dashboard
+            - link "Templates" [ref=e20] [cursor=pointer]:
+              - /url: /admin/templates
+              - img [ref=e21]
+              - text: Templates
+            - link "Reviews" [ref=e27] [cursor=pointer]:
+              - /url: /admin/reviews
+              - img [ref=e28]
+              - text: Reviews
+            - link "Gyms" [ref=e30] [cursor=pointer]:
+              - /url: /admin/gyms
+              - img [ref=e31]
+              - text: Gyms
+          - link "앱으로 돌아가기" [ref=e35] [cursor=pointer]:
+            - /url: /
+            - img [ref=e36]
+            - text: 앱으로 돌아가기
+        - main [ref=e38]:
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - heading "Templates" [level=1] [ref=e42]
+              - button "템플릿 추가" [ref=e43]:
+                - img
+                - text: 템플릿 추가
+            - generic [ref=e46]:
+              - generic [ref=e47]:
+                - img [ref=e48]
+                - textbox "템플릿 이름으로 검색..." [ref=e51]
+              - button "검색" [ref=e52]
+            - generic [ref=e55]: 총 0개 템플릿
+    - contentinfo [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]: © 2026 REHAB. All rights reserved.
+          - navigation [ref=e67]:
+            - link "이용약관" [ref=e68] [cursor=pointer]:
+              - /url: /terms
+            - link "개인정보처리방침" [ref=e69] [cursor=pointer]:
+              - /url: /privacy
+        - paragraph [ref=e71]: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - button "Open Next.js Dev Tools" [ref=e77] [cursor=pointer]:
+    - img [ref=e78]
+  - alert [ref=e81]
+```

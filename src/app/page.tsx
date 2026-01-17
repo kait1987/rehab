@@ -67,6 +67,7 @@ function HomePageContent() {
                     defaultOpen={restartMode}
                   >
                     <Button
+                      type="button"
                       size="lg"
                       className="rounded-xl"
                       data-testid="home-start-rehab"

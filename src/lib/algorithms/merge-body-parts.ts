@@ -57,6 +57,15 @@ export async function mergeBodyParts(
   const warnings: string[] = [];
   const bodyPartIds = request.bodyParts.map((bp) => bp.bodyPartId);
 
+  // 0. 기구 ID -> Name 변환을 위한 맵 조회
+  const allEquipment = await prisma.equipmentType.findMany();
+  const equipmentMap = new Map(allEquipment.map((eq) => [eq.id, eq.name]));
+
+  // 사용자 선택 기구 ID를 Name으로 변환
+  const userEquipmentNames = (request.equipmentAvailable || [])
+    .map((id) => equipmentMap.get(id))
+    .filter((name): name is string => !!name); // 유효한 이름만 필터링
+
   // 1. 각 부위별 추천 운동 조회
   const mappings = await prisma.bodyPartExerciseMapping.findMany({
     where: {
@@ -112,7 +121,7 @@ export async function mergeBodyParts(
       );
 
     // 사용자가 선택한 기구 Set
-    const userEquipmentSet = new Set(request.equipmentAvailable || []);
+    const userEquipmentSet = new Set(userEquipmentNames);
 
     // "없음"이 선택된 경우, "맨몸" 운동도 수행 가능하다고 가정
     if (userEquipmentSet.has("없음")) {
@@ -120,14 +129,15 @@ export async function mergeBodyParts(
     }
 
     // 운동 가능 조건 체크
-    // 1. "없음"만 필요한 운동 → 항상 가능 (맨손 운동)
+    // 1. "없음" 또는 "맨몸"만 필요한 운동 → 항상 가능 (맨손 운동)
     const isNoEquipmentExercise =
-      exerciseEquipment.length === 1 && exerciseEquipment[0] === "없음";
+      exerciseEquipment.length === 1 &&
+      (exerciseEquipment[0] === "없음" || exerciseEquipment[0] === "맨몸");
 
     // 2. 특정 기구 필요 → 사용자가 해당 기구를 모두 가지고 있어야 함
-    //    (또는 "없음"으로 대체 가능한 경우)
+    //    (또는 "없음"/"맨몸"으로 대체 가능한 경우)
     const hasAllRequiredEquipment = exerciseEquipment.every(
-      (eq) => eq === "없음" || userEquipmentSet.has(eq),
+      (eq) => eq === "없음" || eq === "맨몸" || userEquipmentSet.has(eq),
     );
 
     // 필터링: 맨손 운동이 아니고, 필요한 기구도 없으면 제외

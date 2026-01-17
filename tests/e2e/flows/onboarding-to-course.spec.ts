@@ -28,9 +28,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     console.log("🍪 Loaded Cookies:", JSON.stringify(cookies, null, 2));
 
     await onboardingPage.open();
-    await expect(page.getByText("오늘의 통증 체크")).toBeVisible({
-      timeout: 30000,
-    });
+    await expect(page.getByText("오늘의 통증 체크")).toBeVisible();
   });
 
   test("Step 1: 부위 및 통증 레벨 선택", async ({ page }) => {
@@ -44,9 +42,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     await onboardingPage.next();
 
     // Step 2 진입 확인
-    await expect(page.getByText("사용 가능한 기구")).toBeVisible({
-      timeout: 30000,
-    });
+    await expect(page.getByText("사용 가능한 기구").first()).toBeVisible();
   });
 
   test("Step 2: 장비 선택 (매트)", async ({ page }) => {
@@ -59,9 +55,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     await onboardingPage.next();
 
     // Step 3 진입 확인
-    await expect(page.getByText("평소 운동 빈도")).toBeVisible({
-      timeout: 30000,
-    });
+    await expect(page.getByText("평소 운동 빈도").first()).toBeVisible();
   });
 
   test("Step 3: 운동 경험 선택", async ({ page }) => {
@@ -76,18 +70,19 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     await onboardingPage.next();
 
     // Step 4 진입 확인
-    await expect(page.getByText("원하시는 운동 시간")).toBeVisible({
-      timeout: 30000,
-    });
+    await expect(page.getByText("원하시는 운동 시간").first()).toBeVisible();
   });
 
   test("Step 4: 운동 시간 선택 및 생성", async ({ page }) => {
     await onboardingPage.open();
     await onboardingPage.selectBodyPart("허리", 3);
+    await expect(onboardingPage.nextButton).toBeEnabled();
     await onboardingPage.next();
     await onboardingPage.selectEquipment("매트");
+    await expect(onboardingPage.nextButton).toBeEnabled();
     await onboardingPage.next();
     await onboardingPage.selectExperience("주 1-2회");
+    await expect(onboardingPage.nextButton).toBeEnabled();
     await onboardingPage.next();
 
     // 60분 선택
@@ -128,9 +123,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
 
     // 다음 단계로 진행 가능 확인
     await onboardingPage.next();
-    await expect(page.getByText("사용 가능한 기구")).toBeVisible({
-      timeout: 30000,
-    });
+    await expect(page.getByText("사용 가능한 기구")).toBeVisible();
   });
 
   // ============================================
@@ -147,7 +140,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     });
 
     await rehabPage.expectCourseResultVisible();
-    await expect(page.getByText("총 90분")).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText("총 90분")).toBeVisible();
   });
 
   test("120분 코스 생성", async ({ page }) => {
@@ -160,6 +153,6 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
     });
 
     await rehabPage.expectCourseResultVisible();
-    await expect(page.getByText("총 120분")).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText("총 120분")).toBeVisible();
   });
 });

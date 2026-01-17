@@ -264,10 +264,10 @@ export function distributeTime(
       accumulatedMainTime += timeForThisExercise;
       mainIndex++;
 
-      // Safety break: 최대 15개 운동 (같은 운동 반복 포함)
+      // Safety break: 최대 30개 운동 (같은 운동 반복 포함)
       // 하지만 시간이 80% 이상 채워졌으면 더 이상 추가 안 함
-      if (mainIndex >= 15) break;
-      if (mainIndex >= 8 && accumulatedMainTime >= mainTarget * 0.8) break;
+      if (mainIndex >= 30) break;
+      if (mainIndex >= 30) break;
     }
   }
 
