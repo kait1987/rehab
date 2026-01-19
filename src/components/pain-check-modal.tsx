@@ -174,10 +174,8 @@ export function PainCheckModal({
     }
   };
 
-  // "맨몸" 또는 "없음" 기구 ID 찾기
-  const noneEquipmentId = equipmentTypes.find(
-    (eq) => eq.name === "맨몸" || eq.name === "없음",
-  )?.id;
+  // "맨몸" 기구 ID 찾기
+  const noneEquipmentId = equipmentTypes.find((eq) => eq.name === "맨몸")?.id;
 
   // 기구 선택 토글 (개선: "맨몸" 처리 로직 추가)
   const toggleEquipment = (equipmentId: string) => {
@@ -189,7 +187,7 @@ export function PainCheckModal({
         // "맨몸" 선택 시: 다른 모든 기구 해제하고 "맨몸"만 선택
         return isCurrentlySelected ? [] : [equipmentId];
       } else {
-        // 다른 기구 선택 시: "없음"이 있으면 제거하고 선택한 기구 추가/제거
+        // 다른 기구 선택 시: "맨몸"이 있으면 제거하고 선택한 기구 추가/제거
         const withoutNone = prev.filter((id) => id !== noneEquipmentId);
         if (isCurrentlySelected) {
           return withoutNone.filter((id) => id !== equipmentId);
@@ -222,7 +220,7 @@ export function PainCheckModal({
     if (step === 2) {
       if (equipmentAvailable.length === 0) {
         setError(
-          "사용 가능한 기구를 최소 하나 이상 선택해주세요. 사용할 수 있는 기구가 없다면 '없음'을 선택해주세요.",
+          "사용 가능한 기구를 최소 하나 이상 선택해주세요. 사용할 수 있는 기구가 없다면 '맨몸'을 선택해주세요.",
         );
         return;
       }
@@ -452,7 +450,7 @@ export function PainCheckModal({
                   현재 사용 가능한 기구를 선택해주세요 (복수 선택 가능)
                 </p>
                 <p className="text-xs text-muted-foreground mb-3">
-                  💡 사용할 수 있는 기구가 없다면 &apos;없음&apos;을
+                  💡 사용할 수 있는 기구가 없다면 &apos;맨몸&apos;을
                   선택해주세요
                 </p>
                 <div className="grid grid-cols-2 gap-3">
