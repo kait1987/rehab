@@ -218,15 +218,26 @@ export function distributeTime(
   }
 
   // ==================================================================================
-  // [Main Generation] Fill remaining time
+  // [Main Generation] Fill remaining time - NO DUPLICATES ALLOWED
   // ==================================================================================
   let accumulatedMainTime = 0;
   let mainIndex = 0;
+  const usedExerciseIds = new Set<string>(); // 중복 방지용 Set
 
   // 메인 운동이 없으면 경고(실제로는 merge 단계에서 처리됨)
   if (exercises.main.length > 0) {
-    while (accumulatedMainTime < mainTarget) {
-      const sourceExercise = exercises.main[mainIndex % exercises.main.length];
+    while (
+      accumulatedMainTime < mainTarget &&
+      mainIndex < exercises.main.length
+    ) {
+      const sourceExercise = exercises.main[mainIndex];
+
+      // 🔥 중복 체크: 이미 사용된 운동이면 스킵
+      if (usedExerciseIds.has(sourceExercise.exerciseTemplateId)) {
+        mainIndex++;
+        continue;
+      }
+
       const remainingTime = mainTarget - accumulatedMainTime;
 
       // 이번 운동에 할당할 시간
@@ -261,12 +272,12 @@ export function distributeTime(
         reps,
       });
 
+      // 사용된 운동 ID 기록
+      usedExerciseIds.add(sourceExercise.exerciseTemplateId);
       accumulatedMainTime += timeForThisExercise;
       mainIndex++;
 
-      // Safety break: 최대 30개 운동 (같은 운동 반복 포함)
-      // 하지만 시간이 80% 이상 채워졌으면 더 이상 추가 안 함
-      if (mainIndex >= 30) break;
+      // Safety break: 최대 30개 운동
       if (mainIndex >= 30) break;
     }
   }

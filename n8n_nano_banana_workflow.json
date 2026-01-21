@@ -1,0 +1,195 @@
+{
+  "name": "Nano Banana Image Gen (Gemini)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-node",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\"name\":\"캣 카우 스트레칭\",\"filename\":\"캣_카우_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Cat-Cow stretch: person on all fours alternating between arching back upward (cat) and dropping belly down (cow), showing both positions, side view, clean lines, white background\"},{\"name\":\"버드독\",\"filename\":\"버드독.png\",\"prompt\":\"Minimalist vector illustration of Bird Dog exercise: person on all fours extending opposite arm forward and leg backward parallel to floor, maintaining neutral spine, side view, clean lines, white background\"},{\"name\":\"데드버그\",\"filename\":\"데드버그.png\",\"prompt\":\"Minimalist vector illustration of Dead Bug exercise: person lying on back with arms extended toward ceiling and knees bent 90 degrees above hips, extending opposite arm and leg, side view, clean lines, white background\"},{\"name\":\"힙 힌지 (굿모닝)\",\"filename\":\"힙_힌지_굿모닝.png\",\"prompt\":\"Minimalist vector illustration of Hip Hinge Good Morning: person standing, bending forward from hips with flat back and slight knee bend, pushing hips backward, hands behind head, side view, clean lines, white background\"},{\"name\":\"플랭크\",\"filename\":\"플랭크.png\",\"prompt\":\"Minimalist vector illustration of Plank: person in push-up position supported on forearms and toes, body forming straight line from head to heels, facing down, side view, clean lines, white background\"},{\"name\":\"사이드 플랭크\",\"filename\":\"사이드_플랭크.png\",\"prompt\":\"Minimalist vector illustration of Side Plank: person lying on side, propped up on one forearm with body forming straight diagonal line from head to feet, hips lifted off ground, front view, clean lines, white background\"},{\"name\":\"브릿지 (힙 레이즈)\",\"filename\":\"브릿지_힙_레이즈.png\",\"prompt\":\"Minimalist vector illustration of Glute Bridge: person lying on back with knees bent and feet flat on floor, lifting hips toward ceiling squeezing glutes, side view, clean lines, white background\"},{\"name\":\"맥켄지 익스텐션\",\"filename\":\"맥켄지_익스텐션.png\",\"prompt\":\"Minimalist vector illustration of McKenzie Extension: person lying face down pushing upper body up with arms while keeping hips on floor, gently arching lower back, side view, clean lines, white background\"},{\"name\":\"니 투 체스트 스트레칭\",\"filename\":\"니_투_체스트_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Knee to Chest stretch: person lying on back hugging one or both knees toward chest, lower back pressed into floor, side view, clean lines, white background\"},{\"name\":\"앉아서 옆구리 늘리기 (Parivrtta Janu Sirsasana)\",\"filename\":\"앉아서_옆구리_늘리기_Parivrtta_Janu_Sirsasana.png\",\"prompt\":\"Minimalist vector illustration of Seated Side stretch: person sitting with one leg extended, reaching opposite arm overhead and bending toward extended leg, stretching side body, front view, clean lines, white background\"},{\"name\":\"숄더 프레스\",\"filename\":\"숄더_프레스.png\",\"prompt\":\"Minimalist vector illustration of Shoulder Press: person standing or seated pressing dumbbells overhead from shoulder level with arms extending upward, front view, clean lines, white background\"},{\"name\":\"사이드 레터럴 레이즈\",\"filename\":\"사이드_레터럴_레이즈.png\",\"prompt\":\"Minimalist vector illustration of Lateral Raise: person standing with arms at sides, raising straight arms outward to shoulder height forming T-shape, front view, clean lines, white background\"},{\"name\":\"페이스 풀\",\"filename\":\"페이스_풀.png\",\"prompt\":\"Minimalist vector illustration of Face Pull: person pulling cable or band toward face with elbows high and wide, squeezing shoulder blades together, front view, clean lines, white background\"},{\"name\":\"익스터널 로테이션\",\"filename\":\"익스터널_로테이션.png\",\"prompt\":\"Minimalist vector illustration of External Rotation: person with elbow bent 90 degrees at side, rotating forearm outward away from body, front view, clean lines, white background\"},{\"name\":\"인터널 로테이션\",\"filename\":\"인터널_로테이션.png\",\"prompt\":\"Minimalist vector illustration of Internal Rotation: person with elbow bent 90 degrees at side, rotating forearm inward toward body, front view, clean lines, white background\"},{\"name\":\"YTWL 운동\",\"filename\":\"YTWL_운동.png\",\"prompt\":\"Minimalist vector illustration of YTWL exercise: four poses showing person lying face down raising arms in Y shape, T shape, W shape, and L shape positions, front view from above, clean lines, white background\"},{\"name\":\"월 슬라이드\",\"filename\":\"월_슬라이드.png\",\"prompt\":\"Minimalist vector illustration of Wall Slide: person standing with back against wall, arms in goalpost position sliding up and down while maintaining contact with wall, front view, clean lines, white background\"},{\"name\":\"숄더 서클\",\"filename\":\"숄더_서클.png\",\"prompt\":\"Minimalist vector illustration of Shoulder Circle: person standing with arms extended to sides, making circular motions with shoulders, arrows indicating rotation, front view, clean lines, white background\"},{\"name\":\"펜듈럼 운동\",\"filename\":\"펜듈럼_운동.png\",\"prompt\":\"Minimalist vector illustration of Pendulum exercise: person bending forward at waist supporting on table, letting one arm hang and swing in circles like a pendulum, side view, clean lines, white background\"},{\"name\":\"크로스바디 스트레칭\",\"filename\":\"크로스바디_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Cross-body stretch: person standing pulling one arm across chest with opposite hand, stretching rear shoulder, front view, clean lines, white background\"},{\"name\":\"레그 익스텐션\",\"filename\":\"레그_익스텐션.png\",\"prompt\":\"Minimalist vector illustration of Leg Extension: person seated on machine or chair, extending lower leg forward until straight, side view, clean lines, white background\"},{\"name\":\"레그 컬\",\"filename\":\"레그_컬.png\",\"prompt\":\"Minimalist vector illustration of Leg Curl: person lying face down on machine bending knees to curl heels toward buttocks, side view, clean lines, white background\"},{\"name\":\"스쿼트\",\"filename\":\"스쿼트.png\",\"prompt\":\"Minimalist vector illustration of Squat: person standing with feet shoulder-width apart, lowering body by bending knees and hips as if sitting back, thighs parallel to floor, side view, clean lines, white background\"},{\"name\":\"월 싯\",\"filename\":\"월_싯.png\",\"prompt\":\"Minimalist vector illustration of Wall Sit: person with back against wall, knees bent at 90 degrees as if sitting in invisible chair, thighs parallel to floor, side view, clean lines, white background\"},{\"name\":\"스텝업\",\"filename\":\"스텝업.png\",\"prompt\":\"Minimalist vector illustration of Step Up: person stepping up onto elevated platform with one foot, driving body upward, side view, clean lines, white background\"},{\"name\":\"클램쉘\",\"filename\":\"클램쉘.png\",\"prompt\":\"Minimalist vector illustration of Clamshell: person lying on side with knees bent 45 degrees and feet together, opening top knee like clam shell while feet stay together, front view, clean lines, white background\"},{\"name\":\"햄스트링 스트레칭\",\"filename\":\"햄스트링_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Hamstring stretch: person lying on back with one leg extended upward, hands behind thigh pulling leg toward chest, side view, clean lines, white background\"},{\"name\":\"쿼드 스트레칭\",\"filename\":\"쿼드_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Quadriceps stretch: person standing on one leg, holding opposite ankle behind pulling heel toward buttocks, side view, clean lines, white background\"},{\"name\":\"슬라이딩 레그 컬\",\"filename\":\"슬라이딩_레그_컬.png\",\"prompt\":\"Minimalist vector illustration of Sliding Leg Curl: person lying on back with heels on sliders, lifting hips and sliding heels toward buttocks, side view, clean lines, white background\"},{\"name\":\"내측광근 강화 운동 (VMO)\",\"filename\":\"내측광근_강화_운동_VMO.png\",\"prompt\":\"Minimalist vector illustration of VMO exercise: person seated with small ball under bent knee, pressing knee down to squeeze ball activating inner quadriceps, side view, clean lines, white background\"},{\"name\":\"넥 플렉션\",\"filename\":\"넥_플렉션.png\",\"prompt\":\"Minimalist vector illustration of Neck Flexion: person sitting upright, gently tucking chin toward chest stretching back of neck, side view, clean lines, white background\"},{\"name\":\"넥 익스텐션\",\"filename\":\"넥_익스텐션.png\",\"prompt\":\"Minimalist vector illustration of Neck Extension: person sitting upright, gently tilting head backward looking upward, side view, clean lines, white background\"},{\"name\":\"턱 당기기 (Chin Tuck)\",\"filename\":\"턱_당기기_Chin_Tuck.png\",\"prompt\":\"Minimalist vector illustration of Chin Tuck: person sitting or standing tall, pulling chin straight back creating double chin, head gliding backward on neck, side view, clean lines, white background\"},{\"name\":\"상부 승모근 스트레칭 (Upper Trapezius)\",\"filename\":\"상부_승모근_스트레칭_Upper_Trapezius.png\",\"prompt\":\"Minimalist vector illustration of Upper Trapezius stretch: person tilting head to one side, using hand to gently pull head toward shoulder, front view, clean lines, white background\"},{\"name\":\"견갑거근 스트레칭 (Levator Scapulae)\",\"filename\":\"견갑거근_스트레칭_Levator_Scapulae.png\",\"prompt\":\"Minimalist vector illustration of Levator Scapulae stretch: person tilting head diagonally looking toward armpit, hand on head gently pulling, front view, clean lines, white background\"},{\"name\":\"흉쇄유돌근 스트레칭 (SCM)\",\"filename\":\"흉쇄유돌근_스트레칭_SCM.png\",\"prompt\":\"Minimalist vector illustration of SCM stretch: person rotating head to one side and tilting up, stretching front neck muscle, front view, clean lines, white background\"},{\"name\":\"이소메트릭 넥 프레스\",\"filename\":\"이소메트릭_넥_프레스.png\",\"prompt\":\"Minimalist vector illustration of Isometric Neck Press: person pressing palm against forehead or side of head, resisting with neck muscles without moving, side view, clean lines, white background\"},{\"name\":\"숄더 쉬러그\",\"filename\":\"숄더_쉬러그.png\",\"prompt\":\"Minimalist vector illustration of Shoulder Shrug: person standing with arms at sides, raising shoulders up toward ears, front view, clean lines, white background\"},{\"name\":\"손목 굽힘 스트레칭 (Flexion)\",\"filename\":\"손목_굽힘_스트레칭_Flexion.png\",\"prompt\":\"Minimalist vector illustration of Wrist Flexion stretch: person extending arm forward palm up, using other hand to gently pull fingers down and back, side view, clean lines, white background\"},{\"name\":\"손목 젖힘 스트레칭 (Extension)\",\"filename\":\"손목_젖힘_스트레칭_Extension.png\",\"prompt\":\"Minimalist vector illustration of Wrist Extension stretch: person extending arm forward palm down, using other hand to gently pull fingers back toward body, side view, clean lines, white background\"},{\"name\":\"리스트 컬\",\"filename\":\"리스트_컬.png\",\"prompt\":\"Minimalist vector illustration of Wrist Curl: person seated with forearm on thigh palm up, curling wrist upward holding dumbbell, side view, clean lines, white background\"},{\"name\":\"리버스 리스트 컬\",\"filename\":\"리버스_리스트_컬.png\",\"prompt\":\"Minimalist vector illustration of Reverse Wrist Curl: person seated with forearm on thigh palm down, raising back of hand upward holding dumbbell, side view, clean lines, white background\"},{\"name\":\"손가락 스프레드\",\"filename\":\"손가락_스프레드.png\",\"prompt\":\"Minimalist vector illustration of Finger Spread: close-up of hand spreading fingers wide apart with rubber band around fingers for resistance, front view, clean lines, white background\"},{\"name\":\"그립 스트렝스닝\",\"filename\":\"그립_스트렝스닝.png\",\"prompt\":\"Minimalist vector illustration of Grip Strengthening: hand squeezing grip strengthener or stress ball, side view, clean lines, white background\"},{\"name\":\"손목 서클\",\"filename\":\"손목_서클.png\",\"prompt\":\"Minimalist vector illustration of Wrist Circles: fist making circular motion with arrow indicating rotation, front view, clean lines, white background\"},{\"name\":\"손목 회전 운동 (Pronation/Supination)\",\"filename\":\"손목_회전_운동_PronationSupination.png\",\"prompt\":\"Minimalist vector illustration of Pronation Supination: forearm rotating palm up then palm down while elbow stays still, showing both positions, front view, clean lines, white background\"},{\"name\":\"발목 당기기 (Dorsiflexion)\",\"filename\":\"발목_당기기_Dorsiflexion.png\",\"prompt\":\"Minimalist vector illustration of Ankle Dorsiflexion: foot pulling toes upward toward shin, side view showing ankle joint movement, clean lines, white background\"},{\"name\":\"발목 밀기 (Plantarflexion)\",\"filename\":\"발목_밀기_Plantarflexion.png\",\"prompt\":\"Minimalist vector illustration of Ankle Plantarflexion: foot pointing toes downward away from body, side view showing ankle extension, clean lines, white background\"},{\"name\":\"카프 레이즈\",\"filename\":\"카프_레이즈.png\",\"prompt\":\"Minimalist vector illustration of Calf Raise: person standing on toes rising up on balls of feet, heels lifted high off ground, side view, clean lines, white background\"},{\"name\":\"발목 알파벳 운동\",\"filename\":\"발목_알파벳_운동.png\",\"prompt\":\"Minimalist vector illustration of Ankle Alphabet: person seated with foot elevated, drawing letters in air with toes, showing A B C pattern, side view, clean lines, white background\"},{\"name\":\"발목 밸런스 보드\",\"filename\":\"발목_밸런스_보드.png\",\"prompt\":\"Minimalist vector illustration of Balance Board exercise: person standing on wobble board with one or both feet, maintaining balance, front view, clean lines, white background\"},{\"name\":\"싱글 레그 스탠드\",\"filename\":\"싱글_레그_스탠드.png\",\"prompt\":\"Minimalist vector illustration of Single Leg Stand: person balancing on one leg, other leg lifted with knee bent, arms out for balance, front view, clean lines, white background\"},{\"name\":\"아킬레스건 스트레칭\",\"filename\":\"아킬레스건_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Achilles stretch: person in lunge position with back leg straight heel on ground, leaning forward to stretch calf and Achilles, side view, clean lines, white background\"},{\"name\":\"밴드 발목 안쪽 돌림 (Inversion)\",\"filename\":\"밴드_발목_안쪽_돌림_Inversion.png\",\"prompt\":\"Minimalist vector illustration of Ankle Inversion with band: foot turning sole inward against resistance band anchored to side, front view, clean lines, white background\"},{\"name\":\"밴드 발목 바깥쪽 돌림 (Eversion)\",\"filename\":\"밴드_발목_바깥쪽_돌림_Eversion.png\",\"prompt\":\"Minimalist vector illustration of Ankle Eversion with band: foot turning sole outward against resistance band, front view, clean lines, white background\"},{\"name\":\"골반 틸트\",\"filename\":\"골반_틸트.png\",\"prompt\":\"Minimalist vector illustration of Pelvic Tilt: person lying on back with knees bent, flattening lower back against floor by tilting pelvis upward, side view, clean lines, white background\"},{\"name\":\"힙 플렉서 스트레칭\",\"filename\":\"힙_플렉서_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Hip Flexor stretch: person in kneeling lunge with back knee on floor, pushing hips forward stretching front of hip, side view, clean lines, white background\"},{\"name\":\"피리포미스 스트레칭\",\"filename\":\"피리포미스_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Piriformis stretch: person lying on back, crossing one ankle over opposite knee, pulling thigh toward chest, side view, clean lines, white background\"},{\"name\":\"힙 써클\",\"filename\":\"힙_써클.png\",\"prompt\":\"Minimalist vector illustration of Hip Circle: person standing on one leg, making circular motion with other leg in the air, arrows showing rotation, front view, clean lines, white background\"},{\"name\":\"파이어 하이드런트\",\"filename\":\"파이어_하이드런트.png\",\"prompt\":\"Minimalist vector illustration of Fire Hydrant: person on all fours lifting bent knee out to side keeping 90-degree angle, like dog at fire hydrant, side view, clean lines, white background\"},{\"name\":\"사이드 라잉 힙 어브덕션\",\"filename\":\"사이드_라잉_힙_어브덕션.png\",\"prompt\":\"Minimalist vector illustration of Side Lying Hip Abduction: person lying on side, lifting top leg straight up toward ceiling, legs straight, side view, clean lines, white background\"},{\"name\":\"힙 어덕션\",\"filename\":\"힙_어덕션.png\",\"prompt\":\"Minimalist vector illustration of Hip Adduction: person lying on side, lifting bottom leg upward while top leg is supported, side view, clean lines, white background\"},{\"name\":\"싱글 레그 데드리프트\",\"filename\":\"싱글_레그_데드리프트.png\",\"prompt\":\"Minimalist vector illustration of Single Leg Deadlift: person balancing on one leg, hinging forward at hip with other leg extending behind for counterbalance, arms reaching toward floor, side view, clean lines, white background\"},{\"name\":\"글루트 킥백\",\"filename\":\"글루트_킥백.png\",\"prompt\":\"Minimalist vector illustration of Glute Kickback: person on all fours, extending one leg straight back and up squeezing glute, side view, clean lines, white background\"},{\"name\":\"힙 90/90 스트레칭\",\"filename\":\"힙_9090_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of 90/90 Hip stretch: person seated on floor with both legs bent at 90 degrees, one in front and one to side, rotating torso, front view, clean lines, white background\"},{\"name\":\"슈퍼맨 운동\",\"filename\":\"슈퍼맨_운동.png\",\"prompt\":\"Minimalist vector illustration of Superman exercise: person lying face down with arms extended forward, lifting both arms and legs off the floor simultaneously, side view, clean lines, white background\"},{\"name\":\"프론 코브라\",\"filename\":\"프론_코브라.png\",\"prompt\":\"Minimalist vector illustration of Prone Cobra: person lying face down, lifting chest off ground with arms by sides palms up, squeezing shoulder blades together, side view, clean lines, white background\"},{\"name\":\"도어 프레임 로우\",\"filename\":\"도어_프레임_로우.png\",\"prompt\":\"Minimalist vector illustration of Door Frame Row: person holding door frame and leaning back, pulling chest toward door by rowing motion, side view, clean lines, white background\"},{\"name\":\"랫 풀다운\",\"filename\":\"랫_풀다운.png\",\"prompt\":\"Minimalist vector illustration of Lat Pulldown: person seated pulling wide bar down toward chest, elbows moving down and back, front view, clean lines, white background\"},{\"name\":\"시티드 로우\",\"filename\":\"시티드_로우.png\",\"prompt\":\"Minimalist vector illustration of Seated Row: person seated pulling cable or band handle toward midsection, squeezing shoulder blades together, side view, clean lines, white background\"},{\"name\":\"등 스트레칭 (차일드 포즈)\",\"filename\":\"등_스트레칭_차일드_포즈.png\",\"prompt\":\"Minimalist vector illustration of Child Pose: person kneeling with arms extended forward on floor, forehead down, hips sitting back on heels, stretching back, side view, clean lines, white background\"},{\"name\":\"수퍼맨 운동\",\"filename\":\"수퍼맨_운동.png\",\"prompt\":\"Minimalist vector illustration of Superman exercise: person lying face down with arms extended forward, lifting both arms and legs off the floor simultaneously, side view, clean lines, white background\"},{\"name\":\"캣 스트레칭\",\"filename\":\"캣_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Cat stretch: person on all fours rounding back upward like angry cat, tucking chin and pelvis, side view, clean lines, white background\"},{\"name\":\"푸쉬업\",\"filename\":\"푸쉬업.png\",\"prompt\":\"Minimalist vector illustration of Push-up: person in plank position lowering chest toward floor by bending elbows, body in straight line, side view, clean lines, white background\"},{\"name\":\"체스트 프레스\",\"filename\":\"체스트_프레스.png\",\"prompt\":\"Minimalist vector illustration of Chest Press: person lying on back pressing dumbbells up from chest level, arms extending upward, side view, clean lines, white background\"},{\"name\":\"체스트 플라이\",\"filename\":\"체스트_플라이.png\",\"prompt\":\"Minimalist vector illustration of Chest Fly: person lying on back with arms extended to sides holding dumbbells, bringing arms together above chest in arc motion, front view, clean lines, white background\"},{\"name\":\"가슴 스트레칭\",\"filename\":\"가슴_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Chest stretch: person standing in doorway with arms on frame at shoulder height, leaning forward to stretch chest muscles, front view, clean lines, white background\"},{\"name\":\"월 푸쉬업\",\"filename\":\"월_푸쉬업.png\",\"prompt\":\"Minimalist vector illustration of Wall Push-up: person standing at arms length from wall, hands on wall at shoulder height, bending elbows to bring chest toward wall then pushing back, side view, clean lines, white background\"},{\"name\":\"바이셉 컬\",\"filename\":\"바이셉_컬.png\",\"prompt\":\"Minimalist vector illustration of Bicep Curl: person standing with dumbbells, curling weight toward shoulders by bending elbows, front view, clean lines, white background\"},{\"name\":\"트라이셉 딥\",\"filename\":\"트라이셉_딥.png\",\"prompt\":\"Minimalist vector illustration of Tricep Dip: person with hands on bench behind, lowering body by bending elbows then pushing back up, legs extended forward, side view, clean lines, white background\"},{\"name\":\"해머 컬\",\"filename\":\"해머_컬.png\",\"prompt\":\"Minimalist vector illustration of Hammer Curl: person standing curling dumbbells with palms facing each other thumbs up, front view, clean lines, white background\"},{\"name\":\"팔 스트레칭\",\"filename\":\"팔_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Arm stretch: person with one arm across chest, pulling it closer with other hand, stretching shoulder and arm, front view, clean lines, white background\"},{\"name\":\"트라이셉 익스텐션\",\"filename\":\"트라이셉_익스텐션.png\",\"prompt\":\"Minimalist vector illustration of Tricep Extension: person holding dumbbell overhead with both hands, lowering behind head by bending elbows then extending back up, side view, clean lines, white background\"},{\"name\":\"런지\",\"filename\":\"런지.png\",\"prompt\":\"Minimalist vector illustration of Lunge: person stepping forward with one leg, lowering back knee toward floor while front thigh is parallel to ground, side view, clean lines, white background\"},{\"name\":\"글루트 브릿지\",\"filename\":\"글루트_브릿지.png\",\"prompt\":\"Minimalist vector illustration of Glute Bridge: person lying face up with knees bent and feet flat, lifting hips high off ground squeezing glutes at top, side view, clean lines, white background\"},{\"name\":\"사이드 런지\",\"filename\":\"사이드_런지.png\",\"prompt\":\"Minimalist vector illustration of Side Lunge: person stepping wide to one side, bending that knee while keeping other leg straight, lowering hips, front view, clean lines, white background\"},{\"name\":\"허벅지 스트레칭\",\"filename\":\"허벅지_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Thigh stretch: person in kneeling lunge position, rear knee on ground stretching hip flexor and thigh, side view, clean lines, white background\"},{\"name\":\"카프 스트레칭\",\"filename\":\"카프_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Calf stretch: person facing wall with hands on wall, one leg back with heel down stretching calf muscle, side view, clean lines, white background\"},{\"name\":\"팔꿈치 플렉션 스트레칭\",\"filename\":\"팔꿈치_플렉션_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Elbow Flexion stretch: person with arm extended, gently pressing to straighten elbow fully, side view, clean lines, white background\"},{\"name\":\"전완 스트레칭\",\"filename\":\"전완_스트레칭.png\",\"prompt\":\"Minimalist vector illustration of Forearm stretch: person with arm extended palm up, pressing fingers down with other hand, side view, clean lines, white background\"},{\"name\":\"이소메트릭 플렉션\",\"filename\":\"이소메트릭_플렉션.png\",\"prompt\":\"Minimalist vector illustration of Isometric Elbow Flexion: person pressing palm against underside of table or door frame without moving, side view, clean lines, white background\"},{\"name\":\"이소메트릭 익스텐션\",\"filename\":\"이소메트릭_익스텐션.png\",\"prompt\":\"Minimalist vector illustration of Isometric Elbow Extension: person pressing palm down on table or surface resisting without moving, side view, clean lines, white background\"},{\"name\":\"테니스볼 스퀴즈\",\"filename\":\"테니스볼_스퀴즈.png\",\"prompt\":\"Minimalist vector illustration of Tennis Ball Squeeze: hand gripping and squeezing tennis ball, showing muscle engagement, side view, clean lines, white background\"}];"
+      },
+      "id": "set-data-node",
+      "name": "Set Exercise List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-node",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        900,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent",
+        "authentication": "none",
+        "sendQuery": true,
+        "queryParameters": {
+          "key": "YOUR_GEMINI_API_KEY_HERE"
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "={{ [ { \"parts\": [ { \"text\": \"Generate an image based on this prompt: \" + $json.prompt } ] } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-request-node",
+      "name": "Gemini API Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1140,
+        460
+      ],
+      "notes": "Replace YOUR_GEMINI_API_KEY_HERE with your actual Gemini API key. This calls Gemini 2.0 Flash Experimental model for image generation."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract base64 image from Gemini API response\nconst response = $input.item.json;\n\n// Gemini API response structure:\n// response.candidates[0].content.parts[0].inlineData.data (base64)\n// response.candidates[0].content.parts[0].inlineData.mimeType\n\nlet base64Data = null;\nlet mimeType = 'image/png';\n\ntry {\n  if (response.candidates && response.candidates[0]) {\n    const candidate = response.candidates[0];\n    if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {\n      const part = candidate.content.parts[0];\n      if (part.inlineData) {\n        base64Data = part.inlineData.data;\n        mimeType = part.inlineData.mimeType || 'image/png';\n      }\n    }\n  }\n  \n  if (!base64Data) {\n    throw new Error('No image data found in Gemini API response');\n  }\n  \n  // Get original exercise data from Split In Batches node\n  const exerciseData = $node['Split In Batches'].json;\n  \n  return [{\n    json: {\n      name: exerciseData.name,\n      filename: exerciseData.filename,\n      prompt: exerciseData.prompt,\n      mimeType: mimeType\n    },\n    binary: {\n      data: {\n        data: base64Data,\n        mimeType: mimeType,\n        fileName: exerciseData.filename\n      }\n    }\n  }];\n} catch (error) {\n  throw new Error(`Failed to extract image from Gemini response: ${error.message}`);\n}"
+      },
+      "id": "extract-image-node",
+      "name": "Extract Base64 Image",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        460
+      ],
+      "notes": "Extracts base64 image data from Gemini API response and converts it to binary format."
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "wait-node",
+      "name": "Wait (Rate Limit)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "fileName": "={{ 'public/images/exercises/' + $node['Split In Batches'].json.filename }}",
+        "options": {}
+      },
+      "id": "save-file-node",
+      "name": "Save to Disk",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        460
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Set Exercise List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Exercise List": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Nano Banana (Gemini API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API Call": {
+      "main": [
+        [
+          {
+            "node": "Extract Base64 Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Base64 Image": {
+      "main": [
+        [
+          {
+            "node": "Wait (Rate Limit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (Rate Limit)": {
+      "main": [
+        [
+          {
+            "node": "Save to Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Disk": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -5,19 +5,20 @@
  * 이 스크립트는 n8n_exercises.json 파일에 작성된 상세한 프롬프트를 사용하여
  * Pollinations.ai를 통해 운동 이미지를 생성하고 public/images/exercises/ 폴더에 저장합니다.
  *
+ * Pollinations.ai는 무료 이미지 생성 서비스로 API 키가 필요 없습니다.
+ *
  * 사용법:
  *   pnpm tsx scripts/generate-images-pollinations-from-json.ts
  *
  * @dependencies
  * - n8n_exercises.json: 운동 프롬프트 데이터 파일
- * - Pollinations.ai: 무료 AI 이미지 생성 서비스 (API 키 불필요)
  */
 
 import * as fs from "fs";
 import * as path from "path";
 import {
-  generateSeedFromFilename,
-  generateAndSaveImageWithPollinations,
+  generateImageWithPollinations,
+  saveImageToFile,
   wait,
 } from "./utils/pollinations-image";
 
@@ -114,15 +115,14 @@ async function generateAndSaveImage(
   );
 
   try {
-    // 파일명 기반으로 고정된 seed 생성 (일관된 이미지 보장)
-    const seed = generateSeedFromFilename(exercise.filename);
-
-    // Generate and save image
-    await generateAndSaveImageWithPollinations(
+    // Generate and download image from Pollinations.ai
+    const { buffer, mimeType } = await generateImageWithPollinations(
       exercise.prompt,
-      imagePath,
-      seed
+      exercise.filename
     );
+
+    // Save to file
+    saveImageToFile(buffer, imagePath, mimeType);
 
     stats.completed++;
     console.log(
@@ -157,6 +157,7 @@ function displayProgress(stats: ProgressStats): void {
  */
 async function main() {
   console.log("🎨 Starting Pollinations.ai Image Generation...\n");
+  console.log("ℹ️  Pollinations.ai is a free service - no API key required!\n");
 
   // Load exercises data
   let exercises: ExerciseData[];
@@ -185,7 +186,7 @@ async function main() {
 
   // Process each exercise
   console.log("🚀 Starting image generation...\n");
-  console.log("⏳ Note: Pollinations.ai image generation may take 5-10 seconds per image.\n");
+  console.log("⏳ Note: Pollinations.ai may take 5-10 seconds per image to generate.\n");
 
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i];
@@ -231,7 +232,10 @@ async function main() {
     console.log(
       "\n⚠️  Some images failed to generate. Check the error messages above."
     );
+    console.log("💡 Tip: You can re-run this script to retry failed images.");
     process.exit(1);
+  } else {
+    console.log("\n🎉 All images generated successfully!");
   }
 }
 
@@ -240,4 +244,3 @@ main().catch((error) => {
   console.error("❌ Fatal error:", error);
   process.exit(1);
 });
-

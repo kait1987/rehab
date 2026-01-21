@@ -30,13 +30,19 @@ async function main() {
   console.log("✅ body_parts: 8개 삽입 완료");
 
   // 2. equipment_types 삽입
+  // 덤벨과 아령은 같은 의미이므로 "덤벨"만 사용
   const equipmentTypes = [
     { name: "맨몸", displayOrder: 1, isActive: true },
     { name: "매트", displayOrder: 2, isActive: true },
     { name: "덤벨", displayOrder: 3, isActive: true },
     { name: "밴드", displayOrder: 4, isActive: true },
-    { name: "짐볼", displayOrder: 5, isActive: true },
-    { name: "폼롤러", displayOrder: 6, isActive: true },
+    { name: "마사지볼", displayOrder: 5, isActive: true },
+    { name: "짐볼", displayOrder: 6, isActive: true },
+    { name: "의자", displayOrder: 7, isActive: true },
+    { name: "폼롤러", displayOrder: 8, isActive: true },
+    { name: "바벨", displayOrder: 9, isActive: true }, // 추가됨
+    { name: "수건", displayOrder: 10, isActive: true },
+    { name: "물병", displayOrder: 11, isActive: true },
   ];
 
   for (const equip of equipmentTypes) {
@@ -46,7 +52,7 @@ async function main() {
       create: equip,
     });
   }
-  console.log("✅ equipment_types: 6개 삽입 완료");
+  console.log("✅ equipment_types: 11개 삽입 완료");
 
   console.log("🎉 Seed 완료!");
 }

@@ -27,6 +27,9 @@ import {
   ImageOff,
   Play,
   X,
+  Footprints,
+  Activity,
+  Sprout,
 } from "lucide-react";
 import type { MergedExercise } from "@/types/body-part-merge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -301,15 +304,159 @@ function ExerciseMedia({
     );
   }
 
-  // 플레이스홀더 (미디어 없음)
+  // 플레이스홀더: 이미지가 없을 때 "프리미엄 추상화 디자인" 적용
+  // 부위/키워드별 그라디언트 및 패턴 결정
+  const getDesignPattern = (name: string) => {
+    const n = name.toLowerCase();
+
+    // 1. 하체/다리/무릎/발목 (안정감 있는 블루/틸)
+    if (
+      n.includes("다리") ||
+      n.includes("무릎") ||
+      n.includes("발목") ||
+      n.includes("하체") ||
+      n.includes("스쿼트") ||
+      n.includes("런지")
+    ) {
+      return {
+        bg: "bg-gradient-to-br from-cyan-500 to-blue-600",
+        icon: "lower",
+        accent: "text-cyan-100",
+      };
+    }
+    // 2. 상체/어깨/가슴/팔 (에너지 있는 오렌지/레드)
+    if (
+      n.includes("어깨") ||
+      n.includes("가슴") ||
+      n.includes("팔") ||
+      n.includes("프레스") ||
+      n.includes("푸시업") ||
+      n.includes("컬")
+    ) {
+      return {
+        bg: "bg-gradient-to-br from-orange-400 to-rose-500",
+        icon: "upper",
+        accent: "text-orange-100",
+      };
+    }
+    // 3. 허리/등/코어 (신뢰감 있는 인디고/바이올렛)
+    if (
+      n.includes("허리") ||
+      n.includes("등") ||
+      n.includes("코어") ||
+      n.includes("플랭크") ||
+      n.includes("슈퍼맨")
+    ) {
+      return {
+        bg: "bg-gradient-to-br from-indigo-500 to-purple-600",
+        icon: "core",
+        accent: "text-indigo-100",
+      };
+    }
+    // 4. 스트레칭/요가/목 (차분한 그린/에메랄드/핑크)
+    if (
+      n.includes("스트레칭") ||
+      n.includes("요가") ||
+      n.includes("목") ||
+      n.includes("이완") ||
+      n.includes("롤링")
+    ) {
+      return {
+        bg: "bg-gradient-to-br from-emerald-400 to-teal-600",
+        icon: "stretch",
+        accent: "text-emerald-100",
+      };
+    }
+
+    // 기본 (모던한 그레이/슬레이트)
+    return {
+      bg: "bg-gradient-to-br from-slate-500 to-slate-700",
+      icon: "default",
+      accent: "text-slate-200",
+    };
+  };
+
+  const pattern = getDesignPattern(exerciseName);
+
   return (
-    <div className="w-full aspect-video bg-muted/50 rounded-lg flex items-center justify-center border border-border">
-      <div className="text-center text-muted-foreground">
-        <ImageOff
-          className="h-10 w-10 mx-auto mb-2 opacity-50"
-          strokeWidth={1.5}
-        />
-        <p className="text-xs">동작 영상 준비 중</p>
+    <div
+      className={cn(
+        "relative w-full aspect-video rounded-lg overflow-hidden group shadow-inner",
+        pattern.bg,
+      )}
+    >
+      {/* 배경 패턴 (추상적 도형 & 은은한 질감) */}
+      <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[140%] bg-white/10 rounded-full blur-3xl transform rotate-12 group-hover:rotate-45 transition-transform duration-1000 ease-in-out opacity-60" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[100%] bg-black/10 rounded-full blur-2xl opacity-40" />
+
+      {/* 노이즈 텍스처 오버레이 (고급스러운 느낌) */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      ></div>
+
+      {/* 중앙 아이콘/그래픽 */}
+      <div className="absolute inset-0 flex items-center justify-center p-6">
+        <div className="relative z-10 text-center transform group-hover:scale-105 transition-transform duration-500 ease-out">
+          {/* Lucide 아이콘 매핑 */}
+          {pattern.icon === "stretch" ? (
+            <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+              <Sprout
+                className="w-10 h-10 text-white drop-shadow-md"
+                strokeWidth={1.5}
+              />
+            </div>
+          ) : pattern.icon === "upper" ? (
+            <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+              <Dumbbell
+                className="w-10 h-10 text-white drop-shadow-md"
+                strokeWidth={1.5}
+              />
+            </div>
+          ) : pattern.icon === "lower" ? (
+            <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+              <Footprints
+                className="w-10 h-10 text-white drop-shadow-md"
+                strokeWidth={1.5}
+              />
+            </div>
+          ) : pattern.icon === "core" ? (
+            <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+              <Activity
+                className="w-10 h-10 text-white drop-shadow-md"
+                strokeWidth={1.5}
+              />
+            </div>
+          ) : (
+            <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+              <Dumbbell
+                className="w-10 h-10 text-white drop-shadow-md"
+                strokeWidth={1.5}
+              />
+            </div>
+          )}
+
+          <p
+            className={cn(
+              "mt-4 text-lg font-bold text-white tracking-wide opacity-95",
+              "drop-shadow-md px-4 leading-tight",
+            )}
+          >
+            {exerciseName}
+          </p>
+        </div>
+      </div>
+
+      {/* 브랜드 뱃지 */}
+      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+        <Badge
+          variant="outline"
+          className="border-white/30 text-white text-[10px] uppercase font-semibold tracking-wider bg-black/20 backdrop-blur-sm h-5"
+        >
+          Rehap Studio
+        </Badge>
       </div>
     </div>
   );
@@ -408,10 +555,10 @@ export function CourseExerciseCard({
                   {exercise.sets && exercise.reps
                     ? `${exercise.sets}세트 × ${exercise.reps}회`
                     : exercise.sets
-                    ? `${exercise.sets}세트`
-                    : exercise.reps
-                    ? `${exercise.reps}회`
-                    : ""}
+                      ? `${exercise.sets}세트`
+                      : exercise.reps
+                        ? `${exercise.reps}회`
+                        : ""}
                 </span>
               </div>
             )}

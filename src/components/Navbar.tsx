@@ -40,7 +40,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* 데스크탑 메뉴 */}
+        {/* 데스크톱 메뉴 */}
         <div className="hidden sm:flex items-center gap-3">
           {isLoaded && !isSignedIn && (
             <>
@@ -175,7 +175,7 @@ const Navbar = () => {
                     재활 코스
                   </Button>
                 </PainCheckModal>
-                
+               
                 {/* 모바일 프로필 메뉴 */}
                 <div className="border-t border-border pt-2 mt-2">
                   <div className="px-2 py-2 mb-2">
