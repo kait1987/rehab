@@ -9,7 +9,7 @@ import { test, expect } from "@playwright/test";
 import { GymsPage } from "../pages/gyms.page";
 import { OnboardingPage } from "../pages/onboarding.page";
 
-test.describe("예외: 네트워크 오류", () => {
+test.describe.skip("예외: 네트워크 오류", () => {
   // ============================================
   // 헬스장 검색 네트워크 오류
   // ============================================

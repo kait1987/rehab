@@ -68,9 +68,8 @@ export class OnboardingPage {
     await this.page.waitForLoadState("domcontentloaded");
 
     // 시작 버튼 클릭
-    const heroBtn = this.page.getByRole("button", {
-      name: /재활 코스 만들기/i,
-    });
+    // 시작 버튼 클릭 (PainCheckModal 트리거)
+    const heroBtn = this.page.locator('[data-testid="home-start-rehab"]');
 
     // Clerk 로딩 대기 및 버튼 표시 대기
     await expect(heroBtn).toBeVisible({ timeout: 60000 });
@@ -142,6 +141,7 @@ export class OnboardingPage {
    */
   async next() {
     await this.nextButton.click();
+    await this.page.waitForTimeout(500); // UI 전환 안정화 대기
   }
 
   /**
