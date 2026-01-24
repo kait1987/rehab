@@ -17,17 +17,13 @@
  * - @/lib/utils/check-business-status: 영업 상태 확인
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { GymSearchResult } from "@/types/gym-search";
 import { getBusinessStatus } from "@/lib/utils/check-business-status";
-
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
+import type { GymSearchResult } from "@/types/gym-search";
+import "@/types/naver-maps";
+import { useEffect, useRef, useState } from "react";
 
 interface GymMapProps {
   /** 표시할 헬스장 목록 */
@@ -150,7 +146,7 @@ export function GymMap({
     } else {
       // 중심점 업데이트
       mapInstanceRef.current.setCenter(
-        new window.naver.maps.LatLng(center.lat, center.lng)
+        new window.naver.maps.LatLng(center.lat, center.lng),
       );
     }
 
@@ -231,13 +227,17 @@ export function GymMap({
                 font-size: 14px;
                 color: #6b7280;
               ">${gym.address}</p>
-              ${gym.phone ? `
+              ${
+                gym.phone
+                  ? `
                 <p style="
                   margin: 0 0 8px 0;
                   font-size: 14px;
                   color: #6b7280;
                 ">📞 ${gym.phone}</p>
-              ` : ""}
+              `
+                  : ""
+              }
               <div style="
                 margin-top: 8px;
                 padding-top: 8px;
@@ -284,7 +284,7 @@ export function GymMap({
       userMarkerRef.current = new window.naver.maps.Marker({
         position: new window.naver.maps.LatLng(
           userLocation.lat,
-          userLocation.lng
+          userLocation.lng,
         ),
         map: map,
         icon: {
@@ -318,7 +318,10 @@ export function GymMap({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-[60vh] sm:h-[65vh] md:h-[70vh] bg-muted rounded-xl border border-border" style={{ minHeight: "400px", maxHeight: "800px" }}>
+      <div
+        className="flex items-center justify-center h-[60vh] sm:h-[65vh] md:h-[70vh] bg-muted rounded-xl border border-border"
+        style={{ minHeight: "400px", maxHeight: "800px" }}
+      >
         <div className="text-center p-6">
           <p className="text-muted-foreground mb-2">{error}</p>
           <p className="text-sm text-muted-foreground/80">
@@ -331,7 +334,10 @@ export function GymMap({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[60vh] sm:h-[65vh] md:h-[70vh] bg-muted rounded-xl border border-border" style={{ minHeight: "400px", maxHeight: "800px" }}>
+      <div
+        className="flex items-center justify-center h-[60vh] sm:h-[65vh] md:h-[70vh] bg-muted rounded-xl border border-border"
+        style={{ minHeight: "400px", maxHeight: "800px" }}
+      >
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">지도를 불러오는 중...</p>
@@ -348,4 +354,3 @@ export function GymMap({
     />
   );
 }
-

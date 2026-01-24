@@ -104,7 +104,7 @@ export async function calculateDifficulty(
   const painAdjust = PAIN_ADJUSTMENTS[Math.min(5, Math.round(avgPain)) as 1|2|3|4|5];
 
   // 권장 강도 계산
-  let baseIntensity = Math.min(fitnessLevel, phaseConfig.maxIntensity);
+  const baseIntensity = Math.min(fitnessLevel, phaseConfig.maxIntensity);
   let recommendedIntensity = Math.max(1, Math.min(5, baseIntensity + painAdjust.intensityMod)) as 1|2|3|4|5;
 
   // 최대 통증이 4 이상이면 강도 제한

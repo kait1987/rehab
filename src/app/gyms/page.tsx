@@ -18,21 +18,15 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import {
-  Search,
-  MapPin,
-  Loader2,
-  AlertCircle,
-  // List,        // 지도 기능 비활성화로 미사용
-  // Map as MapIcon, // 지도 기능 비활성화로 미사용
-} from "lucide-react";
 import { GymCard } from "@/components/gym-card";
+import { AlertCircle, Loader2, MapPin, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 // import { GymMap } from "@/components/gym-map"; // 지도 기능 비활성화
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -41,7 +35,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { getBusinessStatus } from "@/lib/utils/check-business-status";
 import type { GymSearchResponse, GymSearchResult } from "@/types/gym-search";
 
@@ -485,8 +478,7 @@ export default function GymsPage() {
                     </div>
 
                     {/* 더 보기 버튼 */}
-                    {displayedGyms.length <
-                      filteredAndSortedGyms.length && (
+                    {displayedGyms.length < filteredAndSortedGyms.length && (
                       <div className="flex justify-center mt-8">
                         <Button
                           onClick={handleLoadMore}
@@ -494,8 +486,7 @@ export default function GymsPage() {
                           className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/30"
                         >
                           더 보기 (
-                          {filteredAndSortedGyms.length -
-                            displayedGyms.length}
+                          {filteredAndSortedGyms.length - displayedGyms.length}
                           개 남음)
                         </Button>
                       </div>
@@ -518,7 +509,7 @@ export default function GymsPage() {
               위치를 설정해주세요
             </p>
             <p className="text-sm text-muted-foreground/80 mb-4">
-              '내 위치 사용' 버튼을 클릭하여 주변 헬스장을 검색하세요.
+              &apos;내 위치 사용&apos; 버튼을 클릭하여 주변 헬스장을 검색하세요.
             </p>
             <Button
               onClick={requestLocation}

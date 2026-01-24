@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,9 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Save, Trash2, ArrowUp, ArrowDown } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Loader2, Save, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface BodyPart {
@@ -63,7 +65,9 @@ export default function BodyPartMappingPage() {
           setSelectedBodyPartId(data.bodyParts[0].id);
         }
       } catch (err) {
-        toast.error("오류", { description: "부위 목록을 불러오지 못했습니다." });
+        toast.error("오류", {
+          description: "부위 목록을 불러오지 못했습니다.",
+        });
       } finally {
         setLoadingBodyParts(false);
       }
@@ -85,7 +89,9 @@ export default function BodyPartMappingPage() {
         const data = await res.json();
         setMappings(data.mappings);
       } catch (err) {
-        toast.error("오류", { description: "매핑 데이터를 불러오지 못했습니다." });
+        toast.error("오류", {
+          description: "매핑 데이터를 불러오지 못했습니다.",
+        });
       } finally {
         setLoadingMappings(false);
       }
@@ -138,7 +144,9 @@ export default function BodyPartMappingPage() {
       const reloadData = await reloadRes.json();
       setMappings(reloadData.mappings);
     } catch (err) {
-      toast.error("저장 실패", { description: "변경사항을 저장하지 못했습니다." });
+      toast.error("저장 실패", {
+        description: "변경사항을 저장하지 못했습니다.",
+      });
     } finally {
       setSaving(false);
     }

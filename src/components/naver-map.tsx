@@ -1,12 +1,7 @@
 "use client";
 
+import "@/types/naver-maps";
 import { useEffect, useRef, useState } from "react";
-
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
 
 export default function NaverMap() {
   const mapRef = useRef<HTMLDivElement>(null);

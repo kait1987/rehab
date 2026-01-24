@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -18,9 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Save, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface EquipmentType {
@@ -60,7 +62,9 @@ export default function EquipmentMappingPage() {
           setSelectedEquipmentId(data.equipment[0].id);
         }
       } catch (err) {
-        toast.error("오류", { description: "기구 목록을 불러오지 못했습니다." });
+        toast.error("오류", {
+          description: "기구 목록을 불러오지 못했습니다.",
+        });
       } finally {
         setLoadingEquipment(false);
       }
@@ -82,7 +86,9 @@ export default function EquipmentMappingPage() {
         const data = await res.json();
         setMappings(data.mappings);
       } catch (err) {
-        toast.error("오류", { description: "매핑 데이터를 불러오지 못했습니다." });
+        toast.error("오류", {
+          description: "매핑 데이터를 불러오지 못했습니다.",
+        });
       } finally {
         setLoadingMappings(false);
       }
@@ -132,7 +138,9 @@ export default function EquipmentMappingPage() {
       const reloadData = await reloadRes.json();
       setMappings(reloadData.mappings);
     } catch (err) {
-      toast.error("저장 실패", { description: "변경사항을 저장하지 못했습니다." });
+      toast.error("저장 실패", {
+        description: "변경사항을 저장하지 못했습니다.",
+      });
     } finally {
       setSaving(false);
     }

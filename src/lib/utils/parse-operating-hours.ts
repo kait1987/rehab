@@ -184,7 +184,7 @@ function extractBreakTime(description: string): {
     /중식시간\s*[:：]\s*(\d{1,2}:\d{2})\s*[~-]\s*(\d{1,2}:\d{2})/gi,
   ];
 
-  let breakTimeNotes: string[] = [];
+  const breakTimeNotes: string[] = [];
   let cleanedDescription = description;
 
   // 패턴 기반 브레이크 타임 추출

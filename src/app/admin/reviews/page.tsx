@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -11,15 +17,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Eye, EyeOff, Trash2, CheckCircle, Loader2 } from 'lucide-react';
+} from "@/components/ui/table";
+import { CheckCircle, EyeOff, Loader2, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /**
  * Admin Reviews Management Page
@@ -49,7 +49,7 @@ export default function AdminReviewsPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'deleted' | 'active'>('all');
+  const [filter, setFilter] = useState<"all" | "deleted" | "active">("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,12 +58,12 @@ export default function AdminReviewsPage() {
       try {
         const params = new URLSearchParams({ filter });
         const res = await fetch(`/api/admin/reviews?${params}`);
-        if (!res.ok) throw new Error('Failed to fetch reviews');
+        if (!res.ok) throw new Error("Failed to fetch reviews");
         const data: ReviewsResponse = await res.json();
         setReviews(data.reviews);
         setTotal(data.total);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -71,27 +71,30 @@ export default function AdminReviewsPage() {
     fetchReviews();
   }, [filter]);
 
-  const handleAction = async (id: string, action: 'hide' | 'delete' | 'approve') => {
+  const handleAction = async (
+    id: string,
+    action: "hide" | "delete" | "approve",
+  ) => {
     setActionLoading(id);
     try {
       const res = await fetch(`/api/admin/reviews/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
-      
-      if (!res.ok) throw new Error('Action failed');
-      
+
+      if (!res.ok) throw new Error("Action failed");
+
       // 목록 새로고침
-      setReviews((prev) => 
-        prev.map((r) => 
-          r.id === id 
-            ? { ...r, isDeleted: action === 'hide' || action === 'delete' }
-            : r
-        )
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, isDeleted: action === "hide" || action === "delete" }
+            : r,
+        ),
       );
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Action failed');
+      alert(err instanceof Error ? err.message : "Action failed");
     } finally {
       setActionLoading(null);
     }
@@ -106,7 +109,10 @@ export default function AdminReviewsPage() {
         <CardContent className="pt-6">
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">필터:</span>
-            <Select value={filter} onValueChange={(v: typeof filter) => setFilter(v)}>
+            <Select
+              value={filter}
+              onValueChange={(v: typeof filter) => setFilter(v)}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
@@ -150,7 +156,7 @@ export default function AdminReviewsPage() {
                 {reviews.map((review) => (
                   <TableRow key={review.id}>
                     <TableCell className="font-medium">
-                      {review.gym?.name || '-'}
+                      {review.gym?.name || "-"}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
@@ -167,10 +173,10 @@ export default function AdminReviewsPage() {
                       </div>
                     </TableCell>
                     <TableCell className="max-w-xs truncate">
-                      {review.comment || '-'}
+                      {review.comment || "-"}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {review.user?.email || '익명'}
+                      {review.user?.email || "익명"}
                     </TableCell>
                     <TableCell>
                       {review.isDeleted ? (
@@ -187,7 +193,7 @@ export default function AdminReviewsPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleAction(review.id, 'approve')}
+                            onClick={() => handleAction(review.id, "approve")}
                             disabled={actionLoading === review.id}
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -197,7 +203,7 @@ export default function AdminReviewsPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleAction(review.id, 'hide')}
+                              onClick={() => handleAction(review.id, "hide")}
                               disabled={actionLoading === review.id}
                             >
                               <EyeOff className="w-4 h-4" />
@@ -205,7 +211,7 @@ export default function AdminReviewsPage() {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleAction(review.id, 'delete')}
+                              onClick={() => handleAction(review.id, "delete")}
                               disabled={actionLoading === review.id}
                             >
                               <Trash2 className="w-4 h-4" />

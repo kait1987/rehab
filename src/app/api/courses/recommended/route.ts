@@ -40,7 +40,7 @@ export async function GET() {
 
     // 추천 로직
     let reason = '';
-    let suggestedBodyParts: string[] = [];
+    const suggestedBodyParts: string[] = [];
     let suggestedDuration = 60;
 
     // 1. 통증 프로필 기반 추천

@@ -1,9 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -11,16 +16,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { toast } from 'sonner';
-import { Check, X, Loader2 } from 'lucide-react';
+} from "@/components/ui/table";
+import { Check, Loader2, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface GymReport {
   id: string;
@@ -36,17 +36,17 @@ interface GymReport {
 }
 
 const REPORT_TYPE_LABELS: Record<string, string> = {
-  info_wrong: '정보 오류',
-  hours_changed: '운영시간 변경',
-  closed: '폐업',
-  moved: '이전',
-  other: '기타',
+  info_wrong: "정보 오류",
+  hours_changed: "운영시간 변경",
+  closed: "폐업",
+  moved: "이전",
+  other: "기타",
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-500',
-  approved: 'bg-green-500',
-  rejected: 'bg-red-500',
+  pending: "bg-yellow-500",
+  approved: "bg-green-500",
+  rejected: "bg-red-500",
 };
 
 function AdminReportsContent() {
@@ -55,39 +55,48 @@ function AdminReportsContent() {
   const [reports, setReports] = useState<GymReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
-  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 0 });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+    totalPages: 0,
+  });
 
-  const status = searchParams.get('status') || 'pending';
-  const page = parseInt(searchParams.get('page') || '1');
+  const status = searchParams.get("status") || "pending";
+  const page = parseInt(searchParams.get("page") || "1");
 
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/admin/reports?status=${status}&page=${page}&limit=20`);
+      const res = await fetch(
+        `/api/admin/reports?status=${status}&page=${page}&limit=20`,
+      );
       const data = await res.json();
       if (res.ok) {
         setReports(data.data);
         setPagination(data.pagination);
       } else {
-        toast.error(data.error || '제보 목록을 불러오는데 실패했습니다.');
+        toast.error(data.error || "제보 목록을 불러오는데 실패했습니다.");
       }
     } catch {
-      toast.error('제보 목록을 불러오는데 실패했습니다.');
+      toast.error("제보 목록을 불러오는데 실패했습니다.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [status, page]);
 
   useEffect(() => {
     fetchReports();
-  }, [status, page]);
+  }, [fetchReports]);
 
-  const handleAction = async (reportId: string, action: 'approve' | 'reject') => {
+  const handleAction = async (
+    reportId: string,
+    action: "approve" | "reject",
+  ) => {
     setProcessingId(reportId);
     try {
       const res = await fetch(`/api/admin/reports/${reportId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
       const data = await res.json();
@@ -98,7 +107,7 @@ function AdminReportsContent() {
         toast.error(data.error);
       }
     } catch {
-      toast.error('처리에 실패했습니다.');
+      toast.error("처리에 실패했습니다.");
     } finally {
       setProcessingId(null);
     }
@@ -150,25 +159,33 @@ function AdminReportsContent() {
             {reports.map((report) => (
               <TableRow key={report.id}>
                 <TableCell className="font-medium">{report.gym.name}</TableCell>
-                <TableCell>{REPORT_TYPE_LABELS[report.reportType] || report.reportType}</TableCell>
-                <TableCell className="max-w-xs truncate">
-                  {report.suggestedValue || report.description || '-'}
+                <TableCell>
+                  {REPORT_TYPE_LABELS[report.reportType] || report.reportType}
                 </TableCell>
-                <TableCell>{report.user?.email || '익명'}</TableCell>
+                <TableCell className="max-w-xs truncate">
+                  {report.suggestedValue || report.description || "-"}
+                </TableCell>
+                <TableCell>{report.user?.email || "익명"}</TableCell>
                 <TableCell>
                   <Badge className={STATUS_COLORS[report.status]}>
-                    {report.status === 'pending' ? '대기' : report.status === 'approved' ? '승인' : '거절'}
+                    {report.status === "pending"
+                      ? "대기"
+                      : report.status === "approved"
+                        ? "승인"
+                        : "거절"}
                   </Badge>
                 </TableCell>
-                <TableCell>{new Date(report.createdAt).toLocaleDateString('ko-KR')}</TableCell>
                 <TableCell>
-                  {report.status === 'pending' && (
+                  {new Date(report.createdAt).toLocaleDateString("ko-KR")}
+                </TableCell>
+                <TableCell>
+                  {report.status === "pending" && (
                     <div className="flex gap-2">
                       <Button
                         size="sm"
                         variant="outline"
                         className="text-green-600"
-                        onClick={() => handleAction(report.id, 'approve')}
+                        onClick={() => handleAction(report.id, "approve")}
                         disabled={processingId === report.id}
                       >
                         <Check className="h-4 w-4" />
@@ -177,7 +194,7 @@ function AdminReportsContent() {
                         size="sm"
                         variant="outline"
                         className="text-red-600"
-                        onClick={() => handleAction(report.id, 'reject')}
+                        onClick={() => handleAction(report.id, "reject")}
                         disabled={processingId === report.id}
                       >
                         <X className="h-4 w-4" />
@@ -196,7 +213,9 @@ function AdminReportsContent() {
           <Button
             variant="outline"
             disabled={page <= 1}
-            onClick={() => router.push(`/admin/reports?status=${status}&page=${page - 1}`)}
+            onClick={() =>
+              router.push(`/admin/reports?status=${status}&page=${page - 1}`)
+            }
           >
             이전
           </Button>
@@ -206,7 +225,9 @@ function AdminReportsContent() {
           <Button
             variant="outline"
             disabled={page >= pagination.totalPages}
-            onClick={() => router.push(`/admin/reports?status=${status}&page=${page + 1}`)}
+            onClick={() =>
+              router.push(`/admin/reports?status=${status}&page=${page + 1}`)
+            }
           >
             다음
           </Button>
@@ -218,7 +239,13 @@ function AdminReportsContent() {
 
 export default function AdminReportsPage() {
   return (
-    <Suspense fallback={<div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
       <AdminReportsContent />
     </Suspense>
   );

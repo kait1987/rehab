@@ -18,24 +18,20 @@
  * - lib/utils/convert-place-to-gym: PlaceItem → Gym 변환
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "@/lib/prisma/client";
-import { calculateDistance } from "@/lib/utils/calculate-distance";
-import { calculateBoundingBox } from "@/lib/utils/calculate-bounding-box";
 import { getPlaceSearchService } from "@/lib/services/place-search.service";
-import {
-  convertPlaceItemToGymAllData,
-  type GymUpsertData,
-  type GymFacilityUpsertData,
-  type GymOperatingHourUpsertData,
-} from "@/lib/utils/convert-place-to-gym";
+import { calculateBoundingBox } from "@/lib/utils/calculate-bounding-box";
+import { calculateDistance } from "@/lib/utils/calculate-distance";
+import { convertPlaceItemToGymAllData } from "@/lib/utils/convert-place-to-gym";
 import { normalizePlaceItem } from "@/lib/utils/normalize-place-item";
 import type {
-  GymSearchRequest,
   GymSearchFilter,
+  GymSearchRequest,
   GymSearchResult,
 } from "@/types/gym-search";
-import type { OperatingHours } from "@/types/operating-hours";
 import type { PlaceItem } from "@/types/naver-map";
+import type { OperatingHours } from "@/types/operating-hours";
 
 /**
  * 헬스장 검색 서비스

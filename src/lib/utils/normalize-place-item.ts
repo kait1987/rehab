@@ -1,9 +1,9 @@
 /**
  * @file normalize-place-item.ts
  * @description 네이버 API 응답 정규화 유틸리티
- * 
+ *
  * 네이버 지역 검색 API 응답을 표준 PlaceItem 형식으로 정규화합니다.
- * 
+ *
  * 주요 기능:
  * - HTML 태그 제거
  * - 좌표 변환 (네이버 좌표계 → WGS84)
@@ -11,18 +11,19 @@
  * - 에러 처리 및 로깅
  */
 
-import { convertNaverToWGS84 } from './coordinate-converter';
-import type { PlaceItem } from '@/types/naver-map';
-import { validatePlaceItem } from '@/lib/validations/validate-place-item';
-import { parseOperatingHoursFromDescription } from './parse-operating-hours';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { validatePlaceItem } from "@/lib/validations/validate-place-item";
+import type { PlaceItem } from "@/types/naver-map";
+import { convertNaverToWGS84 } from "./coordinate-converter";
+import { parseOperatingHoursFromDescription } from "./parse-operating-hours";
 
 /**
  * 네이버 API 응답을 표준 PlaceItem 형식으로 정규화
- * 
+ *
  * @param rawItem 네이버 API 원본 응답 아이템
  * @param options 정규화 옵션
  * @returns 정규화된 PlaceItem
- * 
+ *
  * @example
  * const rawItem = {
  *   title: '<b>헬스장</b>',
@@ -42,46 +43,48 @@ export function normalizePlaceItem(
     verbose?: boolean;
     /** 운영시간 파싱 수행 여부 (기본값: true, description이 있을 때만) */
     parseOperatingHours?: boolean;
-  }
+  },
 ): PlaceItem {
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = process.env.NODE_ENV === "development";
   const verbose = options?.verbose ?? isDevelopment;
 
   // HTML 태그 제거
-  const cleanTitle = rawItem.title?.replace(/<[^>]*>/g, '').trim() || '';
-  const cleanDescription = rawItem.description?.replace(/<[^>]*>/g, '').trim() || undefined;
-  
+  const cleanTitle = rawItem.title?.replace(/<[^>]*>/g, "").trim() || "";
+  const cleanDescription =
+    rawItem.description?.replace(/<[^>]*>/g, "").trim() || undefined;
+
   // 좌표 변환 (네이버 좌표계 → WGS84)
-  const mapx = parseInt(rawItem.mapx || '0', 10);
-  const mapy = parseInt(rawItem.mapy || '0', 10);
-  
+  const mapx = parseInt(rawItem.mapx || "0", 10);
+  const mapy = parseInt(rawItem.mapy || "0", 10);
+
   let lat: number | undefined;
   let lng: number | undefined;
   let coordinateError: Error | undefined;
-  
+
   if (mapx > 0 && mapy > 0) {
     try {
       const wgs84 = convertNaverToWGS84(mapx, mapy);
       lat = wgs84.lat;
       lng = wgs84.lng;
-      
+
       if (verbose) {
         console.log(
           `[normalizePlaceItem] 좌표 변환 성공: ` +
-          `(${mapx}, ${mapy}) → (${lat}, ${lng})`
+            `(${mapx}, ${mapy}) → (${lat}, ${lng})`,
         );
       }
     } catch (error) {
-      coordinateError = error instanceof Error ? error : new Error(String(error));
-      
+      coordinateError =
+        error instanceof Error ? error : new Error(String(error));
+
       if (verbose) {
         console.warn(
           `[normalizePlaceItem] 좌표 변환 실패: ` +
-          `mapx=${mapx}, mapy=${mapy}, ` +
-          `error=${coordinateError.message}`
+            `mapx=${mapx}, mapy=${mapy}, ` +
+            `error=${coordinateError.message}`,
         );
       } else {
-        console.warn('좌표 변환 실패:', coordinateError.message);
+        console.warn("좌표 변환 실패:", coordinateError.message);
       }
       // 좌표 변환 실패 시에도 기본 정보는 반환
     }
@@ -89,11 +92,11 @@ export function normalizePlaceItem(
     if (verbose) {
       console.warn(
         `[normalizePlaceItem] 유효하지 않은 좌표: ` +
-        `mapx=${mapx}, mapy=${mapy}`
+          `mapx=${mapx}, mapy=${mapy}`,
       );
     }
   }
-  
+
   // 운영시간 파싱 (옵션)
   let operatingHours = undefined;
   const shouldParseOperatingHours = options?.parseOperatingHours ?? true;
@@ -103,14 +106,14 @@ export function normalizePlaceItem(
       if (verbose && operatingHours.length > 0) {
         console.log(
           `[normalizePlaceItem] 운영시간 파싱 성공: ${cleanTitle} - ` +
-          `${operatingHours.length}개 요일 정보 추출`
+            `${operatingHours.length}개 요일 정보 추출`,
         );
       }
     } catch (error) {
       if (verbose) {
         console.warn(
           `[normalizePlaceItem] 운영시간 파싱 실패: ${cleanTitle} - ` +
-          `${error instanceof Error ? error.message : String(error)}`
+            `${error instanceof Error ? error.message : String(error)}`,
         );
       }
       // 파싱 실패 시 undefined 유지 (기본값 사용)
@@ -119,7 +122,7 @@ export function normalizePlaceItem(
 
   const normalized: PlaceItem = {
     title: cleanTitle,
-    address: rawItem.address || '',
+    address: rawItem.address || "",
     roadAddress: rawItem.roadAddress || undefined,
     category: rawItem.category || undefined,
     category2: rawItem.category2 || undefined,
@@ -144,18 +147,18 @@ export function normalizePlaceItem(
           if (verbose) {
             console.error(
               `[normalizePlaceItem] 검증 실패 (${cleanTitle}):`,
-              result.errors
+              result.errors,
             );
           } else {
             console.error(
-              `검증 실패 (${cleanTitle}): ${result.errors.join(', ')}`
+              `검증 실패 (${cleanTitle}): ${result.errors.join(", ")}`,
             );
           }
         } else if (result.warnings && result.warnings.length > 0) {
           if (verbose) {
             console.warn(
               `[normalizePlaceItem] 검증 경고 (${cleanTitle}):`,
-              result.warnings
+              result.warnings,
             );
           }
         }
@@ -164,7 +167,7 @@ export function normalizePlaceItem(
         if (verbose) {
           console.error(
             `[normalizePlaceItem] 검증 중 오류 발생 (${cleanTitle}):`,
-            error
+            error,
           );
         } else {
           console.error(`검증 오류 (${cleanTitle}):`, error.message);
@@ -177,11 +180,11 @@ export function normalizePlaceItem(
 
 /**
  * 검색 결과 목록 정규화
- * 
+ *
  * @param rawItems 네이버 API 원본 응답 아이템 목록
  * @param options 정규화 옵션
  * @returns 정규화된 PlaceItem 목록
- * 
+ *
  * @example
  * const rawItems = [
  *   { title: '<b>헬스장1</b>', mapx: 311277, mapy: 552097 },
@@ -200,16 +203,19 @@ export async function normalizePlaceItems(
     filterInvalid?: boolean;
     /** 좌표 누락 아이템 자동 필터링 (기본값: true, 지도 서비스 특성상 좌표 필수) */
     filterMissingCoordinates?: boolean;
-  }
+  },
 ): Promise<PlaceItem[]> {
   if (!Array.isArray(rawItems)) {
-    if (options?.verbose ?? process.env.NODE_ENV === 'development') {
-      console.warn('[normalizePlaceItems] rawItems가 배열이 아닙니다:', typeof rawItems);
+    if (options?.verbose ?? process.env.NODE_ENV === "development") {
+      console.warn(
+        "[normalizePlaceItems] rawItems가 배열이 아닙니다:",
+        typeof rawItems,
+      );
     }
     return [];
   }
 
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = process.env.NODE_ENV === "development";
   const verbose = options?.verbose ?? isDevelopment;
   const validate = options?.validate ?? false;
   const filterInvalid = options?.filterInvalid ?? false;
@@ -217,7 +223,7 @@ export async function normalizePlaceItems(
 
   // 정규화 수행
   let normalized = rawItems.map((item) =>
-    normalizePlaceItem(item, { validate, verbose })
+    normalizePlaceItem(item, { validate, verbose }),
   );
 
   // 좌표 누락 아이템 필터링 (기본적으로 수행)
@@ -228,7 +234,7 @@ export async function normalizePlaceItems(
       const hasCoordinates = item.lat !== undefined && item.lng !== undefined;
       if (!hasCoordinates && verbose) {
         console.warn(
-          `[normalizePlaceItems] 좌표 누락으로 제거: ${item.title} (${item.address})`
+          `[normalizePlaceItems] 좌표 누락으로 제거: ${item.title} (${item.address})`,
         );
       }
       return hasCoordinates;
@@ -237,25 +243,26 @@ export async function normalizePlaceItems(
     if (verbose && normalized.length < beforeCount) {
       console.log(
         `[normalizePlaceItems] 좌표 누락으로 ${beforeCount - normalized.length}개 아이템 제거 ` +
-        `(남은 아이템: ${normalized.length}개)`
+          `(남은 아이템: ${normalized.length}개)`,
       );
     }
   }
 
   // 검증 수행 및 필터링 (옵션)
   if (validate) {
-    const { validatePlaceItems } = await import('@/lib/validations/validate-place-item');
-    
+    const { validatePlaceItems } =
+      await import("@/lib/validations/validate-place-item");
+
     // Promise.all을 사용하여 병렬 검증 (네이버 API 응답은 최대 5개이므로 성능 이슈 없음)
     const validationResult = await validatePlaceItems(normalized);
 
     if (verbose) {
       console.log(
         `[normalizePlaceItems] 검증 결과: ` +
-        `전체 ${validationResult.summary.total}개, ` +
-        `유효 ${validationResult.summary.valid}개, ` +
-        `무효 ${validationResult.summary.invalid}개, ` +
-        `경고 ${validationResult.summary.warnings}개`
+          `전체 ${validationResult.summary.total}개, ` +
+          `유효 ${validationResult.summary.valid}개, ` +
+          `무효 ${validationResult.summary.invalid}개, ` +
+          `경고 ${validationResult.summary.warnings}개`,
       );
     }
 
@@ -268,7 +275,7 @@ export async function normalizePlaceItems(
         if (!isValid && verbose) {
           console.warn(
             `[normalizePlaceItems] 검증 실패로 제거: ${item.title} - ` +
-            `${result?.validation.errors.join(', ')}`
+              `${result?.validation.errors.join(", ")}`,
           );
         }
         return isValid;
@@ -277,7 +284,7 @@ export async function normalizePlaceItems(
       if (verbose && normalized.length < beforeCount) {
         console.log(
           `[normalizePlaceItems] 검증 실패로 ${beforeCount - normalized.length}개 아이템 제거 ` +
-          `(남은 아이템: ${normalized.length}개)`
+            `(남은 아이템: ${normalized.length}개)`,
         );
       }
     }
@@ -285,4 +292,3 @@ export async function normalizePlaceItems(
 
   return normalized;
 }
-

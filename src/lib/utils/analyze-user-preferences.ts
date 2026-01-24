@@ -82,7 +82,7 @@ export async function analyzeUserPreferences(
     }>();
 
     let totalCompleted = 0;
-    let totalLogs = completionLogs.length;
+    const totalLogs = completionLogs.length;
 
     for (const log of completionLogs) {
       const id = log.exerciseTemplate.id;

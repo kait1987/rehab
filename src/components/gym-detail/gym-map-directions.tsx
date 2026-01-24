@@ -1,15 +1,15 @@
 /**
  * @file gym-map-directions.tsx
  * @description 헬스장 네이버맵 길찾기 컴포넌트
- * 
+ *
  * 헬스장 위치를 지도에 표시하고 네이버맵 길찾기 기능을 제공합니다.
- * 
+ *
  * 주요 기능:
  * - 네이버맵 지도 표시 (헬스장 위치 중심)
  * - 사용자 현재 위치 마커 (Geolocation API, 선택적)
  * - 헬스장 위치 마커
  * - 네이버맵 길찾기 버튼
- * 
+ *
  * @dependencies
  * - 네이버 지도 API v3: https://navermaps.github.io/maps.js.ncp/
  * - @/components/ui/card: Card 컴포넌트
@@ -17,19 +17,14 @@
  * - lucide-react: 아이콘
  */
 
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Navigation, Loader2, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { AlertCircle, Loader2, Navigation } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface GymMapDirectionsProps {
   gym: {
@@ -59,7 +54,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
     const clientId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
 
     if (!clientId) {
-      setError('네이버맵 API 키가 설정되지 않았습니다.');
+      setError("네이버맵 API 키가 설정되지 않았습니다.");
       setIsLoading(false);
       return;
     }
@@ -70,7 +65,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
       return;
     }
 
-    const scriptId = 'naver-map-script';
+    const scriptId = "naver-map-script";
 
     // 이미 스크립트가 있으면 제거
     const existingScript = document.getElementById(scriptId);
@@ -79,7 +74,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
     }
 
     // 스크립트 생성 및 추가
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.id = scriptId;
     script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
     script.async = true;
@@ -87,7 +82,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
       setIsLoading(false);
     };
     script.onerror = () => {
-      setError('네이버맵 스크립트 로드 실패');
+      setError("네이버맵 스크립트 로드 실패");
       setIsLoading(false);
     };
 
@@ -111,9 +106,9 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
           });
         },
         (error) => {
-          console.log('Geolocation error:', error);
+          console.log("Geolocation error:", error);
           // 실패해도 헬스장 위치는 표시
-        }
+        },
       );
     }
   }, []);
@@ -135,7 +130,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
     } else {
       // 지도 중심점 업데이트
       mapInstanceRef.current.setCenter(
-        new window.naver.maps.LatLng(gym.latitude, gym.longitude)
+        new window.naver.maps.LatLng(gym.latitude, gym.longitude),
       );
     }
 
@@ -176,9 +171,12 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
     // 사용자 위치 마커 생성 (있는 경우)
     if (userLocation) {
       userMarkerRef.current = new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(userLocation.lat, userLocation.lng),
+        position: new window.naver.maps.LatLng(
+          userLocation.lat,
+          userLocation.lng,
+        ),
         map: mapInstanceRef.current,
-        title: '내 위치',
+        title: "내 위치",
         icon: {
           content: `
             <div style="
@@ -201,13 +199,15 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
    */
   const handleDirections = () => {
     const destCoords = `${gym.longitude},${gym.latitude}`;
-    const startCoords = userLocation ? `${userLocation.lng},${userLocation.lat}` : '';
+    const startCoords = userLocation
+      ? `${userLocation.lng},${userLocation.lat}`
+      : "";
 
     const naverMapUrl = startCoords
       ? `https://map.naver.com/v5/directions/${startCoords}/${destCoords}`
       : `https://map.naver.com/v5/search/${encodeURIComponent(gym.address)}`;
 
-    window.open(naverMapUrl, '_blank');
+    window.open(naverMapUrl, "_blank");
   };
 
   if (error) {
@@ -227,7 +227,10 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 text-foreground">위치</h2>
         <div className="w-full h-[60vh] md:h-[400px] rounded-lg bg-secondary flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" strokeWidth={1.5} />
+          <Loader2
+            className="h-8 w-8 animate-spin text-primary"
+            strokeWidth={1.5}
+          />
         </div>
       </Card>
     );
@@ -241,7 +244,7 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
       <div
         ref={mapRef}
         className="w-full h-[60vh] md:h-[400px] rounded-lg mb-4 bg-secondary border border-border"
-        style={{ minHeight: '300px' }}
+        style={{ minHeight: "300px" }}
       />
 
       {/* 길찾기 버튼 */}
@@ -255,4 +258,3 @@ export function GymMapDirections({ gym }: GymMapDirectionsProps) {
     </Card>
   );
 }
-

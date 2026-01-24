@@ -1,0 +1,20 @@
+# Auto-generated files (Prisma)
+src/app/generated/
+
+# Utility scripts (development only)
+scripts/
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.log
+lint_log.txt
