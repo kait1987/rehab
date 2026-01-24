@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Search, ChevronLeft, ChevronRight, Plus, Loader2 } from 'lucide-react';
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Search, ChevronLeft, ChevronRight, Plus, Loader2 } from "lucide-react";
 
 /**
  * Admin Templates List Page
@@ -50,34 +50,36 @@ function TemplatesLoading() {
 function TemplatesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [templates, setTemplates] = useState<Template[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || "",
+  );
 
-  const page = parseInt(searchParams.get('page') || '1');
-  const search = searchParams.get('search') || '';
+  const page = parseInt(searchParams.get("page") || "1");
+  const search = searchParams.get("search") || "";
 
   useEffect(() => {
     async function fetchTemplates() {
       setLoading(true);
       try {
-        const params = new URLSearchParams({ 
-          page: page.toString(), 
-          limit: '20',
-          ...(search && { search })
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: "20",
+          ...(search && { search }),
         });
         const res = await fetch(`/api/admin/templates?${params}`);
-        if (!res.ok) throw new Error('Failed to fetch templates');
+        if (!res.ok) throw new Error("Failed to fetch templates");
         const data: TemplatesResponse = await res.json();
         setTemplates(data.templates);
         setTotal(data.total);
         setTotalPages(data.totalPages);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -88,14 +90,14 @@ function TemplatesContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (searchInput) params.set('search', searchInput);
-    params.set('page', '1');
+    if (searchInput) params.set("search", searchInput);
+    params.set("page", "1");
     router.push(`/admin/templates?${params}`);
   };
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set('page', newPage.toString());
+    params.set("page", newPage.toString());
     router.push(`/admin/templates?${params}`);
   };
 
@@ -163,10 +165,20 @@ function TemplatesContent() {
                 </TableHeader>
                 <TableBody>
                   {templates.map((template) => (
-                    <TableRow key={template.id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell className="font-medium">{template.name}</TableCell>
-                      <TableCell>{template.bodyPart?.name || '-'}</TableCell>
-                      <TableCell>{getIntensityBadge(template.intensityLevel)}</TableCell>
+                    <TableRow
+                      key={template.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() =>
+                        router.push(`/admin/templates/${template.id}`)
+                      }
+                    >
+                      <TableCell className="font-medium">
+                        {template.name}
+                      </TableCell>
+                      <TableCell>{template.bodyPart?.name || "-"}</TableCell>
+                      <TableCell>
+                        {getIntensityBadge(template.intensityLevel)}
+                      </TableCell>
                       <TableCell>
                         {template.isActive ? (
                           <Badge>활성</Badge>
@@ -219,4 +231,3 @@ export default function AdminTemplatesPage() {
     </Suspense>
   );
 }
-

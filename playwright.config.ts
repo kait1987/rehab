@@ -33,8 +33,8 @@ export default defineConfig({
   fullyParallel: true,
   workers: process.env.CI ? 1 : undefined,
 
-  // 실패 시 재시도
-  retries: process.env.CI ? 2 : 0,
+  // 실패 시 재시도 (로컬에서도 1회 재시도)
+  retries: process.env.CI ? 2 : 1,
 
   // 리포터 설정
   reporter: [

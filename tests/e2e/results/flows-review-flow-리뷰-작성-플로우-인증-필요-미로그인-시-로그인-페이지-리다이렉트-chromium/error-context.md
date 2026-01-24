@@ -1,0 +1,62 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - generic [ref=e11]:
+    - banner [ref=e12]:
+      - generic [ref=e13]:
+        - link "홈페이지로 이동" [ref=e15] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e16]: REHAB
+        - generic [ref=e17]:
+          - button "로그인" [ref=e18]
+          - button "회원가입" [ref=e19]
+    - main [ref=e20]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - img [ref=e24]
+          - heading "404" [level=1] [ref=e27]
+          - heading "페이지를 찾을 수 없습니다" [level=2] [ref=e28]
+          - paragraph [ref=e29]:
+            - text: 요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+            - text: 안전한 회복을 위해 다시 시작해보세요.
+        - generic [ref=e30]:
+          - link "홈으로 돌아가기" [ref=e31] [cursor=pointer]:
+            - /url: /
+            - button "홈으로 돌아가기" [ref=e32]:
+              - img
+              - text: 홈으로 돌아가기
+          - link "헬스장 찾기" [ref=e33] [cursor=pointer]:
+            - /url: /gyms
+            - button "헬스장 찾기" [ref=e34]:
+              - img
+              - text: 헬스장 찾기
+        - generic [ref=e35]:
+          - paragraph [ref=e36]: "다음 페이지들을 확인해보세요:"
+          - generic [ref=e37]:
+            - link "헬스장 찾기" [ref=e38] [cursor=pointer]:
+              - /url: /gyms
+              - img [ref=e39]
+              - text: 헬스장 찾기
+            - link "재활 코스 만들기" [ref=e41] [cursor=pointer]:
+              - /url: /rehab
+              - img [ref=e42]
+              - text: 재활 코스 만들기
+            - link "내 코스" [ref=e45] [cursor=pointer]:
+              - /url: /rehab
+              - img [ref=e46]
+              - text: 내 코스
+    - contentinfo [ref=e49]:
+      - generic [ref=e50]:
+        - generic [ref=e51]:
+          - generic [ref=e52]: © 2026 REHAB. All rights reserved.
+          - navigation [ref=e53]:
+            - link "이용약관" [ref=e54] [cursor=pointer]:
+              - /url: /terms
+            - link "개인정보처리방침" [ref=e55] [cursor=pointer]:
+              - /url: /privacy
+        - paragraph [ref=e57]: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - alert [ref=e58]
+```

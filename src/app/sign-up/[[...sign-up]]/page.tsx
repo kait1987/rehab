@@ -13,7 +13,7 @@
  * - @clerk/nextjs: SignUp 컴포넌트
  */
 
-import { SignUp } from '@clerk/nextjs';
+import { SignUp } from "@clerk/nextjs";
 
 export default function SignUpPage() {
   return (
@@ -21,13 +21,17 @@ export default function SignUpPage() {
       <SignUp
         appearance={{
           variables: {
-            colorPrimary: 'oklch(0.62 0.10 35)', // 테라코타 색상
-            colorText: 'oklch(0.98 0 0)', // 흰색 텍스트
-            colorBackground: 'oklch(0.18 0.015 60)', // 어두운 크림 베이지 배경
+            colorPrimary: "oklch(0.62 0.10 35)",
+            colorText: "oklch(0.98 0 0)",
+            colorBackground: "oklch(0.18 0.015 60)",
           },
           elements: {
-            rootBox: 'mx-auto',
-            card: 'shadow-lg',
+            rootBox: "mx-auto",
+            card: "shadow-lg",
+            footerAction:
+              "flex !flex-row justify-center items-center gap-2 w-full",
+            footerActionText: "text-muted-foreground",
+            footerActionLink: "text-primary hover:text-primary/90",
           },
         }}
         routing="path"
@@ -38,4 +42,3 @@ export default function SignUpPage() {
     </div>
   );
 }
-

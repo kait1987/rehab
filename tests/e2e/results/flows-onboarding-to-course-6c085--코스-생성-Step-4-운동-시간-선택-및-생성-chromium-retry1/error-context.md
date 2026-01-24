@@ -1,0 +1,47 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "홈페이지로 이동" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: REHAB
+        - generic [ref=e8]:
+          - button "로그인" [ref=e9]
+          - button "회원가입" [ref=e10]
+    - main [ref=e11]:
+      - main [ref=e12]:
+        - generic [ref=e15]:
+          - generic [ref=e16]:
+            - heading "REHAB" [level=1] [ref=e17]
+            - paragraph [ref=e18]: 개인 맞춤형 재활 운동 추천 시스템
+          - button "내 몸 상태로 재활 코스 만들기" [active] [ref=e20]
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - img [ref=e26]
+            - heading "개인 맞춤 추천" [level=3] [ref=e28]
+            - paragraph [ref=e29]: 당신의 상태에 맞는 재활 운동을 추천합니다
+          - generic [ref=e30]:
+            - img [ref=e32]
+            - heading "쉽고 빠른 시작" [level=3] [ref=e34]
+            - paragraph [ref=e35]: 간단한 설정으로 바로 시작할 수 있습니다
+          - generic [ref=e36]:
+            - img [ref=e38]
+            - heading "진행도 추적" [level=3] [ref=e40]
+            - paragraph [ref=e41]: 운동 기록을 통해 회복 과정을 확인하세요
+    - contentinfo [ref=e42]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: © 2026 REHAB. All rights reserved.
+          - navigation [ref=e46]:
+            - link "이용약관" [ref=e47] [cursor=pointer]:
+              - /url: /terms
+            - link "개인정보처리방침" [ref=e48] [cursor=pointer]:
+              - /url: /privacy
+        - paragraph [ref=e50]: 본 서비스는 의료행위가 아닙니다. 통증이 악화되면 즉시 운동을 중단하고 전문의와 상담하세요.
+  - button "Open Next.js Dev Tools" [ref=e56] [cursor=pointer]:
+    - img [ref=e57]
+  - alert [ref=e60]
+```

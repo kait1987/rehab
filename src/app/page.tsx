@@ -59,9 +59,8 @@ function HomePageContent() {
                     </Button>
                   </>
                 )}
-              {isLoaded &&
-                (isSignedIn ||
-                  process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH === "true") && (
+              {(process.env.NEXT_PUBLIC_E2E_BYPASS_AUTH === "true" ||
+                (isLoaded && isSignedIn)) && (
                   <PainCheckModal
                     initialValues={initialValues}
                     defaultOpen={restartMode}

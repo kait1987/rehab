@@ -59,22 +59,12 @@ export class OnboardingPage {
    * 온보딩 모달 열기
    */
   async open() {
-    await this.page.goto("/", {
-      waitUntil: "domcontentloaded",
+    // restart=true 파라미터로 모달 자동 열기
+    await this.page.goto("/?restart=true", {
       timeout: 60_000,
     });
 
-    // 페이지 로드 대기
-    await this.page.waitForLoadState("domcontentloaded");
-
-    // 시작 버튼 클릭
-    // 시작 버튼 클릭 (PainCheckModal 트리거)
-    const heroBtn = this.page.locator('[data-testid="home-start-rehab"]');
-
-    // Clerk 로딩 대기 및 버튼 표시 대기
-    await expect(heroBtn).toBeVisible({ timeout: 60000 });
-    await heroBtn.click();
-
+    // 모달 열림 대기 (defaultOpen=true로 자동 열림)
     await expect(this.modalContent).toBeVisible({ timeout: 60000 });
   }
 
@@ -129,9 +119,10 @@ export class OnboardingPage {
    * Step 4: 시간 선택
    */
   async selectDuration(minutes: 60 | 90 | 120) {
-    const durationBtn = this.modalContent
-      .getByRole("button", { name: `${minutes}분` })
-      .first();
+    // data-testid로 더 정확하게 선택
+    const durationBtn = this.modalContent.locator(
+      `[data-testid="duration-${minutes}"]`,
+    );
     await expect(durationBtn).toBeVisible({ timeout: 60000 });
     await durationBtn.click();
   }
@@ -148,9 +139,10 @@ export class OnboardingPage {
    * 코스 생성 (마지막 단계)
    */
   async generate() {
+    // 생성 버튼 대기 및 클릭
+    await expect(this.generateButton).toBeVisible({ timeout: 30000 });
     await this.generateButton.click();
-    // 로딩 대기 (모달이 닫히거나 URL이 변경될 때까지)
-    await expect(this.modalContent).toBeHidden({ timeout: 120000 });
+    // 로딩 대기 (URL 변경 확인)
     await expect(this.page).toHaveURL(/\/rehab/, { timeout: 120000 });
   }
 

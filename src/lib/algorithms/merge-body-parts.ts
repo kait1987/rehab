@@ -120,20 +120,27 @@ export async function mergeBodyParts(
         (eem) => eem.equipmentType.name,
       );
 
-    // 사용자가 선택한 기구 Set
+    // 사용자가 선택한 기구 Set (맨몸/없음은 동일 취급)
     const userEquipmentSet = new Set(userEquipmentNames);
 
-    // "맨몸" 선택의 경우 - 특별히 추가 처리 불필요 (이미 "맨몸"으로 통일됨)
+    // "맨몸" 또는 "없음" 선택 시, 둘 다 허용
+    const userWantsBodyweight =
+      userEquipmentSet.has("맨몸") || userEquipmentSet.has("없음");
+    if (userWantsBodyweight) {
+      userEquipmentSet.add("맨몸");
+      userEquipmentSet.add("없음");
+    }
 
     // 운동 가능 조건 체크
-    // 1. "맨몸"만 필요한 운동 → 항상 가능 (맨손 운동)
-    const isNoEquipmentExercise =
-      exerciseEquipment.length === 1 && exerciseEquipment[0] === "맨몸";
+    // 1. "맨몸" 또는 "없음"을 포함하는 운동 → 맨손으로 가능
+    const isNoEquipmentExercise = exerciseEquipment.some(
+      (eq) => eq === "맨몸" || eq === "없음",
+    );
 
     // 2. 특정 기구 필요 → 사용자가 해당 기구를 모두 가지고 있어야 함
-    //    (또는 "맨몸"으로 대체 가능한 경우)
-    const hasAllRequiredEquipment = exerciseEquipment.every(
-      (eq) => eq === "맨몸" || userEquipmentSet.has(eq),
+    //    (또는 "맨몸"/"없음"으로 대체 가능한 경우)
+    const hasAllRequiredEquipment = exerciseEquipment.some(
+      (eq) => eq === "맨몸" || eq === "없음" || userEquipmentSet.has(eq),
     );
 
     // 필터링: 맨손 운동이 아니고, 필요한 기구도 없으면 제외
@@ -168,6 +175,9 @@ export async function mergeBodyParts(
       description: mapping.exerciseTemplate.description || undefined,
       instructions: mapping.exerciseTemplate.instructions || undefined,
       precautions: mapping.exerciseTemplate.precautions || undefined,
+      imageUrl: mapping.exerciseTemplate.imageUrl || undefined,
+      gifUrl: mapping.exerciseTemplate.gifUrl || undefined,
+      videoUrl: mapping.exerciseTemplate.videoUrl || undefined,
     });
   }
 

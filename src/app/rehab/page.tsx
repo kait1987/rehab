@@ -8,17 +8,18 @@
  * - 준비/메인/마무리 섹션별 운동 표시
  * - 코스 저장 기능
  * - 근처 헬스장 찾기 버튼
+ * - 세션 플레이어 모드 (전체 운동 연속 실행)
  * - 의료행위 아님 안내 문구
  *
  * @dependencies
  * - @/components/course-exercise-card: 운동 카드 컴포넌트
- * - @/lib/utils/classify-by-section: 섹션별 분류 함수
+ * - @/components/session-player: 세션 플레이어 컴포넌트
  * - @/types/body-part-merge: MergedExercise 타입
  */
 
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Clock,
@@ -27,16 +28,18 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Play,
 } from "lucide-react";
 import { CourseExerciseCard } from "@/components/course-exercise-card";
 import { ExerciseTimerModal } from "@/components/exercise-timer-modal";
+import { SessionPlayer } from "@/components/session-player";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// classifyBySection import 제거됨 - 서버에서 이미 분류된 결과를 직접 사용
 import { useRecentCourses } from "@/hooks/use-recent-courses";
 import { useSwipe } from "@/hooks/use-swipe";
+import type { SessionResult, UserFeedback } from "@/hooks/use-session-state";
 import type { MergedExercise, MergeRequest } from "@/types/body-part-merge";
 
 interface CourseGenerationResponse {
@@ -88,6 +91,10 @@ function RehabPageContent() {
     null,
   );
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+
+  // 🆕 세션 플레이어 모드 상태
+  const [isSessionMode, setIsSessionMode] = useState(false);
+  const [savedCourseId, setSavedCourseId] = useState<string | null>(null);
 
   // 전체 운동 목록 (순서대로 평탄화)
   const allExercises = sections
@@ -288,6 +295,11 @@ function RehabPageContent() {
         throw new Error(data.error || "코스 저장에 실패했습니다.");
       }
 
+      // 🆕 저장된 코스 ID 저장
+      if (data.data?.courseId) {
+        setSavedCourseId(data.data.courseId);
+      }
+
       setSaveSuccess(true);
       // 3초 후 성공 메시지 숨기기
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -306,6 +318,113 @@ function RehabPageContent() {
   const handleFindGyms = () => {
     router.push("/gyms");
   };
+
+  /**
+   * 🆕 세션 시작 핸들러
+   * 코스를 먼저 저장한 후 세션 모드로 전환
+   */
+  const handleStartSession = async () => {
+    if (!courseData || !requestData) return;
+
+    // 코스가 아직 저장되지 않았으면 먼저 저장
+    if (!savedCourseId) {
+      setSaving(true);
+      try {
+        const response = await fetch("/api/courses/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            totalDurationMinutes: requestData.totalDurationMinutes || 60,
+            painLevel: requestData.painLevel,
+            experienceLevel: requestData.experienceLevel,
+            bodyParts: requestData.bodyParts.map((bp) => bp.bodyPartName),
+            equipmentAvailable: requestData.equipmentAvailable,
+            exercises: courseData.exercises,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "코스 저장에 실패했습니다.");
+        }
+
+        setSavedCourseId(data.data.courseId);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
+        setError(errorMessage);
+        setSaving(false);
+        return;
+      }
+      setSaving(false);
+    }
+
+    // 세션 모드로 전환
+    setIsSessionMode(true);
+  };
+
+  /**
+   * 🆕 세션 완료 핸들러
+   */
+  const handleSessionComplete = useCallback(
+    async (result: SessionResult, feedback: UserFeedback) => {
+      if (!savedCourseId) {
+        console.error("Course ID not found for completion logging");
+        return;
+      }
+
+      try {
+        // 완료 로그 저장
+        const response = await fetch("/api/courses/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            courseId: savedCourseId,
+            exercises: result.exerciseLogs.map((log) => ({
+              exerciseTemplateId: log.exerciseTemplateId,
+              status: log.status,
+              actualDuration: Math.floor(log.actualDuration / 60), // 초 -> 분
+            })),
+            painAfter: feedback.painAfter
+              ? Math.round(
+                  Object.values(feedback.painAfter).reduce((a, b) => a + b, 0) /
+                    Object.values(feedback.painAfter).length
+                )
+              : undefined,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          console.error("Failed to save completion logs:", data.error);
+        }
+      } catch (err) {
+        console.error("Session completion error:", err);
+      }
+    },
+    [savedCourseId]
+  );
+
+  /**
+   * 🆕 세션 종료 핸들러
+   */
+  const handleSessionExit = useCallback(() => {
+    setIsSessionMode(false);
+  }, []);
+
+  /**
+   * 🆕 부위별 통증 정보 변환 (세션 플레이어용)
+   */
+  const getBodyPartInfoForSession = useCallback(() => {
+    if (!requestData) return [];
+    return requestData.bodyParts.map((bp) => ({
+      bodyPartId: bp.bodyPartId,
+      bodyPartName: bp.bodyPartName,
+      painBefore: bp.painLevel,
+    }));
+  }, [requestData]);
 
   if (loading) {
     return (
@@ -343,6 +462,23 @@ function RehabPageContent() {
 
   if (!sections || !courseData) {
     return null;
+  }
+
+  // 🆕 세션 플레이어 모드
+  if (isSessionMode) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background">
+        <SessionPlayer
+          exercises={allExercises}
+          courseId={savedCourseId ?? undefined}
+          courseName={`${requestData?.bodyParts.map(bp => bp.bodyPartName).join(', ')} 재활 코스`}
+          bodyParts={getBodyPartInfoForSession()}
+          streak={0} // TODO: 실제 연속 운동 일수 조회
+          onComplete={handleSessionComplete}
+          onExit={handleSessionExit}
+        />
+      </div>
+    );
   }
 
   return (
@@ -506,6 +642,39 @@ function RehabPageContent() {
           </Tabs>
         </div>
 
+        {/* 🆕 세션 시작 버튼 (메인 CTA) */}
+        <Card className="mb-6 border-primary/30 bg-primary/5">
+          <CardContent className="p-6">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold mb-1">준비되셨나요?</h3>
+              <p className="text-sm text-muted-foreground">
+                전체 운동을 연속으로 진행하고 코칭 피드백을 받아보세요
+              </p>
+            </div>
+            <Button
+              onClick={handleStartSession}
+              disabled={saving}
+              size="lg"
+              className="w-full bg-primary hover:bg-primary-hover text-white"
+            >
+              {saving ? (
+                <>
+                  <Loader2
+                    className="h-5 w-5 mr-2 animate-spin"
+                    strokeWidth={1.5}
+                  />
+                  준비 중...
+                </>
+              ) : (
+                <>
+                  <Play className="h-5 w-5 mr-2" strokeWidth={1.5} />
+                  세션 시작하기
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* 하단 액션 버튼 영역 */}
         <Card className="mb-6">
           <CardContent className="p-6">
@@ -520,8 +689,9 @@ function RehabPageContent() {
               </Button>
               <Button
                 onClick={handleSaveCourse}
-                disabled={saving}
-                className="flex-1 bg-primary hover:bg-primary-hover text-white"
+                disabled={saving || !!savedCourseId}
+                variant="outline"
+                className="flex-1"
               >
                 {saving ? (
                   <>
@@ -530,6 +700,11 @@ function RehabPageContent() {
                       strokeWidth={1.5}
                     />
                     저장 중...
+                  </>
+                ) : savedCourseId ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4 mr-2" strokeWidth={1.5} />
+                    저장됨
                   </>
                 ) : (
                   <>

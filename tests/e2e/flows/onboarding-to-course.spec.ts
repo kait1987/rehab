@@ -123,7 +123,7 @@ test.describe("F1: 온보딩 → 코스 생성", () => {
 
     // 다음 단계로 진행 가능 확인
     await onboardingPage.next();
-    await expect(page.getByText("사용 가능한 기구")).toBeVisible();
+    await expect(page.getByText("사용 가능한 기구").first()).toBeVisible();
   });
 
   // ============================================

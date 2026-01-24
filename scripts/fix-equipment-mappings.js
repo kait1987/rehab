@@ -1,60 +1,103 @@
-/**
- * 잘못된 기구 매핑 수정 스크립트
- * 
- * 랫 풀다운, 시티드 로우 등 헬스장 기구가 필요한 운동을
- * DB에서 비활성화하거나 삭제합니다.
- */
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-// 헬스장 기구 필요 운동 (집에서 하기 어려운 운동)
-const GYM_ONLY_EXERCISES = [
-  '랫 풀다운',
-  '시티드 로우',
-  '체스트 프레스', // 벤치 필요
-  // 필요시 더 추가
-];
-
 async function main() {
-  console.log('🔧 잘못된 기구 매핑 수정 시작...\n');
+  console.log("🔧 Fixing equipment mappings...\n");
 
-  for (const exerciseName of GYM_ONLY_EXERCISES) {
-    const exercise = await prisma.exerciseTemplate.findFirst({
-      where: { name: exerciseName },
+  // 1. Check all equipment types
+  const allEquipment = await prisma.equipmentType.findMany();
+  console.log("📋 All equipment types:");
+  allEquipment.forEach((eq) => {
+    console.log(`  - ${eq.name} (${eq.id})`);
+  });
+
+  // 2. Check if "없음" equipment exists
+  let noEquipment = allEquipment.find((eq) => eq.name === "없음");
+
+  if (!noEquipment) {
+    console.log('\nCreating "없음" equipment...');
+    noEquipment = await prisma.equipmentType.create({
+      data: {
+        name: "없음",
+      },
     });
-
-    if (!exercise) {
-      console.log(`⏭️ [${exerciseName}] 없음, 건너뜀`);
-      continue;
-    }
-
-    // 운동 비활성화
-    await prisma.exerciseTemplate.update({
-      where: { id: exercise.id },
-      data: { isActive: false },
-    });
-
-    console.log(`✅ [${exerciseName}] 비활성화됨`);
+    console.log(`Created: ${noEquipment.id}\n`);
+  } else {
+    console.log(`\n"없음" already exists: ${noEquipment.id}\n`);
   }
 
-  console.log('\n📊 현재 활성화된 등 운동:');
-  const backExercises = await prisma.exerciseTemplate.findMany({
-    where: {
-      bodyPart: { name: '등' },
-      isActive: true,
-    },
-    select: { name: true },
-  });
-  backExercises.forEach((e) => console.log(`  - ${e.name}`));
+  // 3. Find "맨몸" equipment
+  const bodyweight = allEquipment.find((eq) => eq.name === "맨몸");
+  console.log(`"맨몸" equipment: ${bodyweight ? bodyweight.id : "NOT FOUND"}`);
 
-  console.log('\n✅ 수정 완료!');
+  // 4. Find exercises that have "맨몸" and also add "없음" to them
+  if (bodyweight && noEquipment) {
+    const exercisesWithBodyweight =
+      await prisma.exerciseEquipmentMapping.findMany({
+        where: { equipmentTypeId: bodyweight.id },
+        select: { exerciseTemplateId: true },
+      });
+
+    console.log(`\n운동 with "맨몸": ${exercisesWithBodyweight.length}`);
+
+    let added = 0;
+    for (const mapping of exercisesWithBodyweight) {
+      const exists = await prisma.exerciseEquipmentMapping.findFirst({
+        where: {
+          exerciseTemplateId: mapping.exerciseTemplateId,
+          equipmentTypeId: noEquipment.id,
+        },
+      });
+
+      if (!exists) {
+        await prisma.exerciseEquipmentMapping.create({
+          data: {
+            exerciseTemplateId: mapping.exerciseTemplateId,
+            equipmentTypeId: noEquipment.id,
+          },
+        });
+        added++;
+      }
+    }
+    console.log(`Added "없음" mapping to ${added} bodyweight exercises`);
+  }
+
+  // 5. Also add "없음" to exercises that have "매트"
+  const matEquipment = allEquipment.find((eq) => eq.name === "매트");
+
+  if (matEquipment && noEquipment) {
+    const exercisesWithMat = await prisma.exerciseEquipmentMapping.findMany({
+      where: { equipmentTypeId: matEquipment.id },
+      select: { exerciseTemplateId: true },
+    });
+
+    console.log(`\n운동 with "매트": ${exercisesWithMat.length}`);
+
+    let added = 0;
+    for (const mapping of exercisesWithMat) {
+      const exists = await prisma.exerciseEquipmentMapping.findFirst({
+        where: {
+          exerciseTemplateId: mapping.exerciseTemplateId,
+          equipmentTypeId: noEquipment.id,
+        },
+      });
+
+      if (!exists) {
+        await prisma.exerciseEquipmentMapping.create({
+          data: {
+            exerciseTemplateId: mapping.exerciseTemplateId,
+            equipmentTypeId: noEquipment.id,
+          },
+        });
+        added++;
+      }
+    }
+    console.log(`Added "없음" mapping to ${added} mat exercises`);
+  }
+
+  console.log("\n✅ Done!");
 }
 
 main()
-  .catch((e) => {
-    console.error('❌ 오류:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

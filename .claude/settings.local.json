@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm next build:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm test:e2e:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm prisma generate:*)",
+      "Bash(node -e:*)",
+      "Bash(pnpm add:*)",
+      "Bash(cd:*)",
+      "Bash(node scripts/generate-sample-image.js:*)",
+      "WebSearch",
+      "WebFetch(domain:rapidapi.com)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(node scripts/test-exercisedb.js:*)",
+      "Bash(pnpm tsc:*)"
+    ]
+  }
+}
