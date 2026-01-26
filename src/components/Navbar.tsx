@@ -1,12 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
-import { useUser, useClerk, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Settings } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { PainCheckModal } from "@/components/pain-check-modal";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { LayoutDashboard, LogOut, Menu, Settings, User, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -38,20 +38,32 @@ const Navbar = () => {
           >
             <span className="text-lg sm:text-xl font-semibold">REHAB</span>
           </Link>
+
+          {/* 데스크톱 네비게이션 */}
+          {isLoaded && isSignedIn && (
+            <nav className="hidden md:flex items-center gap-6 ml-8">
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                대시보드
+              </Link>
+            </nav>
+          )}
         </div>
 
         {/* 데스크톱 메뉴 */}
         <div className="hidden sm:flex items-center gap-3">
           {isLoaded && !isSignedIn && (
             <>
-              <Button 
-                onClick={() => router.push('/sign-in')}
+              <Button
+                onClick={() => router.push("/sign-in")}
                 className="rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
               >
                 로그인
               </Button>
               <Button
-                onClick={() => router.push('/sign-up')}
+                onClick={() => router.push("/sign-up")}
                 variant="secondary"
                 className="rounded-xl bg-secondary hover:bg-secondary-hover text-white border-2 border-secondary-dark/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 px-4 py-2 text-sm"
               >
@@ -66,7 +78,7 @@ const Navbar = () => {
                   재활 코스
                 </Button>
               </PainCheckModal>
-              
+
               {/* 프로필 드롭다운 메뉴 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -89,7 +101,9 @@ const Navbar = () => {
                 <DropdownMenuContent align="end" className="w-48">
                   <div className="px-3 py-2">
                     <p className="text-sm font-medium truncate">
-                      {user?.fullName || user?.primaryEmailAddress?.emailAddress || '사용자'}
+                      {user?.fullName ||
+                        user?.primaryEmailAddress?.emailAddress ||
+                        "사용자"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {user?.primaryEmailAddress?.emailAddress}
@@ -97,14 +111,14 @@ const Navbar = () => {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => router.push('/mypage')}
+                    onClick={() => router.push("/mypage")}
                     className="cursor-pointer"
                   >
                     <User className="w-4 h-4 mr-2" strokeWidth={1.5} />
                     마이페이지
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push('/settings')}
+                    onClick={() => router.push("/settings")}
                     className="cursor-pointer"
                   >
                     <Settings className="w-4 h-4 mr-2" strokeWidth={1.5} />
@@ -144,9 +158,9 @@ const Navbar = () => {
           <div className="container px-3 py-3 flex flex-col gap-2">
             {isLoaded && !isSignedIn && (
               <>
-                <Button 
+                <Button
                   onClick={() => {
-                    router.push('/sign-in');
+                    router.push("/sign-in");
                     setIsOpen(false);
                   }}
                   className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
@@ -155,7 +169,7 @@ const Navbar = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    router.push('/sign-up');
+                    router.push("/sign-up");
                     setIsOpen(false);
                   }}
                   variant="secondary"
@@ -168,19 +182,33 @@ const Navbar = () => {
             {isLoaded && isSignedIn && (
               <>
                 <PainCheckModal>
-                  <Button 
+                  <Button
                     className="w-full justify-start rounded-xl bg-primary hover:bg-primary-hover text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     onClick={() => setIsOpen(false)}
                   >
                     재활 코스
                   </Button>
                 </PainCheckModal>
-               
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start mt-2"
+                  onClick={() => {
+                    router.push("/dashboard");
+                    setIsOpen(false);
+                  }}
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" strokeWidth={1.5} />
+                  대시보드
+                </Button>
+
                 {/* 모바일 프로필 메뉴 */}
                 <div className="border-t border-border pt-2 mt-2">
                   <div className="px-2 py-2 mb-2">
                     <p className="text-sm font-medium truncate">
-                      {user?.fullName || user?.primaryEmailAddress?.emailAddress || '사용자'}
+                      {user?.fullName ||
+                        user?.primaryEmailAddress?.emailAddress ||
+                        "사용자"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {user?.primaryEmailAddress?.emailAddress}
@@ -189,7 +217,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      router.push('/mypage');
+                      router.push("/mypage");
                       setIsOpen(false);
                     }}
                     className="w-full justify-start"
@@ -200,7 +228,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      router.push('/settings');
+                      router.push("/settings");
                       setIsOpen(false);
                     }}
                     className="w-full justify-start"
