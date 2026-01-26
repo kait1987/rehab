@@ -19,28 +19,27 @@
 
 "use client";
 
-import { useState, useEffect, Suspense, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Clock,
-  MapPin,
-  Save,
-  Loader2,
-  AlertCircle,
-  CheckCircle2,
-  Play,
-} from "lucide-react";
 import { CourseExerciseCard } from "@/components/course-exercise-card";
 import { ExerciseTimerModal } from "@/components/exercise-timer-modal";
 import { SessionPlayer } from "@/components/session-player";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRecentCourses } from "@/hooks/use-recent-courses";
-import { useSwipe } from "@/hooks/use-swipe";
 import type { SessionResult, UserFeedback } from "@/hooks/use-session-state";
+import { useSwipe } from "@/hooks/use-swipe";
 import type { MergedExercise, MergeRequest } from "@/types/body-part-merge";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Loader2,
+  Play,
+  Save,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 interface CourseGenerationResponse {
   success: boolean;
@@ -313,13 +312,6 @@ function RehabPageContent() {
   };
 
   /**
-   * 근처 헬스장 찾기 핸들러
-   */
-  const handleFindGyms = () => {
-    router.push("/gyms");
-  };
-
-  /**
    * 🆕 세션 시작 핸들러
    * 코스를 먼저 저장한 후 세션 모드로 전환
    */
@@ -353,7 +345,9 @@ function RehabPageContent() {
         setTimeout(() => setSaveSuccess(false), 3000);
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
+          err instanceof Error
+            ? err.message
+            : "알 수 없는 오류가 발생했습니다.";
         setError(errorMessage);
         setSaving(false);
         return;
@@ -390,7 +384,7 @@ function RehabPageContent() {
             painAfter: feedback.painAfter
               ? Math.round(
                   Object.values(feedback.painAfter).reduce((a, b) => a + b, 0) /
-                    Object.values(feedback.painAfter).length
+                    Object.values(feedback.painAfter).length,
                 )
               : undefined,
           }),
@@ -404,7 +398,7 @@ function RehabPageContent() {
         console.error("Session completion error:", err);
       }
     },
-    [savedCourseId]
+    [savedCourseId],
   );
 
   /**
@@ -471,7 +465,7 @@ function RehabPageContent() {
         <SessionPlayer
           exercises={allExercises}
           courseId={savedCourseId ?? undefined}
-          courseName={`${requestData?.bodyParts.map(bp => bp.bodyPartName).join(', ')} 재활 코스`}
+          courseName={`${requestData?.bodyParts.map((bp) => bp.bodyPartName).join(", ")} 재활 코스`}
           bodyParts={getBodyPartInfoForSession()}
           streak={0} // TODO: 실제 연속 운동 일수 조회
           onComplete={handleSessionComplete}
@@ -680,14 +674,6 @@ function RehabPageContent() {
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
-                onClick={handleFindGyms}
-                variant="secondary"
-                className="flex-1 bg-secondary hover:bg-secondary-hover text-secondary-foreground"
-              >
-                <MapPin className="h-4 w-4 mr-2" strokeWidth={1.5} />이 코스
-                하기 좋은 근처 헬스장 보기
-              </Button>
-              <Button
                 onClick={handleSaveCourse}
                 disabled={saving || !!savedCourseId}
                 variant="outline"
@@ -713,20 +699,16 @@ function RehabPageContent() {
                   </>
                 )}
               </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => router.push("/")}
+              >
+                새 코스 만들기
+              </Button>
             </div>
           </CardContent>
         </Card>
-
-        {/* 새 코스 만들기 버튼 */}
-        <div className="mb-8 flex justify-center">
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto min-w-[200px]"
-            onClick={() => router.push("/")}
-          >
-            새 코스 만들기
-          </Button>
-        </div>
 
         {/* 의료행위 아님 안내 문구 */}
         <Alert variant="default" className="border-muted bg-muted/30">
