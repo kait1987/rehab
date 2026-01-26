@@ -15,7 +15,8 @@
       "Bash(npx prisma db pull:*)",
       "Bash(node scripts/test-exercisedb.js:*)",
       "Bash(pnpm tsc:*)",
-      "Bash(pnpm eslint --fix)"
+      "Bash(pnpm eslint --fix)",
+      "Bash(pnpm lint:*)"
     ]
   }
 }

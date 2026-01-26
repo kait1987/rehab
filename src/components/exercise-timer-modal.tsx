@@ -49,6 +49,10 @@ export function ExerciseTimerModal({
   const endTimeRef = useRef<number | null>(null);
   const originalTitleRef = useRef<string>("");
 
+  // 이전 운동 추적 (자동 시작용)
+  const prevExerciseIdRef = useRef<string | null>(null);
+  const [shouldAutoStart, setShouldAutoStart] = useState(false);
+
   // Wake Lock 관리
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
@@ -83,6 +87,12 @@ export function ExerciseTimerModal({
     }
   }, []);
 
+  // releaseWakeLock을 ref로 저장하여 useEffect 의존성 문제 해결
+  const releaseWakeLockRef = useRef(releaseWakeLock);
+  useEffect(() => {
+    releaseWakeLockRef.current = releaseWakeLock;
+  }, [releaseWakeLock]);
+
   // 초기화 및 운동 변경 감지
   useEffect(() => {
     if (isOpen && exercise) {
@@ -93,16 +103,27 @@ export function ExerciseTimerModal({
       setMode("idle");
       setShowInfo(false);
       originalTitleRef.current = document.title;
+
+      // 운동이 변경되었고 이전 운동이 있었다면 자동 시작
+      const isNewExercise =
+        prevExerciseIdRef.current !== null &&
+        prevExerciseIdRef.current !== exercise.exerciseTemplateId;
+
+      if (isNewExercise) {
+        setShouldAutoStart(true);
+      }
+
+      prevExerciseIdRef.current = exercise.exerciseTemplateId;
     }
 
     return () => {
       stopTimer();
-      releaseWakeLock();
+      releaseWakeLockRef.current();
       if (originalTitleRef.current) {
         document.title = originalTitleRef.current;
       }
     };
-  }, [isOpen, exercise, releaseWakeLock, stopTimer]);
+  }, [isOpen, exercise, stopTimer]);
 
   // 탭 타이틀 업데이트
   useEffect(() => {
@@ -201,6 +222,18 @@ export function ExerciseTimerModal({
     startTimer();
   }, [timeLeft, startTimer]);
 
+  // 자동 시작 처리 (운동 전환 시)
+  useEffect(() => {
+    if (shouldAutoStart && mode === "idle" && timeLeft > 0) {
+      setShouldAutoStart(false);
+      // 약간의 딜레이로 UI 업데이트 후 시작
+      const timer = setTimeout(() => {
+        startTimer();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldAutoStart, mode, timeLeft, startTimer]);
+
   // 리셋
   const resetTimer = useCallback(() => {
     if (!exercise) return;
@@ -230,6 +263,9 @@ export function ExerciseTimerModal({
     if (originalTitleRef.current) {
       document.title = originalTitleRef.current;
     }
+    // 상태 초기화
+    prevExerciseIdRef.current = null;
+    setShouldAutoStart(false);
     onClose();
   }, [stopTimer, releaseWakeLock, onClose]);
 
@@ -348,9 +384,26 @@ export function ExerciseTimerModal({
             </div>
           ) : (
             <>
-              {/* 시간 표시 */}
-              <div className="text-6xl font-bold tabular-nums tracking-tight mb-8">
-                {`${minutes}:${seconds.toString().padStart(2, "0")}`}
+              {/* 시간 표시 + 일시정지 버튼 */}
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <div className="text-6xl font-bold tabular-nums tracking-tight">
+                  {`${minutes}:${seconds.toString().padStart(2, "0")}`}
+                </div>
+                {/* 타이머 옆 일시정지/재개 버튼 */}
+                {(mode === "running" || mode === "paused") && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-12 w-12 rounded-full"
+                    onClick={mode === "running" ? pauseTimer : resumeTimer}
+                  >
+                    {mode === "running" ? (
+                      <Pause className="h-8 w-8" />
+                    ) : (
+                      <Play className="h-8 w-8 ml-0.5" />
+                    )}
+                  </Button>
+                )}
               </div>
 
               {/* 컨트롤 버튼 */}
@@ -393,22 +446,6 @@ export function ExerciseTimerModal({
                         onClick={stopExercise}
                       >
                         <Square className="h-8 w-8 fill-current" />
-                      </Button>
-                    )}
-
-                    {/* 일시정지/재개 버튼 */}
-                    {(mode === "running" || mode === "paused") && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-14 w-14 rounded-full"
-                        onClick={mode === "running" ? pauseTimer : resumeTimer}
-                      >
-                        {mode === "running" ? (
-                          <Pause className="h-6 w-6" />
-                        ) : (
-                          <Play className="h-6 w-6 ml-0.5" />
-                        )}
                       </Button>
                     )}
                   </>
