@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  X,
-  Play,
-  Pause,
-  RotateCcw,
-  CheckCircle2,
-  HelpCircle,
-  AlertTriangle,
-} from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import type { MergedExercise } from "@/types/body-part-merge";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  HelpCircle,
+  Pause,
+  Play,
+  RotateCcw,
+  Square,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ExerciseTimerModalProps {
   isOpen: boolean;
@@ -27,6 +28,9 @@ interface ExerciseTimerModalProps {
 
 type TimerMode = "idle" | "running" | "paused" | "finished" | "done";
 
+// 기본 운동 시간 (분)
+const DEFAULT_DURATION_MINUTES = 10;
+
 export function ExerciseTimerModal({
   isOpen,
   exercise,
@@ -38,7 +42,7 @@ export function ExerciseTimerModal({
   const [mode, setMode] = useState<TimerMode>("idle");
   const [timeLeft, setTimeLeft] = useState(0);
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
-  const [showInfo, setShowInfo] = useState(false); // 🆕 도움말 표시 상태
+  const [showInfo, setShowInfo] = useState(false);
 
   // 타이머 참조
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -71,14 +75,23 @@ export function ExerciseTimerModal({
     }
   }, [wakeLock]);
 
+  // 타이머 정지 함수 (먼저 정의)
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
   // 초기화 및 운동 변경 감지
   useEffect(() => {
     if (isOpen && exercise) {
-      // 초기 시간 설정 (분 -> 초 변환)
-      const durationSec = (exercise.durationMinutes || 0) * 60;
+      // 초기 시간 설정 (분 -> 초 변환, 없으면 기본값 사용)
+      const durationMin = exercise.durationMinutes || DEFAULT_DURATION_MINUTES;
+      const durationSec = durationMin * 60;
       setTimeLeft(durationSec);
       setMode("idle");
-      setShowInfo(false); // 초기화
+      setShowInfo(false);
       originalTitleRef.current = document.title;
     }
 
@@ -89,7 +102,7 @@ export function ExerciseTimerModal({
         document.title = originalTitleRef.current;
       }
     };
-  }, [isOpen, exercise, releaseWakeLock]);
+  }, [isOpen, exercise, releaseWakeLock, stopTimer]);
 
   // 탭 타이틀 업데이트
   useEffect(() => {
@@ -124,8 +137,8 @@ export function ExerciseTimerModal({
     };
   }, [mode, requestWakeLock]);
 
-  // 타이머 로직
-  const startTimer = () => {
+  // 타이머 시작
+  const startTimer = useCallback(() => {
     if (timeLeft <= 0) return;
 
     setMode("running");
@@ -163,55 +176,75 @@ export function ExerciseTimerModal({
       } else {
         setTimeLeft(remaining);
       }
-    }, 100); // 0.1초마다 체크하여 반응성 향상
-  };
+    }, 100);
+  }, [
+    timeLeft,
+    requestWakeLock,
+    stopTimer,
+    releaseWakeLock,
+    hasNext,
+    onNext,
+    onDone,
+    onClose,
+  ]);
 
-  const pauseTimer = () => {
+  // 일시정지
+  const pauseTimer = useCallback(() => {
     setMode("paused");
     stopTimer();
     releaseWakeLock();
-  };
+  }, [stopTimer, releaseWakeLock]);
 
-  const resetTimer = () => {
+  // 재개
+  const resumeTimer = useCallback(() => {
+    if (timeLeft <= 0) return;
+    startTimer();
+  }, [timeLeft, startTimer]);
+
+  // 리셋
+  const resetTimer = useCallback(() => {
     if (!exercise) return;
-    const durationSec = (exercise.durationMinutes || 0) * 60;
+    const durationMin = exercise.durationMinutes || DEFAULT_DURATION_MINUTES;
+    const durationSec = durationMin * 60;
     setTimeLeft(durationSec);
     setMode("idle");
     stopTimer();
     releaseWakeLock();
-  };
+  }, [exercise, stopTimer, releaseWakeLock]);
 
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  };
+  // 종료 (타이머 중지하고 idle로)
+  const stopExercise = useCallback(() => {
+    stopTimer();
+    releaseWakeLock();
+    setMode("idle");
+    if (!exercise) return;
+    const durationMin = exercise.durationMinutes || DEFAULT_DURATION_MINUTES;
+    const durationSec = durationMin * 60;
+    setTimeLeft(durationSec);
+  }, [exercise, stopTimer, releaseWakeLock]);
 
-  const handleClose = () => {
+  // 모달 닫기
+  const handleClose = useCallback(() => {
     stopTimer();
     releaseWakeLock();
     if (originalTitleRef.current) {
       document.title = originalTitleRef.current;
     }
     onClose();
-  };
+  }, [stopTimer, releaseWakeLock, onClose]);
 
   if (!exercise) return null;
 
-  const hasDuration = (exercise.durationMinutes || 0) > 0;
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // YouTube Embed URL
-  const getYouTubeEmbedUrl = (videoId: string) => {
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0`;
-  };
+  // 이미지/GIF URL 결정 (우선순위: gifUrl > imageUrl)
+  const mediaUrl = exercise.gifUrl || exercise.imageUrl;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden bg-background">
-        {/* 헤더 (닫기 버튼 포함) */}
+        {/* 헤더 */}
         <div className="p-4 flex items-center justify-between border-b">
           <DialogTitle className="text-lg font-semibold truncate pr-4 flex-1">
             {exercise.exerciseTemplateName}
@@ -240,9 +273,9 @@ export function ExerciseTimerModal({
           </div>
         </div>
 
-        {/* 비디오 영역 */}
+        {/* 이미지/GIF 영역 */}
         <div className="aspect-video bg-black relative overflow-hidden">
-          {/* 🆕 도움말 오버레이 */}
+          {/* 도움말 오버레이 */}
           {showInfo && (
             <div className="absolute inset-0 z-10 bg-background/95 p-6 overflow-y-auto animate-in fade-in slide-in-from-bottom-5">
               <div className="space-y-4">
@@ -286,17 +319,16 @@ export function ExerciseTimerModal({
               <CheckCircle2 className="h-16 w-16 mb-4" />
               <p className="text-xl font-bold">운동 완료!</p>
             </div>
-          ) : exercise.videoUrl ? (
-            <iframe
-              src={getYouTubeEmbedUrl(exercise.videoUrl)}
-              title={exercise.exerciseTemplateName}
-              className="w-full h-full"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
+          ) : mediaUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={mediaUrl}
+              alt={exercise.exerciseTemplateName}
+              className="w-full h-full object-contain"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              <p>영상 없음</p>
+              <p>이미지 없음</p>
             </div>
           )}
         </div>
@@ -318,17 +350,11 @@ export function ExerciseTimerModal({
             <>
               {/* 시간 표시 */}
               <div className="text-6xl font-bold tabular-nums tracking-tight mb-8">
-                {hasDuration ? (
-                  `${minutes}:${seconds.toString().padStart(2, "0")}`
-                ) : (
-                  <span className="text-4xl text-muted-foreground">
-                    시간 정보 없음
-                  </span>
-                )}
+                {`${minutes}:${seconds.toString().padStart(2, "0")}`}
               </div>
 
               {/* 컨트롤 버튼 */}
-              <div className="flex items-center gap-4 w-full max-w-xs mb-6">
+              <div className="flex items-center justify-center gap-4 w-full max-w-xs mb-6">
                 {mode === "finished" ? (
                   <div className="w-full text-center py-4">
                     <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3 animate-bounce" />
@@ -341,32 +367,48 @@ export function ExerciseTimerModal({
                   </div>
                 ) : (
                   <>
+                    {/* 리셋 버튼 */}
                     <Button
                       variant="outline"
                       size="icon"
                       className="h-14 w-14 rounded-full"
                       onClick={resetTimer}
-                      disabled={!hasDuration}
                     >
                       <RotateCcw className="h-6 w-6" />
                     </Button>
 
-                    {mode === "running" ? (
+                    {/* 메인 버튼: 시작/종료 토글 */}
+                    {mode === "idle" ? (
                       <Button
                         size="icon"
-                        className="h-20 w-20 rounded-full shadow-lg"
-                        onClick={pauseTimer}
+                        className="h-20 w-20 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+                        onClick={startTimer}
                       >
-                        <Pause className="h-10 w-10 fill-current" />
+                        <Play className="h-10 w-10 fill-current ml-1" />
                       </Button>
                     ) : (
                       <Button
                         size="icon"
-                        className="h-20 w-20 rounded-full shadow-lg"
-                        onClick={startTimer}
-                        disabled={!hasDuration}
+                        className="h-20 w-20 rounded-full shadow-lg bg-destructive hover:bg-destructive/90"
+                        onClick={stopExercise}
                       >
-                        <Play className="h-10 w-10 fill-current ml-1" />
+                        <Square className="h-8 w-8 fill-current" />
+                      </Button>
+                    )}
+
+                    {/* 일시정지/재개 버튼 */}
+                    {(mode === "running" || mode === "paused") && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-14 w-14 rounded-full"
+                        onClick={mode === "running" ? pauseTimer : resumeTimer}
+                      >
+                        {mode === "running" ? (
+                          <Pause className="h-6 w-6" />
+                        ) : (
+                          <Play className="h-6 w-6 ml-0.5" />
+                        )}
                       </Button>
                     )}
                   </>
