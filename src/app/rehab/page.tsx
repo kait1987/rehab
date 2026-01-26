@@ -701,7 +701,7 @@ function RehabPageContent() {
               </Button>
               <Button
                 variant="outline"
-                className="flex-1"
+                className="flex-1 border-border/80 hover:border-primary/50"
                 onClick={() => router.push("/")}
               >
                 새 코스 만들기
@@ -711,15 +711,15 @@ function RehabPageContent() {
         </Card>
 
         {/* 의료행위 아님 안내 문구 */}
-        <Alert variant="default" className="border-muted bg-muted/30">
+        <Alert variant="default" className="border-border/50 bg-muted/20">
           <AlertCircle
-            className="h-4 w-4 text-muted-foreground"
+            className="h-4 w-4 text-muted-foreground flex-shrink-0"
             strokeWidth={1.5}
           />
-          <AlertDescription className="text-xs text-muted-foreground">
-            <strong className="text-foreground">의료행위 아님 안내:</strong> 본
-            서비스는 의료행위가 아닙니다. 통증이 심하거나 지속되면 전문의와
-            상담하세요.
+          <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
+            <strong className="text-foreground">의료행위 아님 안내:</strong>
+            <br className="sm:hidden" />본 서비스는 의료행위가 아닙니다. 통증이
+            심하거나 지속되면 전문의와 상담하세요.
           </AlertDescription>
         </Alert>
       </div>

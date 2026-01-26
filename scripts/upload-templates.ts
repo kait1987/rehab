@@ -1,12 +1,15 @@
 #!/usr/bin/env tsx
 /**
  * 템플릿 업로드 스크립트
- * 
- * templates/exercise-templates-100.json 파일을 읽어
- * 데이터베이스에 업로드합니다.
- * 
+ *
+ * JSON 템플릿 파일을 읽어 데이터베이스에 업로드합니다.
+ *
  * 사용법:
+ *   pnpm tsx scripts/upload-templates.ts [파일경로]
+ *
+ * 예시:
  *   pnpm tsx scripts/upload-templates.ts
+ *   pnpm tsx scripts/upload-templates.ts templates/exercise-templates-pnf-diagonal.json
  */
 
 import { readFileSync } from "fs";
@@ -14,7 +17,11 @@ import { join } from "path";
 import { prisma } from "@/lib/prisma/client";
 import type { ExerciseTemplateInput } from "@/types/exercise-template";
 
-const TEMPLATES_FILE = join(process.cwd(), "templates", "exercise-templates-100.json");
+// CLI 인자로 파일 경로 받기, 없으면 기본값 사용
+const fileArg = process.argv[2];
+const TEMPLATES_FILE = fileArg
+  ? (fileArg.startsWith("/") || fileArg.includes(":") ? fileArg : join(process.cwd(), fileArg))
+  : join(process.cwd(), "templates", "exercise-templates-100.json");
 
 interface UploadStats {
   created: number;
