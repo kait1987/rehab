@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import {
   eachDayOfInterval,
