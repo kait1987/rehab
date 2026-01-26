@@ -677,7 +677,7 @@ function RehabPageContent() {
                 onClick={handleSaveCourse}
                 disabled={saving || !!savedCourseId}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 border-2 border-primary/30 bg-background/50 hover:bg-primary/10 hover:border-primary transition-all h-14 text-base"
               >
                 {saving ? (
                   <>
@@ -701,7 +701,7 @@ function RehabPageContent() {
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 border-border/80 hover:border-primary/50"
+                className="flex-1 border-2 border-border/60 bg-background/50 hover:bg-accent hover:border-foreground/50 transition-all h-14 text-base"
                 onClick={() => router.push("/")}
               >
                 새 코스 만들기
