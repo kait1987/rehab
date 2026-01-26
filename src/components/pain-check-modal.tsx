@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { savePainProfile } from "@/actions/pain-check";
+import { BodyPartSelector } from "@/components/body-part-selector";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,20 +10,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import StepLoader from "@/components/ui/step-loader";
+import { cn } from "@/lib/utils";
+import type { BodyPartSelection, MergeRequest } from "@/types/body-part-merge";
+import { useUser } from "@clerk/nextjs";
 import {
-  HeartPulse,
+  Check,
   ChevronLeft,
   ChevronRight,
-  Check,
-  RefreshCw,
   Clock,
+  RefreshCw,
 } from "lucide-react";
-import { savePainProfile } from "@/actions/pain-check";
-import { cn } from "@/lib/utils";
-import StepLoader from "@/components/ui/step-loader";
-import { BodyPartSelector } from "@/components/body-part-selector";
-import type { BodyPartSelection, MergeRequest } from "@/types/body-part-merge";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 /**
  * 통증 체크 모달 컴포넌트
@@ -174,26 +173,17 @@ export function PainCheckModal({
     }
   };
 
-  // "맨몸" 기구 ID 찾기
-  const noneEquipmentId = equipmentTypes.find((eq) => eq.name === "맨몸")?.id;
-
-  // 기구 선택 토글 (개선: "맨몸" 처리 로직 추가)
+  // 기구 선택 토글 (모든 기구 복수 선택 가능)
   const toggleEquipment = (equipmentId: string) => {
     setEquipmentAvailable((prev) => {
-      const isNone = equipmentId === noneEquipmentId;
       const isCurrentlySelected = prev.includes(equipmentId);
 
-      if (isNone) {
-        // "맨몸" 선택 시: 다른 모든 기구 해제하고 "맨몸"만 선택
-        return isCurrentlySelected ? [] : [equipmentId];
+      if (isCurrentlySelected) {
+        // 이미 선택되어 있으면 해제
+        return prev.filter((id) => id !== equipmentId);
       } else {
-        // 다른 기구 선택 시: "맨몸"이 있으면 제거하고 선택한 기구 추가/제거
-        const withoutNone = prev.filter((id) => id !== noneEquipmentId);
-        if (isCurrentlySelected) {
-          return withoutNone.filter((id) => id !== equipmentId);
-        } else {
-          return [...withoutNone, equipmentId];
-        }
+        // 선택되어 있지 않으면 추가
+        return [...prev, equipmentId];
       }
     });
   };
