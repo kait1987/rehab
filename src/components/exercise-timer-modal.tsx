@@ -12,6 +12,8 @@ import {
   Pause,
   Play,
   RotateCcw,
+  SkipBack,
+  SkipForward,
   Square,
   X,
 } from "lucide-react";
@@ -21,8 +23,10 @@ interface ExerciseTimerModalProps {
   isOpen: boolean;
   exercise: MergedExercise | null;
   hasNext: boolean;
+  hasPrevious?: boolean;
   onClose: () => void;
   onNext: () => void;
+  onPrevious?: () => void;
   onDone?: () => void;
 }
 
@@ -35,8 +39,10 @@ export function ExerciseTimerModal({
   isOpen,
   exercise,
   hasNext,
+  hasPrevious = false,
   onClose,
   onNext,
+  onPrevious,
   onDone,
 }: ExerciseTimerModalProps) {
   const [mode, setMode] = useState<TimerMode>("idle");
@@ -369,8 +375,44 @@ export function ExerciseTimerModal({
           )}
         </div>
 
+        {/* 운동 설명/방법/주의사항 영역 */}
+        {mode !== "done" && (
+          <div className="px-4 py-3 border-b max-h-40 overflow-y-auto">
+            <div className="space-y-2 text-sm">
+              {/* 운동 설명 */}
+              {exercise.description && (
+                <div>
+                  <span className="font-medium text-foreground">설명: </span>
+                  <span className="text-muted-foreground">{exercise.description}</span>
+                </div>
+              )}
+
+              {/* 운동 방법 */}
+              {exercise.instructions && (
+                <div>
+                  <span className="font-medium text-foreground">방법: </span>
+                  <span className="text-muted-foreground whitespace-pre-wrap">{exercise.instructions}</span>
+                </div>
+              )}
+
+              {/* 주의사항 */}
+              {exercise.precautions && (
+                <div className="flex items-start gap-1.5 p-2 rounded bg-yellow-500/10 border border-yellow-500/30">
+                  <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-yellow-600 dark:text-yellow-400">{exercise.precautions}</span>
+                </div>
+              )}
+
+              {/* 설명이 모두 없는 경우 */}
+              {!exercise.description && !exercise.instructions && !exercise.precautions && (
+                <p className="text-muted-foreground text-center py-2">운동 설명이 없습니다.</p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* 타이머 및 컨트롤 영역 */}
-        <div className="p-6 flex flex-col items-center">
+        <div className="p-4 flex flex-col">
           {mode === "done" ? (
             <div className="w-full py-8 text-center">
               <p className="text-muted-foreground mb-6">
@@ -384,30 +426,8 @@ export function ExerciseTimerModal({
             </div>
           ) : (
             <>
-              {/* 시간 표시 + 일시정지 버튼 */}
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <div className="text-6xl font-bold tabular-nums tracking-tight">
-                  {`${minutes}:${seconds.toString().padStart(2, "0")}`}
-                </div>
-                {/* 타이머 옆 일시정지/재개 버튼 */}
-                {(mode === "running" || mode === "paused") && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-12 w-12 rounded-full"
-                    onClick={mode === "running" ? pauseTimer : resumeTimer}
-                  >
-                    {mode === "running" ? (
-                      <Pause className="h-8 w-8" />
-                    ) : (
-                      <Play className="h-8 w-8 ml-0.5" />
-                    )}
-                  </Button>
-                )}
-              </div>
-
-              {/* 컨트롤 버튼 */}
-              <div className="flex items-center justify-center gap-4 w-full max-w-xs mb-6">
+              {/* 시간 + 컨트롤 버튼 (가로 배치) */}
+              <div className="flex items-center justify-between gap-4 mb-4">
                 {mode === "finished" ? (
                   <div className="w-full text-center py-4">
                     <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3 animate-bounce" />
@@ -420,45 +440,108 @@ export function ExerciseTimerModal({
                   </div>
                 ) : (
                   <>
-                    {/* 리셋 버튼 */}
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-14 w-14 rounded-full"
-                      onClick={resetTimer}
-                    >
-                      <RotateCcw className="h-6 w-6" />
-                    </Button>
+                    {/* 시간 표시 (왼쪽) */}
+                    <div className="text-5xl font-bold tabular-nums tracking-tight">
+                      {`${minutes}:${seconds.toString().padStart(2, "0")}`}
+                    </div>
 
-                    {/* 메인 버튼: 시작/종료 토글 */}
-                    {mode === "idle" ? (
+                    {/* 컨트롤 버튼 (오른쪽) */}
+                    <div className="flex items-center gap-2">
+                      {/* 이전 버튼 */}
+                      {hasPrevious && onPrevious && (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-12 w-12 rounded-full"
+                          onClick={onPrevious}
+                          title="이전 운동"
+                        >
+                          <SkipBack className="h-5 w-5" />
+                        </Button>
+                      )}
+
+                      {/* 리셋 버튼 */}
                       <Button
+                        variant="outline"
                         size="icon"
-                        className="h-20 w-20 rounded-full shadow-lg bg-primary hover:bg-primary/90"
-                        onClick={startTimer}
+                        className="h-12 w-12 rounded-full"
+                        onClick={resetTimer}
+                        title="리셋"
                       >
-                        <Play className="h-10 w-10 fill-current ml-1" />
+                        <RotateCcw className="h-5 w-5" />
                       </Button>
-                    ) : (
-                      <Button
-                        size="icon"
-                        className="h-20 w-20 rounded-full shadow-lg bg-destructive hover:bg-destructive/90"
-                        onClick={stopExercise}
-                      >
-                        <Square className="h-8 w-8 fill-current" />
-                      </Button>
-                    )}
+
+                      {/* 메인 버튼: 시작/일시정지/재개 토글 */}
+                      {mode === "idle" ? (
+                        <Button
+                          size="icon"
+                          className="h-16 w-16 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+                          onClick={startTimer}
+                          title="시작"
+                        >
+                          <Play className="h-8 w-8 fill-current ml-1" />
+                        </Button>
+                      ) : mode === "running" ? (
+                        <Button
+                          size="icon"
+                          className="h-16 w-16 rounded-full shadow-lg bg-yellow-500 hover:bg-yellow-500/90"
+                          onClick={pauseTimer}
+                          title="일시정지"
+                        >
+                          <Pause className="h-8 w-8 fill-current" />
+                        </Button>
+                      ) : (
+                        <Button
+                          size="icon"
+                          className="h-16 w-16 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+                          onClick={resumeTimer}
+                          title="재개"
+                        >
+                          <Play className="h-8 w-8 fill-current ml-1" />
+                        </Button>
+                      )}
+
+                      {/* 정지 버튼 (타이머 실행 중일 때만) */}
+                      {(mode === "running" || mode === "paused") && (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-12 w-12 rounded-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={stopExercise}
+                          title="정지"
+                        >
+                          <Square className="h-5 w-5 fill-current" />
+                        </Button>
+                      )}
+
+                      {/* 다음 버튼 */}
+                      {hasNext && (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-12 w-12 rounded-full"
+                          onClick={onNext}
+                          title="다음 운동"
+                        >
+                          <SkipForward className="h-5 w-5" />
+                        </Button>
+                      )}
+                    </div>
                   </>
                 )}
               </div>
 
-              {/* 운동 정보 */}
-              <div className="flex gap-2 text-sm text-muted-foreground">
+              {/* 운동 정보 (세트/횟수) */}
+              <div className="flex gap-3 justify-center">
                 {exercise.sets && (
-                  <Badge variant="secondary">{exercise.sets}세트</Badge>
+                  <Badge variant="secondary" className="text-base px-4 py-2 font-semibold">
+                    {exercise.sets}세트
+                  </Badge>
                 )}
                 {exercise.reps && (
-                  <Badge variant="secondary">{exercise.reps}회</Badge>
+                  <Badge variant="secondary" className="text-base px-4 py-2 font-semibold">
+                    {exercise.reps}회
+                  </Badge>
                 )}
               </div>
             </>

@@ -367,8 +367,10 @@ export function SessionPlayer({
         isOpen={isTimerOpen}
         exercise={session.currentExercise}
         hasNext={session.hasNext}
+        hasPrevious={session.hasPrevious}
         onClose={handleTimerClose}
         onNext={handleNextExercise}
+        onPrevious={handlePreviousExercise}
         onDone={() => {
           // 마지막 운동 완료 시 자동으로 결과 모달 표시
           // useSessionState의 onSessionComplete 콜백에서 처리됨

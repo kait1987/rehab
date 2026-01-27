@@ -119,6 +119,14 @@ function RehabPageContent() {
     }
   };
 
+  const handlePreviousExercise = () => {
+    if (activeIndex > 0) {
+      const prevIndex = activeIndex - 1;
+      setActiveIndex(prevIndex);
+      setActiveExercise(allExercises[prevIndex]);
+    }
+  };
+
   const handleCloseModal = () => {
     setActiveExercise(null);
     setActiveIndex(-1);
@@ -676,32 +684,34 @@ function RehabPageContent() {
               <Button
                 onClick={handleSaveCourse}
                 disabled={saving || !!savedCourseId}
-                variant="outline"
-                className="flex-1 border-2 border-primary/30 bg-background/50 hover:bg-primary/10 hover:border-primary transition-all h-14 text-base"
+                className={`flex-1 h-14 text-base font-semibold transition-all ${
+                  savedCourseId
+                    ? "bg-green-500 hover:bg-green-600 text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
               >
                 {saving ? (
                   <>
                     <Loader2
-                      className="h-4 w-4 mr-2 animate-spin"
+                      className="h-5 w-5 mr-2 animate-spin"
                       strokeWidth={1.5}
                     />
                     저장 중...
                   </>
                 ) : savedCourseId ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4 mr-2" strokeWidth={1.5} />
-                    저장됨
+                    <CheckCircle2 className="h-5 w-5 mr-2" strokeWidth={1.5} />
+                    저장 완료
                   </>
                 ) : (
                   <>
-                    <Save className="h-4 w-4 mr-2" strokeWidth={1.5} />
+                    <Save className="h-5 w-5 mr-2" strokeWidth={1.5} />
                     코스 저장하기
                   </>
                 )}
               </Button>
               <Button
-                variant="outline"
-                className="flex-1 border-2 border-border/60 bg-background/50 hover:bg-accent hover:border-foreground/50 transition-all h-14 text-base"
+                className="flex-1 h-14 text-base font-semibold bg-gray-700 hover:bg-gray-800 text-white transition-all"
                 onClick={() => router.push("/")}
               >
                 새 코스 만들기
@@ -729,8 +739,10 @@ function RehabPageContent() {
         isOpen={!!activeExercise}
         exercise={activeExercise}
         hasNext={activeIndex < allExercises.length - 1}
+        hasPrevious={activeIndex > 0}
         onClose={handleCloseModal}
         onNext={handleNextExercise}
+        onPrevious={handlePreviousExercise}
       />
     </main>
   );
