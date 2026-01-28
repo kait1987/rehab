@@ -17,7 +17,9 @@
       "Bash(pnpm tsc:*)",
       "Bash(pnpm eslint --fix)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm dev)"
+      "Bash(pnpm dev)",
+      "Bash(npx tsc --noEmit --pretty)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

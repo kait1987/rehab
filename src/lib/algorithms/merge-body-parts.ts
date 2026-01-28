@@ -97,6 +97,11 @@ export async function mergeBodyParts(
   // 2. pain_level_range 필터링 및 우선순위 점수 계산
   const exercisesWithScores: MergedExercise[] = [];
 
+  // AI 코치에서 회피해야 할 운동 ID 목록
+  const avoidExerciseIds = new Set<string>(
+    ((request as unknown as { _avoidExerciseIds?: string[] })._avoidExerciseIds) || []
+  );
+
   for (const mapping of mappings) {
     const bodyPart = request.bodyParts.find(
       (bp) => bp.bodyPartId === mapping.bodyPartId,
@@ -106,6 +111,11 @@ export async function mergeBodyParts(
 
     // ✅ 비활성 운동 필터링 (isActive: false인 운동 제외)
     if (!mapping.exerciseTemplate.isActive) {
+      continue;
+    }
+
+    // ✅ AI 코치 회피 운동 필터링
+    if (avoidExerciseIds.has(mapping.exerciseTemplateId)) {
       continue;
     }
 
@@ -194,10 +204,18 @@ export async function mergeBodyParts(
     });
 
     // 난이도 범위로 필터링
-    filteredByDifficulty = filterByDifficultyRange(
+    const filtered = filterByDifficultyRange(
       exercisesWithScores,
       difficultyAdjustment.allowedRange,
     );
+
+    // 난이도 필터 후 운동이 0개면 필터 해제 (폴백)
+    if (filtered.length > 0) {
+      filteredByDifficulty = filtered;
+    } else if (exercisesWithScores.length > 0) {
+      warnings.push("해당 난이도에 맞는 운동이 부족하여 전체 운동에서 추천합니다.");
+      filteredByDifficulty = exercisesWithScores;
+    }
 
     // 난이도 조정 사유가 있으면 경고 추가
     if (difficultyAdjustment.adjustmentReason) {

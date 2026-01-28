@@ -15,6 +15,17 @@ export function mapExperienceLevel(input: string | null | undefined): Experience
 
   const normalized = input.toLowerCase().trim();
 
+  // 영문 코드값 매핑 (pain-check-modal 폼에서 전송)
+  if (normalized === 'rarely') {
+    return 'beginner';
+  }
+  if (normalized === 'weekly_1_2') {
+    return 'intermediate';
+  }
+  if (normalized === 'weekly_3_plus') {
+    return 'advanced';
+  }
+
   // 한글 매핑
   if (
     normalized.includes('거의 안') ||
