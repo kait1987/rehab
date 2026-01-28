@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface CourseGenerationResponse {
   success: boolean;
@@ -367,6 +368,8 @@ function RehabPageContent() {
     setIsSessionMode(true);
   };
 
+  // ... existing code ...
+
   /**
    * 🆕 세션 완료 핸들러
    */
@@ -399,11 +402,33 @@ function RehabPageContent() {
         });
 
         const data = await response.json();
+
         if (!response.ok || !data.success) {
           console.error("Failed to save completion logs:", data.error);
+          toast.error("저장에 실패했습니다.", {
+            description: data.error || "잠시 후 다시 시도해주세요.",
+          });
+        } else {
+          // 성공 및 스트릭 알림
+          if (data.data?.streak) {
+            const { current, updated } = data.data.streak;
+            if (updated) {
+              toast.success(`🎉 ${current}일 연속 운동 달성!`, {
+                description: "꾸준한 노력이 빛을 발하고 있어요.",
+                duration: 4000,
+              });
+            } else {
+              toast.success("운동이 저장되었습니다.", {
+                description: `현재 ${current}일 연속 기록 중입니다.`,
+              });
+            }
+          } else {
+            toast.success("운동이 성공적으로 저장되었습니다.");
+          }
         }
       } catch (err) {
         console.error("Session completion error:", err);
+        toast.error("네트워크 오류가 발생했습니다.");
       }
     },
     [savedCourseId],

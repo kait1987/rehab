@@ -59,6 +59,9 @@ model UserFitnessProfile {
   avgCompletionRate   Float?    @map("avg_completion_rate")  // 0.0-1.0
   avgPainReduction    Float?    @map("avg_pain_reduction")   // 평균 통증 감소율
   totalCoursesCompleted Int     @default(0) @map("total_courses_completed")
+  currentStreak         Int     @default(0) @map("current_streak")
+  longestStreak         Int     @default(0) @map("longest_streak")
+  lastWorkoutDate       DateTime? @map("last_workout_date") @db.Timestamptz
   createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 

@@ -1,0 +1,35 @@
+Debugger listening on ws://127.0.0.1:55419/3052f8a1-21cb-48fc-9421-e5de242e8385
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+Debugger listening on ws://127.0.0.1:55495/d064f321-aa99-4e0e-94a6-21b57b3d0959
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+   ??Next.js 15.5.7
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     쨌 clientTraceMetadata
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (181kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (199kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (139kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ??Compiled successfully in 44s
+   Skipping linting
+   Checking validity of types ...
+Debugger listening on ws://127.0.0.1:61355/bdee3f27-90aa-4e70-a3f8-c4c17c6513db
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+Failed to compile.
+
+./scripts/sync-clerk-users.ts:1:35
+Type error: Cannot find module '@clerk/backend' or its corresponding type declarations.
+
+> 1 | import { createClerkClient } from "@clerk/backend";
+    |                                   ^
+  2 | import { PrismaClient } from "@prisma/client";
+  3 |
+  4 | const prisma = new PrismaClient();
+Waiting for the debugger to disconnect...
+Next.js build worker exited with code: 1 and signal: null
+Waiting for the debugger to disconnect...
+Waiting for the debugger to disconnect...

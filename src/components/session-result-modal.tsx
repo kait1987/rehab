@@ -1,31 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useMemo } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import type { SessionResult, UserFeedback } from "@/hooks/use-session-state";
 import {
-  Trophy,
-  Clock,
+  generateFeedback,
+  type FeedbackResult,
+} from "@/lib/coaching/generate-feedback";
+import { cn } from "@/lib/utils";
+import confetti from "canvas-confetti";
+import {
   CheckCircle2,
-  SkipForward,
+  Clock,
   Flame,
   Loader2,
-} from 'lucide-react';
-import { PainAfterInput } from './pain-after-input';
-import { CoachingFeedbackCard } from './coaching-feedback';
-import { generateFeedback, type FeedbackResult } from '@/lib/coaching/generate-feedback';
-import type { SessionResult, UserFeedback } from '@/hooks/use-session-state';
+  SkipForward,
+  Trophy,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CoachingFeedbackCard } from "./coaching-feedback";
+import { PainAfterInput } from "./pain-after-input";
 
 interface BodyPartInfo {
   bodyPartId: string;
@@ -73,29 +77,33 @@ function StatCard({
   label,
   value,
   subValue,
-  variant = 'default',
+  variant = "default",
 }: {
   icon: typeof Trophy;
   label: string;
   value: string | number;
   subValue?: string;
-  variant?: 'default' | 'success' | 'warning';
+  variant?: "default" | "success" | "warning";
 }) {
   return (
     <Card
       className={cn(
-        'border-2',
-        variant === 'success' && 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/30',
-        variant === 'warning' && 'border-yellow-200 dark:border-yellow-800 bg-yellow-50/50 dark:bg-yellow-950/30'
+        "border-2",
+        variant === "success" &&
+          "border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/30",
+        variant === "warning" &&
+          "border-yellow-200 dark:border-yellow-800 bg-yellow-50/50 dark:bg-yellow-950/30",
       )}
     >
       <CardContent className="p-3 flex items-center gap-3">
         <div
           className={cn(
-            'p-2 rounded-lg',
-            variant === 'success' && 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400',
-            variant === 'warning' && 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400',
-            variant === 'default' && 'bg-primary/10 text-primary'
+            "p-2 rounded-lg",
+            variant === "success" &&
+              "bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400",
+            variant === "warning" &&
+              "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400",
+            variant === "default" && "bg-primary/10 text-primary",
           )}
         >
           <Icon className="h-5 w-5" />
@@ -123,7 +131,7 @@ export function SessionResultModal({
   onSave,
   onClose,
 }: SessionResultModalProps) {
-  const [activeTab, setActiveTab] = useState('summary');
+  const [activeTab, setActiveTab] = useState("summary");
   const [painAfter, setPainAfter] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     for (const bp of bodyParts) {
@@ -131,7 +139,7 @@ export function SessionResultModal({
     }
     return initial;
   });
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   // 피드백 생성
@@ -153,6 +161,47 @@ export function SessionResultModal({
     });
   }, [sessionResult, painAfter, notes, bodyParts, streak]);
 
+  // 🎉 축하 효과 (Confetti)
+  useEffect(() => {
+    if (isOpen && sessionResult.completionRate >= 50) {
+      // 3초간 폭죽 발사
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+      const defaults = {
+        startVelocity: 30,
+        spread: 360,
+        ticks: 60,
+        zIndex: 100,
+      };
+
+      const randomInRange = (min: number, max: number) =>
+        Math.random() * (max - min) + min;
+
+      const interval: NodeJS.Timeout = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        // 좌우에서 터지도록 설정
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        });
+      }, 250);
+
+      return () => clearInterval(interval);
+    }
+  }, [isOpen, sessionResult.completionRate]);
+
   // 저장 핸들러
   const handleSave = useCallback(async () => {
     setIsSaving(true);
@@ -166,26 +215,28 @@ export function SessionResultModal({
     }
   }, [onSave, painAfter, notes]);
 
-  const { completionRate, completedExercises, skippedExercises, totalExercises } =
-    sessionResult;
+  const {
+    completionRate,
+    completedExercises,
+    skippedExercises,
+    totalExercises,
+  } = sessionResult;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-center">
           <div className="mx-auto mb-2 text-4xl">
-            {completionRate === 100 ? '🎉' : completionRate >= 50 ? '💪' : '🤗'}
+            {completionRate === 100 ? "🎉" : completionRate >= 50 ? "💪" : "🤗"}
           </div>
           <DialogTitle className="text-xl">
             {completionRate === 100
-              ? '운동 완료!'
+              ? "운동 완료!"
               : completionRate >= 50
-                ? '수고하셨어요!'
-                : '조금씩 나아가고 있어요!'}
+                ? "수고하셨어요!"
+                : "조금씩 나아가고 있어요!"}
           </DialogTitle>
-          <DialogDescription>
-            오늘의 운동 결과를 확인하세요
-          </DialogDescription>
+          <DialogDescription>오늘의 운동 결과를 확인하세요</DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -204,7 +255,7 @@ export function SessionResultModal({
                 label="완료한 운동"
                 value={`${completedExercises}/${totalExercises}`}
                 subValue={`${completionRate}% 완료`}
-                variant={completionRate >= 80 ? 'success' : 'default'}
+                variant={completionRate >= 80 ? "success" : "default"}
               />
               <StatCard
                 icon={Clock}
@@ -234,28 +285,28 @@ export function SessionResultModal({
               <CardContent className="p-3 space-y-2">
                 <p className="text-sm font-medium">섹션별 현황</p>
                 <div className="space-y-1.5">
-                  {(['warmup', 'main', 'cooldown'] as const).map((section) => {
+                  {(["warmup", "main", "cooldown"] as const).map((section) => {
                     const stats = sessionResult.sectionStats[section];
                     if (stats.total === 0) return null;
                     const percent = Math.round(
-                      (stats.completed / stats.total) * 100
+                      (stats.completed / stats.total) * 100,
                     );
                     return (
                       <div key={section} className="flex items-center gap-2">
                         <span className="text-xs w-12 text-muted-foreground">
-                          {section === 'warmup'
-                            ? '준비'
-                            : section === 'main'
-                              ? '메인'
-                              : '마무리'}
+                          {section === "warmup"
+                            ? "준비"
+                            : section === "main"
+                              ? "메인"
+                              : "마무리"}
                         </span>
                         <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                           <div
                             className={cn(
-                              'h-full transition-all',
-                              section === 'warmup' && 'bg-blue-500',
-                              section === 'main' && 'bg-primary',
-                              section === 'cooldown' && 'bg-green-500'
+                              "h-full transition-all",
+                              section === "warmup" && "bg-blue-500",
+                              section === "main" && "bg-primary",
+                              section === "cooldown" && "bg-green-500",
                             )}
                             style={{ width: `${percent}%` }}
                           />

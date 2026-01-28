@@ -45,6 +45,7 @@
     "verify:build": "dotenv -e .env.local -- npm run build"
   },
   "dependencies": {
+    "@clerk/backend": "^2.29.5",
     "@clerk/localizations": "^3.32.1",
     "@clerk/nextjs": "^6.36.5",
     "@google/generative-ai": "^0.24.1",
@@ -83,6 +84,7 @@
     "@supabase/supabase-js": "^2.87.1",
     "@types/uuid": "^10.0.0",
     "@vercel/analytics": "^1.6.1",
+    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -114,6 +116,7 @@
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/pg": "^8.16.0",
     "@types/react": "18.2.66",
